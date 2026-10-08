@@ -37,7 +37,7 @@
                 <i class="fa-solid fa-book-open text-sm"></i> Daftar Jurnal
             </button>
             <button onclick="switchTab('bukubesar')" id="nav-bukubesar" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-indigo-900 hover:text-white transition">
-                <i class="fa-solid fa-ledger text-sm"></i> Buku Besar
+                <i class="fa-solid fa-book-bookmark text-sm"></i> Buku Besar
             </button>
             <button onclick="switchTab('laporan')" id="nav-laporan" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-indigo-900 hover:text-white transition">
                 <i class="fa-solid fa-file-invoice-dollar text-sm"></i> Laporan Keuangan
@@ -442,14 +442,29 @@
                 ["Beban LO", document.getElementById('loBeban').innerText],
                 ["Surplus / (Defisit)", document.getElementById('loSurplus').innerText]
             ];
-            XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(summary), "Identitas & Laporan");
+            
+            const wsSummary = XLSX.utils.aoa_to_sheet(summary);
+            wsSummary['!cols'] = [{ wch: 30 }, { wch: 25 }];
+            XLSX.utils.book_append_sheet(wb, wsSummary, "Identitas & Laporan");
 
             // Sheet 2: Jurnal Umum
             const jRows = [["No", "Tanggal", "Uraian", "Debet Finansial", "Kredit Finansial", "Debet LRA", "Kredit LRA", "Nominal"]];
             transaksi.forEach((t, i) => {
                 jRows.push([i+1, t.tgl, t.uraian, t.finD, t.finK, t.lraD, t.lraK, t.nominal]);
             });
-            XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(jRows), "Jurnal Umum");
+            
+            const wsJurnal = XLSX.utils.aoa_to_sheet(jRows);
+            wsJurnal['!cols'] = [
+                { wch: 5 },  // No
+                { wch: 12 }, // Tanggal
+                { wch: 30 }, // Uraian
+                { wch: 30 }, // Debet Finansial
+                { wch: 30 }, // Kredit Finansial
+                { wch: 30 }, // Debet LRA
+                { wch: 30 }, // Kredit LRA
+                { wch: 18 }  // Nominal
+            ];
+            XLSX.utils.book_append_sheet(wb, wsJurnal, "Jurnal Umum");
 
             XLSX.writeFile(wb, `Praktikum_Akuntansi_${(identitas.nama || 'Siswa').replace(/\s+/g, '_')}.xlsx`);
         }
