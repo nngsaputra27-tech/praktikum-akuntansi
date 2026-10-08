@@ -263,7 +263,7 @@
                                 Batal
                             </button>
                             <button type="submit" id="btnSubmitBb" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-5 py-2 rounded-lg transition shadow">
-                                <i class="fa-solid fa-paper-plane"></i> Submit buku besar
+                                <i class="fa-solid fa-paper-plane"></i> Submit Buku Besar
                             </button>
                         </div>
                     </form>
@@ -288,6 +288,13 @@
                         </thead>
                         <tbody id="bbTbody"></tbody>
                     </table>
+                </div>
+
+                <!-- TOMBOL LIHAT SEMUA BUKU BESAR (SISI KANAN BAWAH TABEL) -->
+                <div class="flex justify-end pt-1">
+                    <button onclick="bukaModalSemuaBb()" class="bg-indigo-900 hover:bg-indigo-950 text-amber-400 font-bold text-xs px-4 py-2.5 rounded-lg shadow-md flex items-center gap-2 transition transform hover:-translate-y-0.5">
+                        <i class="fa-solid fa-layer-group text-sm"></i> Lihat Semua Buku Besar
+                    </button>
                 </div>
             </section>
 
@@ -315,6 +322,39 @@
             </section>
         </div>
     </main>
+
+    <!-- MODAL POP-UP LIHAT SEMUA BUKU BESAR -->
+    <div id="modalSemuaBb" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="bg-white w-full max-w-5xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden border border-slate-200">
+            <!-- Modal Header -->
+            <div class="px-6 py-4 bg-indigo-950 text-white flex justify-between items-center shrink-0 border-b border-indigo-900">
+                <div class="flex items-center gap-3">
+                    <div class="bg-amber-400 text-indigo-950 p-2 rounded-lg font-bold">
+                        <i class="fa-solid fa-book-open-reader text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-bold">Rekapitulasi Seluruh Buku Besar</h3>
+                        <p class="text-[11px] text-indigo-300">Menampilkan seluruh rincian transaksi akun yang telah di-input</p>
+                    </div>
+                </div>
+                <button onclick="tutupModalSemuaBb()" class="text-slate-300 hover:text-white bg-indigo-900 hover:bg-indigo-800 rounded-lg w-8 h-8 flex items-center gap-0 justify-center transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Modal Content (Scrollable) -->
+            <div id="modalSemuaBbBody" class="p-6 overflow-y-auto space-y-6 flex-1 bg-slate-50">
+                <!-- Data akan di-render di sini lewat JS -->
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="px-6 py-3 bg-white border-t border-slate-200 flex justify-end shrink-0">
+                <button onclick="tutupModalSemuaBb()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold px-4 py-2 rounded-lg transition">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- LOGIC SCRIPT -->
     <script>
@@ -549,7 +589,7 @@
             renderBukuBesar();
         }
 
-        /* --- FUNGSI BUKU BESAR MANUAL SISWA (DENGAN DUKUNGAN EDIT) --- */
+        /* --- FUNGSI BUKU BESAR MANUAL SISWA --- */
         function tambahBukuBesarManual(e) {
             e.preventDefault();
             const akunKey = document.getElementById('bbSelect').value;
@@ -607,7 +647,7 @@
             document.getElementById('bbDebet').value = '';
             document.getElementById('bbKredit').value = '';
 
-            document.getElementById('btnSubmitBb').innerHTML = '<i class="fa-solid fa-paper-plane"></i> Submit buku besar';
+            document.getElementById('btnSubmitBb').innerHTML = '<i class="fa-solid fa-paper-plane"></i> Submit Buku Besar';
             document.getElementById('btnBatalBb').classList.add('hidden');
         }
 
@@ -668,6 +708,83 @@
                 localStorage.setItem('siswa_bb_manual', JSON.stringify(bukuBesarManual));
                 renderBukuBesar();
             }
+        }
+
+        /* --- FUNGSI MODAL POP-UP LIHAT SEMUA BUKU BESAR --- */
+        function bukaModalSemuaBb() {
+            const modal = document.getElementById('modalSemuaBb');
+            const modalBody = document.getElementById('modalSemuaBbBody');
+            modalBody.innerHTML = '';
+
+            const activeKeys = Object.keys(bukuBesarManual).filter(key => bukuBesarManual[key] && bukuBesarManual[key].length > 0);
+
+            if(activeKeys.length === 0) {
+                modalBody.innerHTML = `
+                    <div class="text-center py-12 text-slate-400 space-y-2">
+                        <i class="fa-solid fa-folder-open text-4xl mb-2 text-slate-300"></i>
+                        <p class="font-bold text-slate-600">Belum Ada Data Buku Besar yang Di-input</p>
+                        <p class="text-xs">Silakan pilih akun dan lakukan posting data pada tab Buku Besar terlebih dahulu.</p>
+                    </div>
+                `;
+            } else {
+                activeKeys.forEach(akunKey => {
+                    const rows = bukuBesarManual[akunKey];
+                    let saldo = 0;
+
+                    let rowsHtml = '';
+                    rows.forEach(r => {
+                        saldo += (r.debet - r.kredit);
+                        rowsHtml += `
+                            <tr class="border-b hover:bg-slate-50 text-xs">
+                                <td class="p-2 border">${r.tgl}</td>
+                                <td class="p-2 border">${r.ket}</td>
+                                <td class="p-2 border text-right font-mono">${formatRp(r.debet)}</td>
+                                <td class="p-2 border text-right font-mono">${formatRp(r.kredit)}</td>
+                                <td class="p-2 border text-right font-bold font-mono">${formatRp(saldo)}</td>
+                            </tr>
+                        `;
+                    });
+
+                    const card = document.createElement('div');
+                    card.className = "bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden";
+                    card.innerHTML = `
+                        <div class="p-3 bg-indigo-50 border-b border-indigo-100 flex justify-between items-center">
+                            <span class="text-xs font-bold text-indigo-950 flex items-center gap-2">
+                                <i class="fa-solid fa-book text-indigo-600"></i> Akun: ${akunKey}
+                            </span>
+                            <span class="text-xs font-bold bg-indigo-200 text-indigo-900 px-2.5 py-0.5 rounded-full">
+                                Saldo Akhir: ${formatRp(saldo)}
+                            </span>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-xs text-left border-collapse">
+                                <thead>
+                                    <tr class="bg-slate-100 text-slate-700 border-b">
+                                        <th class="p-2 border">Tanggal</th>
+                                        <th class="p-2 border">Keterangan</th>
+                                        <th class="p-2 border text-right">Debet (Rp)</th>
+                                        <th class="p-2 border text-right">Kredit (Rp)</th>
+                                        <th class="p-2 border text-right">Saldo (Rp)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${rowsHtml}
+                                </tbody>
+                            </table>
+                        </div>
+                    `;
+                    modalBody.appendChild(card);
+                });
+            }
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function tutupModalSemuaBb() {
+            const modal = document.getElementById('modalSemuaBb');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
         }
 
         // INTEGRASI EXCEL (.XLSX)
