@@ -290,7 +290,7 @@
                     </table>
                 </div>
 
-                <!-- TOMBOL LIHAT SEMUA BUKU BESAR (SISI KANAN BAWAH TABEL) -->
+                <!-- TOMBOL LIHAT SEMUA BUKU BESAR -->
                 <div class="flex justify-end pt-1">
                     <button onclick="bukaModalSemuaBb()" class="bg-indigo-900 hover:bg-indigo-950 text-amber-400 font-bold text-xs px-4 py-2.5 rounded-lg shadow-md flex items-center gap-2 transition transform hover:-translate-y-0.5">
                         <i class="fa-solid fa-layer-group text-sm"></i> Lihat Semua Buku Besar
@@ -326,7 +326,6 @@
     <!-- MODAL POP-UP LIHAT SEMUA BUKU BESAR -->
     <div id="modalSemuaBb" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
         <div class="bg-white w-full max-w-5xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden border border-slate-200">
-            <!-- Modal Header -->
             <div class="px-6 py-4 bg-indigo-950 text-white flex justify-between items-center shrink-0 border-b border-indigo-900">
                 <div class="flex items-center gap-3">
                     <div class="bg-amber-400 text-indigo-950 p-2 rounded-lg font-bold">
@@ -342,12 +341,8 @@
                 </button>
             </div>
 
-            <!-- Modal Content (Scrollable) -->
-            <div id="modalSemuaBbBody" class="p-6 overflow-y-auto space-y-6 flex-1 bg-slate-50">
-                <!-- Data akan di-render di sini lewat JS -->
-            </div>
+            <div id="modalSemuaBbBody" class="p-6 overflow-y-auto space-y-6 flex-1 bg-slate-50"></div>
 
-            <!-- Modal Footer -->
             <div class="px-6 py-3 bg-white border-t border-slate-200 flex justify-end shrink-0">
                 <button onclick="tutupModalSemuaBb()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold px-4 py-2 rounded-lg transition">
                     Tutup
@@ -459,6 +454,7 @@
             localStorage.setItem('siswa_coa', JSON.stringify(coaData));
             initCOA();
             batalEditCoa();
+            renderBukuBesar();
         }
 
         function editCoa(idx) {
@@ -489,6 +485,7 @@
                 coaData.splice(idx, 1);
                 localStorage.setItem('siswa_coa', JSON.stringify(coaData));
                 initCOA();
+                renderBukuBesar();
             }
         }
 
@@ -498,6 +495,7 @@
                 localStorage.setItem('siswa_coa', JSON.stringify(coaData));
                 initCOA();
                 batalEditCoa();
+                renderBukuBesar();
             }
         }
 
@@ -542,6 +540,24 @@
 
         function formatRp(num) {
             return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(num);
+        }
+
+        /* HELPER UNTUK CEK KELOMPOK SALDO NORMAL KREDIT */
+        function isSaldoNormalKredit(akunKey) {
+            if(!akunKey) return false;
+            const cleanKey = akunKey.trim();
+
+            const foundCoa = coaData.find(c => `${c.kode} ${c.nama}` === cleanKey || cleanKey.includes(c.kode));
+            
+            if(foundCoa) {
+                const kat = foundCoa.kat.toLowerCase();
+                if(kat.includes('kewajiban') || kat.includes('utang') || kat.includes('ekuitas') || kat.includes('pendapatan')) {
+                    return true;
+                }
+            }
+
+            const lowerKey = cleanKey.toLowerCase();
+            return lowerKey.includes('pendapatan') || lowerKey.includes('utang') || lowerKey.includes('kewajiban') || lowerKey.includes('ekuitas');
         }
 
         function renderTampilan() {
@@ -672,9 +688,16 @@
                 return;
             }
 
+            const isKreditNormal = isSaldoNormalKredit(akunKey);
             let saldo = 0;
+
             rows.forEach((r) => {
-                saldo += (r.debet - r.kredit);
+                if(isKreditNormal) {
+                    saldo += (r.kredit - r.debet);
+                } else {
+                    saldo += (r.debet - r.kredit);
+                }
+
                 const tr = document.createElement('tr');
                 tr.className = 'border-b hover:bg-slate-50';
                 tr.innerHTML = `
@@ -729,11 +752,17 @@
             } else {
                 activeKeys.forEach(akunKey => {
                     const rows = bukuBesarManual[akunKey];
+                    const isKreditNormal = isSaldoNormalKredit(akunKey);
                     let saldo = 0;
 
                     let rowsHtml = '';
                     rows.forEach(r => {
-                        saldo += (r.debet - r.kredit);
+                        if(isKreditNormal) {
+                            saldo += (r.kredit - r.debet);
+                        } else {
+                            saldo += (r.debet - r.kredit);
+                        }
+
                         rowsHtml += `
                             <tr class="border-b hover:bg-slate-50 text-xs">
                                 <td class="p-2 border">${r.tgl}</td>
