@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Praktikum Akuntansi Lembaga SMK</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 flex h-screen overflow-hidden">
+
+    <!-- SIDEBAR NAVIGATION -->
+    <aside class="w-64 bg-indigo-950 text-slate-300 flex flex-col shrink-0 shadow-xl">
+        <div class="p-5 border-b border-indigo-900 flex items-center space-x-3">
+            <div class="bg-indigo-600 p-2.5 rounded-lg text-amber-400">
+                <i class="fa-solid fa-graduation-cap text-xl"></i>
+            </div>
+            <div>
+                <h1 class="text-sm font-bold text-white leading-tight">Praktikum Akuntansi Lembaga SMK</h1>
+                <p class="text-[11px] text-indigo-300">Kelas XI / XII AKL</p>
+            </div>
+        </div>
+
+        <nav class="flex-1 p-4 space-y-1 overflow-y-auto text-xs font-medium">
+            <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg bg-indigo-800 text-white font-semibold">
+                <i class="fa-solid fa-chart-pie text-sm"></i> Dashboard
+            </button>
+            <button onclick="switchTab('coa')" id="nav-coa" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-indigo-900 hover:text-white transition">
+                <i class="fa-solid fa-list-ol text-sm"></i> Bagan Akun (COA)
+            </button>
+            <button onclick="switchTab('jurnal')" id="nav-jurnal" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-indigo-900 hover:text-white transition">
+                <i class="fa-solid fa-book-open text-sm"></i> Daftar Jurnal
+            </button>
+            <button onclick="switchTab('bukubesar')" id="nav-bukubesar" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-indigo-900 hover:text-white transition">
+                <i class="fa-solid fa-ledger text-sm"></i> Buku Besar
+            </button>
+            <button onclick="switchTab('laporan')" id="nav-laporan" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-indigo-900 hover:text-white transition">
+                <i class="fa-solid fa-file-invoice-dollar text-sm"></i> Laporan Keuangan
+            </button>
+        </nav>
+
+        <div class="p-4 border-t border-indigo-900 text-[10px] text-center text-indigo-400">
+            Terintegrasi MS Excel (.xlsx)
+        </div>
+    </aside>
+
+    <!-- CONTENT AREA -->
+    <main class="flex-1 flex flex-col overflow-y-auto">
+        <header class="bg-white border-b border-slate-200 px-6 py-3 flex justify-between items-center shadow-sm">
+            <div id="headerTitle" class="text-sm font-bold text-slate-800">Dashboard Utama</div>
+            <div class="flex items-center gap-2">
+                <label for="excelImport" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-3 py-1.5 rounded-md cursor-pointer flex items-center gap-1.5 transition">
+                    <i class="fa-solid fa-file-import"></i> Import Excel
+                </label>
+                <input type="file" id="excelImport" accept=".xlsx, .xls" class="hidden" onchange="importFromExcel(event)">
+
+                <button onclick="exportToExcel()" class="bg-amber-500 hover:bg-amber-600 text-slate-900 text-xs font-bold px-3 py-1.5 rounded-md flex items-center gap-1.5 transition">
+                    <i class="fa-solid fa-file-excel"></i> Export Ke Excel
+                </button>
+            </div>
+        </header>
+
+        <div class="p-6 space-y-6">
+            <!-- TAB 1: DASHBOARD -->
+            <section id="tab-dashboard" class="tab-content space-y-6">
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                    <h2 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-id-card text-indigo-600"></i> Identitas Siswa Praktikum
+                    </h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Lengkap Siswa</label>
+                            <input type="text" id="siswaNama" placeholder="Masukkan Nama Siswa" class="w-full px-3 py-2 border rounded-lg text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none" oninput="simpanIdentitas()">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Kelas / Konsentrasi Keahlian</label>
+                            <input type="text" id="siswaKelas" placeholder="Contoh: XI AKL 1" class="w-full px-3 py-2 border rounded-lg text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none" oninput="simpanIdentitas()">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                        <span class="text-[11px] text-slate-500 font-medium">Total Transaksi</span>
+                        <p class="text-xl font-extrabold text-slate-800 mt-1" id="dashTotalTx">0</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                        <span class="text-[11px] text-slate-500 font-medium">Pendapatan LRA</span>
+                        <p class="text-xl font-extrabold text-emerald-600 mt-1" id="dashPendLRA">Rp 0</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                        <span class="text-[11px] text-slate-500 font-medium">Belanja LRA</span>
+                        <p class="text-xl font-extrabold text-rose-600 mt-1" id="dashBelanjaLRA">Rp 0</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                        <span class="text-[11px] text-slate-500 font-medium">SiLPA / (SiKPA)</span>
+                        <p class="text-xl font-extrabold text-indigo-700 mt-1" id="dashSilpa">Rp 0</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 2: BAGAN AKUN (COA) -->
+            <section id="tab-coa" class="tab-content hidden">
+                <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="p-4 border-b text-xs font-bold text-slate-700">Bagan Akun Standar (COA) Pemda / SKPD</div>
+                    <table class="w-full text-xs text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-700 border-b">
+                                <th class="p-2.5 border">Kode Akun</th>
+                                <th class="p-2.5 border">Nama Akun</th>
+                                <th class="p-2.5 border">Kelompok / Basis</th>
+                            </tr>
+                        </thead>
+                        <tbody id="coaTbody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- TAB 3: DAFTAR JURNAL -->
+            <section id="tab-jurnal" class="tab-content hidden space-y-6">
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                    <h2 class="text-xs font-bold text-indigo-900 uppercase tracking-wider mb-4">Input Jurnal Transaksi (Dual Journaling)</h2>
+                    <form onsubmit="tambahJurnal(event)" class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <div>
+                                <label class="block text-xs text-slate-600 mb-1">Tanggal</label>
+                                <input type="date" id="txTgl" required class="w-full px-2.5 py-1.5 border rounded text-xs">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-xs text-slate-600 mb-1">Keterangan / Uraian Transaksi</label>
+                                <input type="text" id="txUraian" required placeholder="Uraian Transaksi" class="w-full px-2.5 py-1.5 border rounded text-xs">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 space-y-2">
+                                <span class="text-xs font-bold text-indigo-700 block">1. Jurnal Finansial (LO & Neraca)</span>
+                                <select id="txFinD" required class="w-full px-2 py-1.5 border rounded text-xs select-coa"></select>
+                                <select id="txFinK" required class="w-full px-2 py-1.5 border rounded text-xs select-coa"></select>
+                            </div>
+                            <div class="bg-amber-50 p-3 rounded-lg border border-amber-200 space-y-2">
+                                <span class="text-xs font-bold text-amber-800 block">2. Jurnal Pelaksanaan Anggaran (LRA)</span>
+                                <select id="txLraD" class="w-full px-2 py-1.5 border rounded text-xs select-coa"></select>
+                                <select id="txLraK" class="w-full px-2 py-1.5 border rounded text-xs select-coa"></select>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between items-center pt-2">
+                            <div class="w-1/3">
+                                <label class="block text-xs text-slate-600 mb-1">Nominal (Rp)</label>
+                                <input type="number" id="txNominal" min="1" required placeholder="0" class="w-full px-2.5 py-1.5 border rounded text-xs font-semibold">
+                            </div>
+                            <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-5 py-2 rounded-lg transition shadow">
+                                Simpan Transaksi
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="p-4 border-b flex justify-between items-center">
+                        <span class="text-xs font-bold text-slate-700">Daftar Jurnal Umum</span>
+                        <button onclick="resetData()" class="text-xs text-rose-600 hover:underline">Reset Data</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-700 border-b">
+                                    <th class="p-2 border">Tgl</th>
+                                    <th class="p-2 border">Uraian</th>
+                                    <th class="p-2 border">Jurnal Finansial (LO/Neraca)</th>
+                                    <th class="p-2 border">Jurnal Anggaran (LRA)</th>
+                                    <th class="p-2 border text-right">Nominal (Rp)</th>
+                                    <th class="p-2 border text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="jurnalTbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 4: BUKU BESAR -->
+            <section id="tab-bukubesar" class="tab-content hidden space-y-4">
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-3">
+                    <label class="text-xs font-bold text-slate-700">Pilih Akun Buku Besar:</label>
+                    <select id="bbSelect" onchange="renderBukuBesar()" class="px-3 py-1.5 border rounded text-xs select-coa w-72"></select>
+                </div>
+
+                <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                    <table class="w-full text-xs text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-700 border-b">
+                                <th class="p-2 border">Tanggal</th>
+                                <th class="p-2 border">Keterangan</th>
+                                <th class="p-2 border text-right">Debet (Rp)</th>
+                                <th class="p-2 border text-right">Kredit (Rp)</th>
+                                <th class="p-2 border text-right">Saldo (Rp)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bbTbody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- TAB 5: LAPORAN KEUANGAN -->
+            <section id="tab-laporan" class="tab-content hidden space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
+                        <h3 class="text-xs font-bold text-amber-800 border-b pb-2 mb-3">Laporan Realisasi Anggaran (LRA)</h3>
+                        <div class="space-y-2 text-xs">
+                            <div class="flex justify-between"><span>Pendapatan LRA</span><span id="lraPend" class="font-semibold text-emerald-600">Rp 0</span></div>
+                            <div class="flex justify-between"><span>Belanja LRA</span><span id="lraBelanja" class="font-semibold text-rose-600">Rp 0</span></div>
+                            <div class="border-t pt-2 flex justify-between font-bold text-sm"><span>SiLPA / (SiKPA)</span><span id="lraSilpa" class="text-indigo-700">Rp 0</span></div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
+                        <h3 class="text-xs font-bold text-indigo-800 border-b pb-2 mb-3">Laporan Operasional (LO)</h3>
+                        <div class="space-y-2 text-xs">
+                            <div class="flex justify-between"><span>Pendapatan LO</span><span id="loPend" class="font-semibold text-emerald-600">Rp 0</span></div>
+                            <div class="flex justify-between"><span>Beban LO</span><span id="loBeban" class="font-semibold text-rose-600">Rp 0</span></div>
+                            <div class="border-t pt-2 flex justify-between font-bold text-sm"><span>Surplus / (Defisit) LO</span><span id="loSurplus" class="text-indigo-700">Rp 0</span></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- LOGIC SCRIPT & EXCEL INTEGRATION -->
+    <script>
+        const coaData = [
+            { kode: '1.1.1.01', nama: 'Kas di Kas Daerah', kat: 'Aset' },
+            { kode: '1.1.3.01', nama: 'Piutang Pajak Daerah', kat: 'Aset' },
+            { kode: '2.1.1.01', nama: 'Utang Perhitungan Pihak Ketiga (PFK)', kat: 'Kewajiban' },
+            { kode: '3.1.1.01', nama: 'Ekuitas', kat: 'Ekuitas' },
+            { kode: '4.1.1.01', nama: 'Pendapatan Pajak Daerah - LRA', kat: 'Pendapatan LRA' },
+            { kode: '4.2.1.01', nama: 'Pendapatan Retribusi Daerah - LRA', kat: 'Pendapatan LRA' },
+            { kode: '5.1.1.01', nama: 'Belanja Pegawai', kat: 'Belanja LRA' },
+            { kode: '5.1.2.01', nama: 'Belanja Barang dan Jasa', kat: 'Belanja LRA' },
+            { kode: '7.1.1.01', nama: 'Pendapatan Pajak Daerah - LO', kat: 'Pendapatan LO' },
+            { kode: '7.2.1.01', nama: 'Pendapatan Retribusi Daerah - LO', kat: 'Pendapatan LO' },
+            { kode: '8.1.1.01', nama: 'Beban Pegawai', kat: 'Beban LO' },
+            { kode: '8.1.2.01', nama: 'Beban Barang dan Jasa', kat: 'Beban LO' },
+            { kode: '0.0.0.00', nama: 'Perubahan SAL', kat: 'Anggaran' }
+        ];
+
+        let transaksi = [];
+        let identitas = { nama: '', kelas: '' };
+
+        window.onload = function() {
+            initCOA();
+            const saveId = localStorage.getItem('siswa_id');
+            const saveTx = localStorage.getItem('siswa_tx');
+            if(saveId) {
+                identitas = JSON.parse(saveId);
+                document.getElementById('siswaNama').value = identitas.nama || '';
+                document.getElementById('siswaKelas').value = identitas.kelas || '';
+            }
+            if(saveTx) transaksi = JSON.parse(saveTx);
+            renderTampilan();
+        };
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('bg-indigo-800', 'text-white', 'font-semibold'));
+            
+            document.getElementById(`tab-${tab}`).classList.remove('hidden');
+            document.getElementById(`nav-${tab}`).classList.add('bg-indigo-800', 'text-white', 'font-semibold');
+            document.getElementById('headerTitle').innerText = tab.toUpperCase();
+        }
+
+        function initCOA() {
+            const coaTbody = document.getElementById('coaTbody');
+            const selects = document.querySelectorAll('.select-coa');
+            coaTbody.innerHTML = '';
+            
+            selects.forEach(s => s.innerHTML = '<option value="">-- Pilih Akun --</option>');
+
+            coaData.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.className = 'border-b hover:bg-slate-50';
+                tr.innerHTML = `<td class="p-2 border font-mono">${item.kode}</td><td class="p-2 border">${item.nama}</td><td class="p-2 border">${item.kat}</td>`;
+                coaTbody.appendChild(tr);
+
+                selects.forEach(s => {
+                    const opt = document.createElement('option');
+                    opt.value = `${item.kode} ${item.nama}`;
+                    opt.innerText = `${item.kode} - ${item.nama}`;
+                    s.appendChild(opt);
+                });
+            });
+        }
+
+        function simpanIdentitas() {
+            identitas.nama = document.getElementById('siswaNama').value;
+            identitas.kelas = document.getElementById('siswaKelas').value;
+            localStorage.setItem('siswa_id', JSON.stringify(identitas));
+        }
+
+        function tambahJurnal(e) {
+            e.preventDefault();
+            const newTx = {
+                id: Date.now(),
+                tgl: document.getElementById('txTgl').value,
+                uraian: document.getElementById('txUraian').value,
+                finD: document.getElementById('txFinD').value,
+                finK: document.getElementById('txFinK').value,
+                lraD: document.getElementById('txLraD').value || '-',
+                lraK: document.getElementById('txLraK').value || '-',
+                nominal: parseFloat(document.getElementById('txNominal').value) || 0
+            };
+            transaksi.push(newTx);
+            localStorage.setItem('siswa_tx', JSON.stringify(transaksi));
+            document.getElementById('txUraian').value = '';
+            document.getElementById('txNominal').value = '';
+            renderTampilan();
+        }
+
+        function hapusTx(id) {
+            transaksi = transaksi.filter(t => t.id !== id);
+            localStorage.setItem('siswa_tx', JSON.stringify(transaksi));
+            renderTampilan();
+        }
+
+        function resetData() {
+            if(confirm("Hapus seluruh data transaksi?")) {
+                transaksi = [];
+                localStorage.removeItem('siswa_tx');
+                renderTampilan();
+            }
+        }
+
+        function formatRp(num) {
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(num);
+        }
+
+        function renderTampilan() {
+            // Render Table Jurnal
+            const jBody = document.getElementById('jurnalTbody');
+            jBody.innerHTML = '';
+            if(transaksi.length === 0) {
+                jBody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-slate-400">Belum ada transaksi.</td></tr>';
+            } else {
+                transaksi.forEach(t => {
+                    const tr = document.createElement('tr');
+                    tr.className = 'border-b hover:bg-slate-50';
+                    tr.innerHTML = `
+                        <td class="p-2 border">${t.tgl}</td>
+                        <td class="p-2 border">${t.uraian}</td>
+                        <td class="p-2 border"><div class="font-medium text-slate-800">(D) ${t.finD}</div><div class="text-slate-500 pl-2">(K) ${t.finK}</div></td>
+                        <td class="p-2 border">${t.lraD !== '-' ? `<div class="font-medium text-amber-800">(D) ${t.lraD}</div><div class="text-amber-600 pl-2">(K) ${t.lraK}</div>` : '-'}</td>
+                        <td class="p-2 border text-right font-semibold">${formatRp(t.nominal)}</td>
+                        <td class="p-2 border text-center"><button onclick="hapusTx(${t.id})" class="text-rose-500"><i class="fa-solid fa-trash"></i></button></td>
+                    `;
+                    jBody.appendChild(tr);
+                });
+            }
+
+            // Hitung Laporan
+            let pendLRA = 0, belLRA = 0, pendLO = 0, bebanLO = 0;
+            transaksi.forEach(t => {
+                if(t.lraK.includes('Pendapatan')) pendLRA += t.nominal;
+                if(t.lraD.includes('Belanja')) belLRA += t.nominal;
+                if(t.finK.includes('Pendapatan')) pendLO += t.nominal;
+                if(t.finD.includes('Beban')) bebanLO += t.nominal;
+            });
+
+            document.getElementById('dashTotalTx').innerText = transaksi.length;
+            document.getElementById('dashPendLRA').innerText = formatRp(pendLRA);
+            document.getElementById('dashBelanjaLRA').innerText = formatRp(belLRA);
+            document.getElementById('dashSilpa').innerText = formatRp(pendLRA - belLRA);
+
+            document.getElementById('lraPend').innerText = formatRp(pendLRA);
+            document.getElementById('lraBelanja').innerText = formatRp(belLRA);
+            document.getElementById('lraSilpa').innerText = formatRp(pendLRA - belLRA);
+
+            document.getElementById('loPend').innerText = formatRp(pendLO);
+            document.getElementById('loBeban').innerText = formatRp(bebanLO);
+            document.getElementById('loSurplus').innerText = formatRp(pendLO - bebanLO);
+
+            renderBukuBesar();
+        }
+
+        function renderBukuBesar() {
+            const akun = document.getElementById('bbSelect').value;
+            const bbBody = document.getElementById('bbTbody');
+            bbBody.innerHTML = '';
+
+            if(!akun) {
+                bbBody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-slate-400">Pilih akun terlebih dahulu.</td></tr>';
+                return;
+            }
+
+            let saldo = 0;
+            transaksi.forEach(t => {
+                let d = 0, k = 0;
+                if(t.finD === akun || t.lraD === akun) d = t.nominal;
+                if(t.finK === akun || t.lraK === akun) k = t.nominal;
+
+                if(d > 0 || k > 0) {
+                    saldo += (d - k);
+                    const tr = document.createElement('tr');
+                    tr.className = 'border-b';
+                    tr.innerHTML = `
+                        <td class="p-2 border">${t.tgl}</td>
+                        <td class="p-2 border">${t.uraian}</td>
+                        <td class="p-2 border text-right">${formatRp(d)}</td>
+                        <td class="p-2 border text-right">${formatRp(k)}</td>
+                        <td class="p-2 border text-right font-bold">${formatRp(saldo)}</td>
+                    `;
+                    bbBody.appendChild(tr);
+                }
+            });
+        }
+
+        // INTEGRASI EXCEL (.XLSX)
+        function exportToExcel() {
+            const wb = XLSX.utils.book_new();
+
+            // Sheet 1: Identitas & Laporan
+            const summary = [
+                ["PRAKTIKUM AKUNTANSI LEMBAGA SMK"],
+                ["LAPORAN KEUANGAN HASIL PRAKTIKUM"],
+                [],
+                ["Nama Siswa", identitas.nama || '-'],
+                ["Kelas", identitas.kelas || '-'],
+                [],
+                ["--- REALISASI ANGGARAN (LRA) ---"],
+                ["Pendapatan LRA", document.getElementById('lraPend').innerText],
+                ["Belanja LRA", document.getElementById('lraBelanja').innerText],
+                ["SiLPA", document.getElementById('lraSilpa').innerText],
+                [],
+                ["--- LAPORAN OPERASIONAL (LO) ---"],
+                ["Pendapatan LO", document.getElementById('loPend').innerText],
+                ["Beban LO", document.getElementById('loBeban').innerText],
+                ["Surplus / (Defisit)", document.getElementById('loSurplus').innerText]
+            ];
+            XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(summary), "Identitas & Laporan");
+
+            // Sheet 2: Jurnal Umum
+            const jRows = [["No", "Tanggal", "Uraian", "Debet Finansial", "Kredit Finansial", "Debet LRA", "Kredit LRA", "Nominal"]];
+            transaksi.forEach((t, i) => {
+                jRows.push([i+1, t.tgl, t.uraian, t.finD, t.finK, t.lraD, t.lraK, t.nominal]);
+            });
+            XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(jRows), "Jurnal Umum");
+
+            XLSX.writeFile(wb, `Praktikum_Akuntansi_${(identitas.nama || 'Siswa').replace(/\s+/g, '_')}.xlsx`);
+        }
+
+        function importFromExcel(e) {
+            const file = e.target.files[0];
+            if(!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                const data = new Uint8Array(evt.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+
+                if(workbook.SheetNames.includes("Jurnal Umum")) {
+                    const rows = XLSX.utils.sheet_to_json(workbook.Sheets["Jurnal Umum"], { header: 1 });
+                    transaksi = [];
+                    for(let i = 1; i < rows.length; i++) {
+                        if(rows[i].length >= 8) {
+                            transaksi.push({
+                                id: Date.now() + i,
+                                tgl: rows[i][1],
+                                uraian: rows[i][2],
+                                finD: rows[i][3],
+                                finK: rows[i][4],
+                                lraD: rows[i][5],
+                                lraK: rows[i][6],
+                                nominal: parseFloat(rows[i][7]) || 0
+                            });
+                        }
+                    }
+                    localStorage.setItem('siswa_tx', JSON.stringify(transaksi));
+                }
+
+                if(workbook.SheetNames.includes("Identitas & Laporan")) {
+                    const idRows = XLSX.utils.sheet_to_json(workbook.Sheets["Identitas & Laporan"], { header: 1 });
+                    if(idRows[3]) identitas.nama = idRows[3][1];
+                    if(idRows[4]) identitas.kelas = idRows[4][1];
+                    document.getElementById('siswaNama').value = identitas.nama;
+                    document.getElementById('siswaKelas').value = identitas.kelas;
+                    localStorage.setItem('siswa_id', JSON.stringify(identitas));
+                }
+
+                renderTampilan();
+                alert("Data berhasil di-import dari Microsoft Excel!");
+            };
+            reader.readAsArrayBuffer(file);
+        }
+    </script>
+</body>
+</html>
