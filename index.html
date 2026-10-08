@@ -631,21 +631,30 @@
             return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(num);
         }
 
+        /* --- PENYESUAIAN SALDO NORMAL AKUN (AGAR PIUTANG TIDAK MINUS) --- */
         function isSaldoNormalKredit(akunKey) {
             if(!akunKey) return false;
             const cleanKey = akunKey.trim();
 
+            // 1. Cek dari kelompok kategori di COA
             const foundCoa = coaData.find(c => `${c.kode} ${c.nama}` === cleanKey || cleanKey.includes(c.kode));
-            
             if(foundCoa) {
                 const kat = foundCoa.kat.toLowerCase();
-                if(kat.includes('kewajiban') || kat.includes('utang') || kat.includes('ekuitas') || kat.includes('pendapatan')) {
+                if(kat.includes('kewajiban') || kat.includes('ekuitas') || kat.includes('pendapatan')) {
                     return true;
+                }
+                if(kat.includes('aset') || kat.includes('belanja') || kat.includes('beban')) {
+                    return false;
                 }
             }
 
-            const lowerKey = cleanKey.toLowerCase();
-            return lowerKey.includes('pendapatan') || lowerKey.includes('utang') || lowerKey.includes('kewajiban') || lowerKey.includes('ekuitas');
+            // 2. Fallback berdasarkan digit awal kode akun
+            const kodeAwal = cleanKey.charAt(0);
+            if(['2', '3', '4', '7'].includes(kodeAwal)) {
+                return true;
+            }
+
+            return false;
         }
 
         function renderTampilan() {
