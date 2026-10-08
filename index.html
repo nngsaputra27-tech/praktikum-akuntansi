@@ -241,6 +241,7 @@
                     </div>
 
                     <form onsubmit="tambahBukuBesarManual(event)" class="grid grid-cols-1 md:grid-cols-5 gap-3 items-end">
+                        <input type="hidden" id="editBbIndex" value="-1">
                         <div>
                             <label class="block text-xs font-semibold text-slate-600 mb-1">Tanggal</label>
                             <input type="date" id="bbTgl" required class="w-full px-2.5 py-1.5 border rounded text-xs">
@@ -257,9 +258,12 @@
                             <label class="block text-xs font-semibold text-slate-600 mb-1">Kredit (Rp)</label>
                             <input type="number" id="bbKredit" min="0" placeholder="0" class="w-full px-2.5 py-1.5 border rounded text-xs">
                         </div>
-                        <div class="md:col-span-5 flex justify-end">
-                            <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-5 py-2 rounded-lg transition shadow">
-                                <i class="fa-solid fa-plus"></i> Tambah Baris Buku Besar
+                        <div class="md:col-span-5 flex justify-end gap-2">
+                            <button type="button" id="btnBatalBb" onclick="batalEditBb()" class="hidden bg-slate-400 hover:bg-slate-500 text-white font-bold text-xs px-4 py-2 rounded-lg transition">
+                                Batal
+                            </button>
+                            <button type="submit" id="btnSubmitBb" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-5 py-2 rounded-lg transition shadow">
+                                <i class="fa-solid fa-paper-plane"></i> Submit buku besar
                             </button>
                         </div>
                     </form>
@@ -279,7 +283,7 @@
                                 <th class="p-2 border text-right">Debet (Rp)</th>
                                 <th class="p-2 border text-right">Kredit (Rp)</th>
                                 <th class="p-2 border text-right">Saldo (Rp)</th>
-                                <th class="p-2 border text-center w-16">Aksi</th>
+                                <th class="p-2 border text-center w-20">Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="bbTbody"></tbody>
@@ -332,7 +336,7 @@
 
         let coaData = [];
         let transaksi = [];
-        let bukuBesarManual = {}; // Menyimpan data BB per Akun
+        let bukuBesarManual = {};
         let identitas = { nama: '', kelas: '' };
 
         window.onload = function() {
@@ -545,7 +549,7 @@
             renderBukuBesar();
         }
 
-        /* --- FUNGSI BUKU BESAR MANUAL SISWA --- */
+        /* --- FUNGSI BUKU BESAR MANUAL SISWA (DENGAN DUKUNGAN EDIT) --- */
         function tambahBukuBesarManual(e) {
             e.preventDefault();
             const akunKey = document.getElementById('bbSelect').value;
@@ -554,8 +558,9 @@
                 return;
             }
 
+            const editId = parseInt(document.getElementById('editBbIndex').value);
             const rowData = {
-                id: Date.now(),
+                id: editId === -1 ? Date.now() : editId,
                 tgl: document.getElementById('bbTgl').value,
                 ket: document.getElementById('bbKet').value,
                 debet: parseFloat(document.getElementById('bbDebet').value) || 0,
@@ -566,14 +571,44 @@
                 bukuBesarManual[akunKey] = [];
             }
 
-            bukuBesarManual[akunKey].push(rowData);
-            localStorage.setItem('siswa_bb_manual', JSON.stringify(bukuBesarManual));
+            if(editId === -1) {
+                bukuBesarManual[akunKey].push(rowData);
+            } else {
+                const targetIdx = bukuBesarManual[akunKey].findIndex(item => item.id === editId);
+                if(targetIdx !== -1) {
+                    bukuBesarManual[akunKey][targetIdx] = rowData;
+                }
+            }
 
+            localStorage.setItem('siswa_bb_manual', JSON.stringify(bukuBesarManual));
+            batalEditBb();
+            renderBukuBesar();
+        }
+
+        function editBarisBb(akunKey, idRow) {
+            const list = bukuBesarManual[akunKey] || [];
+            const target = list.find(item => item.id === idRow);
+            if(!target) return;
+
+            document.getElementById('editBbIndex').value = target.id;
+            document.getElementById('bbTgl').value = target.tgl;
+            document.getElementById('bbKet').value = target.ket;
+            document.getElementById('bbDebet').value = target.debet;
+            document.getElementById('bbKredit').value = target.kredit;
+
+            document.getElementById('btnSubmitBb').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan';
+            document.getElementById('btnBatalBb').classList.remove('hidden');
+        }
+
+        function batalEditBb() {
+            document.getElementById('editBbIndex').value = -1;
+            document.getElementById('bbTgl').value = '';
             document.getElementById('bbKet').value = '';
             document.getElementById('bbDebet').value = '';
             document.getElementById('bbKredit').value = '';
 
-            renderBukuBesar();
+            document.getElementById('btnSubmitBb').innerHTML = '<i class="fa-solid fa-paper-plane"></i> Submit buku besar';
+            document.getElementById('btnBatalBb').classList.add('hidden');
         }
 
         function renderBukuBesar() {
@@ -598,7 +633,7 @@
             }
 
             let saldo = 0;
-            rows.forEach((r, index) => {
+            rows.forEach((r) => {
                 saldo += (r.debet - r.kredit);
                 const tr = document.createElement('tr');
                 tr.className = 'border-b hover:bg-slate-50';
@@ -608,8 +643,9 @@
                     <td class="p-2 border text-right font-mono">${formatRp(r.debet)}</td>
                     <td class="p-2 border text-right font-mono">${formatRp(r.kredit)}</td>
                     <td class="p-2 border text-right font-bold font-mono">${formatRp(saldo)}</td>
-                    <td class="p-2 border text-center">
-                        <button onclick="hapusBarisBb('${akunKey}', ${r.id})" class="text-rose-500 hover:text-rose-700"><i class="fa-solid fa-trash"></i></button>
+                    <td class="p-2 border text-center space-x-2">
+                        <button onclick="editBarisBb('${akunKey}', ${r.id})" class="text-indigo-600 hover:text-indigo-800" title="Edit Baris"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button onclick="hapusBarisBb('${akunKey}', ${r.id})" class="text-rose-500 hover:text-rose-700" title="Hapus Baris"><i class="fa-solid fa-trash"></i></button>
                     </td>
                 `;
                 bbBody.appendChild(tr);
@@ -638,7 +674,6 @@
         function exportToExcel() {
             const wb = XLSX.utils.book_new();
 
-            // Sheet 1: Identitas & Laporan
             const summary = [
                 ["PRAKTIKUM AKUNTANSI LEMBAGA SMK"],
                 ["LAPORAN KEUANGAN HASIL PRAKTIKUM"],
@@ -661,7 +696,6 @@
             wsSummary['!cols'] = [{ wch: 30 }, { wch: 25 }];
             XLSX.utils.book_append_sheet(wb, wsSummary, "Identitas & Laporan");
 
-            // Sheet 2: Jurnal Umum
             const jRows = [["No", "Tanggal", "Uraian", "Debet Finansial", "Kredit Finansial", "Debet LRA", "Kredit LRA", "Nominal"]];
             transaksi.forEach((t, i) => {
                 jRows.push([i+1, t.tgl, t.uraian, t.finD, t.finK, t.lraD, t.lraK, t.nominal]);
@@ -673,7 +707,6 @@
             ];
             XLSX.utils.book_append_sheet(wb, wsJurnal, "Jurnal Umum");
 
-            // Sheet 3: Buku Besar Manual
             const bbExportRows = [["Akun Buku Besar", "Tanggal", "Keterangan", "Debet", "Kredit"]];
             Object.keys(bukuBesarManual).forEach(aKey => {
                 bukuBesarManual[aKey].forEach(row => {
@@ -684,7 +717,6 @@
             wsBb['!cols'] = [{ wch: 30 }, { wch: 12 }, { wch: 30 }, { wch: 15 }, { wch: 15 }];
             XLSX.utils.book_append_sheet(wb, wsBb, "Buku Besar");
 
-            // Sheet 4: COA
             const coaRows = [["Kode Akun", "Nama Akun", "Kelompok / Basis"]];
             coaData.forEach(c => {
                 coaRows.push([c.kode, c.nama, c.kat]);
