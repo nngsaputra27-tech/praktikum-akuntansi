@@ -108,8 +108,9 @@
                 </div>
             </section>
 
-            <!-- TAB 2: BAGAN AKUN (COA) -->
+            <!-- TAB 2: BAGAN AKUN (COA) & NERACA SALDO AWAL -->
             <section id="tab-coa" class="tab-content hidden space-y-6">
+                <!-- FORM TAMBAH / EDIT AKUN -->
                 <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
                     <h2 id="coaFormTitle" class="text-xs font-bold text-indigo-900 uppercase tracking-wider mb-3">Tambah Akun Baru</h2>
                     <form onsubmit="simpanAkun(event)" class="grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
@@ -146,22 +147,55 @@
                     </form>
                 </div>
 
+                <!-- TABEL NERACA SALDO AWAL -->
                 <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-                    <div class="p-4 border-b text-xs font-bold text-slate-700 flex justify-between items-center">
-                        <span>Bagan Akun Standar (COA) Pemda / SKPD</span>
-                        <button onclick="resetCOAKeDefault()" class="text-xs text-rose-600 hover:underline">Reset COA Default</button>
+                    <!-- HEAD KEPALA NERACA SALDO AWAL -->
+                    <div class="p-5 bg-slate-50 border-b space-y-3">
+                        <div class="flex justify-between items-start">
+                            <div class="space-y-1 w-full md:w-2/3">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xs font-bold text-indigo-900 uppercase">Instansi / SKPD:</span>
+                                    <input type="text" id="neracaInstansi" placeholder="Masukkan Nama Instansi / SKPD (contoh: Dinas Pendidikan)" class="border border-slate-300 rounded px-2 py-1 text-xs font-bold text-slate-800 w-full md:w-80 focus:ring-1 focus:ring-indigo-500" oninput="simpanHeaderNeraca()">
+                                </div>
+                                <h3 class="text-sm font-extrabold text-slate-800 tracking-wide uppercase">SALDO AWAL NERACA SALDO</h3>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xs text-slate-600 font-medium">Per Tanggal:</span>
+                                    <input type="date" id="neracaTgl" class="border border-slate-300 rounded px-2 py-0.5 text-xs font-semibold text-slate-700" onchange="simpanHeaderNeraca()">
+                                </div>
+                            </div>
+                            <button onclick="resetCOAKeDefault()" class="text-xs text-rose-600 hover:underline shrink-0">Reset COA Default</button>
+                        </div>
                     </div>
-                    <table class="w-full text-xs text-left border-collapse">
-                        <thead>
-                            <tr class="bg-slate-100 text-slate-700 border-b">
-                                <th class="p-2.5 border">Kode Akun</th>
-                                <th class="p-2.5 border">Nama Akun</th>
-                                <th class="p-2.5 border">Kelompok / Basis</th>
-                                <th class="p-2.5 border text-center w-24">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody id="coaTbody"></tbody>
-                    </table>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-700 border-b text-center">
+                                    <th class="p-2.5 border w-32" rowspan="2">Kode Akun</th>
+                                    <th class="p-2.5 border" rowspan="2">Nama Akun</th>
+                                    <th class="p-2.5 border w-36" rowspan="2">Kelompok / Basis</th>
+                                    <th class="p-2.5 border" colspan="2">Saldo Awal (Rp)</th>
+                                    <th class="p-2.5 border w-24" rowspan="2">Aksi</th>
+                                </tr>
+                                <tr class="bg-slate-100 text-slate-700 border-b text-center">
+                                    <th class="p-2 border w-40">Debit</th>
+                                    <th class="p-2 border w-40">Kredit</th>
+                                </tr>
+                            </thead>
+                            <tbody id="coaTbody"></tbody>
+                            <!-- BARIS TOTAL -->
+                            <tfoot>
+                                <tr class="bg-indigo-950 text-white font-bold text-xs">
+                                    <td colspan="3" class="p-2.5 border text-right uppercase">Total Saldo Awal</td>
+                                    <td class="p-2.5 border text-right font-mono" id="totalDebetSaldoAwal">Rp 0</td>
+                                    <td class="p-2.5 border text-right font-mono" id="totalKreditSaldoAwal">Rp 0</td>
+                                    <td class="p-2.5 border text-center">
+                                        <span id="statusBalance" class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-amber-400 text-slate-900">BALANCE</span>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
                 </div>
             </section>
 
@@ -229,9 +263,8 @@
                 </div>
             </section>
 
-            <!-- TAB 4: BUKU BESAR (INPUT MANUAL OLEH SISWA) -->
+            <!-- TAB 4: BUKU BESAR -->
             <section id="tab-bukubesar" class="tab-content hidden space-y-4">
-                <!-- FORM INPUT MANUAL BUKU BESAR -->
                 <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
                     <h2 class="text-xs font-bold text-indigo-900 uppercase tracking-wider">Input Buku Besar (Posting Manual)</h2>
                     
@@ -269,7 +302,6 @@
                     </form>
                 </div>
 
-                <!-- TABEL HASIL POSTING BUKU BESAR SISWA -->
                 <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
                     <div class="p-3 bg-slate-50 border-b flex justify-between items-center">
                         <span class="text-xs font-bold text-slate-700" id="bbJudulTabel">Buku Besar: Belum Memilih Akun</span>
@@ -290,7 +322,6 @@
                     </table>
                 </div>
 
-                <!-- TOMBOL LIHAT SEMUA BUKU BESAR -->
                 <div class="flex justify-end pt-1">
                     <button onclick="bukaModalSemuaBb()" class="bg-indigo-900 hover:bg-indigo-950 text-amber-400 font-bold text-xs px-4 py-2.5 rounded-lg shadow-md flex items-center gap-2 transition transform hover:-translate-y-0.5">
                         <i class="fa-solid fa-layer-group text-sm"></i> Lihat Semua Buku Besar
@@ -354,25 +385,26 @@
     <!-- LOGIC SCRIPT -->
     <script>
         const defaultCoaData = [
-            { kode: '1.1.1.01', nama: 'Kas di Kas Daerah', kat: 'Aset' },
-            { kode: '1.1.3.01', nama: 'Piutang Pajak Daerah', kat: 'Aset' },
-            { kode: '2.1.1.01', nama: 'Utang Perhitungan Pihak Ketiga (PFK)', kat: 'Kewajiban' },
-            { kode: '3.1.1.01', nama: 'Ekuitas', kat: 'Ekuitas' },
-            { kode: '4.1.1.01', nama: 'Pendapatan Pajak Daerah - LRA', kat: 'Pendapatan LRA' },
-            { kode: '4.2.1.01', nama: 'Pendapatan Retribusi Daerah - LRA', kat: 'Pendapatan LRA' },
-            { kode: '5.1.1.01', nama: 'Belanja Pegawai', kat: 'Belanja LRA' },
-            { kode: '5.1.2.01', nama: 'Belanja Barang dan Jasa', kat: 'Belanja LRA' },
-            { kode: '7.1.1.01', nama: 'Pendapatan Pajak Daerah - LO', kat: 'Pendapatan LO' },
-            { kode: '7.2.1.01', nama: 'Pendapatan Retribusi Daerah - LO', kat: 'Pendapatan LO' },
-            { kode: '8.1.1.01', nama: 'Beban Pegawai', kat: 'Beban LO' },
-            { kode: '8.1.2.01', nama: 'Beban Barang dan Jasa', kat: 'Beban LO' },
-            { kode: '0.0.0.00', nama: 'Perubahan SAL', kat: 'Anggaran' }
+            { kode: '1.1.1.01', nama: 'Kas di Kas Daerah', kat: 'Aset', debetAwal: 0, kreditAwal: 0 },
+            { kode: '1.1.3.01', nama: 'Piutang Pajak Daerah', kat: 'Aset', debetAwal: 0, kreditAwal: 0 },
+            { kode: '2.1.1.01', nama: 'Utang Perhitungan Pihak Ketiga (PFK)', kat: 'Kewajiban', debetAwal: 0, kreditAwal: 0 },
+            { kode: '3.1.1.01', nama: 'Ekuitas', kat: 'Ekuitas', debetAwal: 0, kreditAwal: 0 },
+            { kode: '4.1.1.01', nama: 'Pendapatan Pajak Daerah - LRA', kat: 'Pendapatan LRA', debetAwal: 0, kreditAwal: 0 },
+            { kode: '4.2.1.01', nama: 'Pendapatan Retribusi Daerah - LRA', kat: 'Pendapatan LRA', debetAwal: 0, kreditAwal: 0 },
+            { kode: '5.1.1.01', nama: 'Belanja Pegawai', kat: 'Belanja LRA', debetAwal: 0, kreditAwal: 0 },
+            { kode: '5.1.2.01', nama: 'Belanja Barang dan Jasa', kat: 'Belanja LRA', debetAwal: 0, kreditAwal: 0 },
+            { kode: '7.1.1.01', nama: 'Pendapatan Pajak Daerah - LO', kat: 'Pendapatan LO', debetAwal: 0, kreditAwal: 0 },
+            { kode: '7.2.1.01', nama: 'Pendapatan Retribusi Daerah - LO', kat: 'Pendapatan LO', debetAwal: 0, kreditAwal: 0 },
+            { kode: '8.1.1.01', nama: 'Beban Pegawai', kat: 'Beban LO', debetAwal: 0, kreditAwal: 0 },
+            { kode: '8.1.2.01', nama: 'Beban Barang dan Jasa', kat: 'Beban LO', debetAwal: 0, kreditAwal: 0 },
+            { kode: '0.0.0.00', nama: 'Perubahan SAL', kat: 'Anggaran', debetAwal: 0, kreditAwal: 0 }
         ];
 
         let coaData = [];
         let transaksi = [];
         let bukuBesarManual = {};
         let identitas = { nama: '', kelas: '' };
+        let headerNeraca = { instansi: '', tgl: '' };
 
         window.onload = function() {
             const saveCoa = localStorage.getItem('siswa_coa');
@@ -381,6 +413,13 @@
             } else {
                 coaData = [...defaultCoaData];
                 localStorage.setItem('siswa_coa', JSON.stringify(coaData));
+            }
+
+            const saveHeader = localStorage.getItem('siswa_header_neraca');
+            if(saveHeader) {
+                headerNeraca = JSON.parse(saveHeader);
+                document.getElementById('neracaInstansi').value = headerNeraca.instansi || '';
+                document.getElementById('neracaTgl').value = headerNeraca.tgl || '';
             }
 
             const saveBb = localStorage.getItem('siswa_bb_manual');
@@ -408,6 +447,12 @@
             document.getElementById('headerTitle').innerText = tab.toUpperCase();
         }
 
+        function simpanHeaderNeraca() {
+            headerNeraca.instansi = document.getElementById('neracaInstansi').value;
+            headerNeraca.tgl = document.getElementById('neracaTgl').value;
+            localStorage.setItem('siswa_header_neraca', JSON.stringify(headerNeraca));
+        }
+
         function initCOA() {
             const coaTbody = document.getElementById('coaTbody');
             const selects = document.querySelectorAll('.select-coa');
@@ -415,16 +460,35 @@
             
             selects.forEach(s => s.innerHTML = '<option value="">-- Pilih Akun --</option>');
 
+            let totalDebet = 0;
+            let totalKredit = 0;
+
             coaData.forEach((item, idx) => {
+                item.debetAwal = item.debetAwal || 0;
+                item.kreditAwal = item.kreditAwal || 0;
+
+                totalDebet += parseFloat(item.debetAwal);
+                totalKredit += parseFloat(item.kreditAwal);
+
                 const tr = document.createElement('tr');
                 tr.className = 'border-b hover:bg-slate-50';
                 tr.innerHTML = `
                     <td class="p-2 border font-mono">${item.kode}</td>
-                    <td class="p-2 border">${item.nama}</td>
-                    <td class="p-2 border">${item.kat}</td>
+                    <td class="p-2 border font-medium text-slate-800">${item.nama}</td>
+                    <td class="p-2 border text-slate-600">${item.kat}</td>
+                    <td class="p-1 border text-right">
+                        <input type="number" min="0" value="${item.debetAwal || ''}" placeholder="0" 
+                            onchange="updateSaldoAwal(${idx}, 'debet', this.value)" 
+                            class="w-full px-2 py-1 border rounded text-right font-mono text-xs focus:ring-1 focus:ring-indigo-500">
+                    </td>
+                    <td class="p-1 border text-right">
+                        <input type="number" min="0" value="${item.kreditAwal || ''}" placeholder="0" 
+                            onchange="updateSaldoAwal(${idx}, 'kredit', this.value)" 
+                            class="w-full px-2 py-1 border rounded text-right font-mono text-xs focus:ring-1 focus:ring-indigo-500">
+                    </td>
                     <td class="p-2 border text-center space-x-2">
-                        <button onclick="editCoa(${idx})" class="text-indigo-600 hover:text-indigo-800"><i class="fa-solid fa-pen-to-square"></i></button>
-                        <button onclick="hapusCoa(${idx})" class="text-rose-500 hover:text-rose-700"><i class="fa-solid fa-trash"></i></button>
+                        <button onclick="editCoa(${idx})" class="text-indigo-600 hover:text-indigo-800" title="Edit Akun"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button onclick="hapusCoa(${idx})" class="text-rose-500 hover:text-rose-700" title="Hapus Akun"><i class="fa-solid fa-trash"></i></button>
                     </td>
                 `;
                 coaTbody.appendChild(tr);
@@ -436,6 +500,29 @@
                     s.appendChild(opt);
                 });
             });
+
+            document.getElementById('totalDebetSaldoAwal').innerText = formatRp(totalDebet);
+            document.getElementById('totalKreditSaldoAwal').innerText = formatRp(totalKredit);
+
+            const statusEl = document.getElementById('statusBalance');
+            if(totalDebet === totalKredit) {
+                statusEl.innerText = "BALANCE";
+                statusEl.className = "px-2 py-0.5 rounded text-[10px] font-extrabold bg-emerald-500 text-white";
+            } else {
+                statusEl.innerText = "UNBALANCE";
+                statusEl.className = "px-2 py-0.5 rounded text-[10px] font-extrabold bg-rose-600 text-white";
+            }
+        }
+
+        function updateSaldoAwal(idx, tipe, val) {
+            const nominal = parseFloat(val) || 0;
+            if(tipe === 'debet') {
+                coaData[idx].debetAwal = nominal;
+            } else {
+                coaData[idx].kreditAwal = nominal;
+            }
+            localStorage.setItem('siswa_coa', JSON.stringify(coaData));
+            initCOA();
         }
 
         function simpanAkun(e) {
@@ -446,9 +533,11 @@
             const kat = document.getElementById('inputKatAkun').value;
 
             if(index === -1) {
-                coaData.push({ kode, nama, kat });
+                coaData.push({ kode, nama, kat, debetAwal: 0, kreditAwal: 0 });
             } else {
-                coaData[index] = { kode, nama, kat };
+                coaData[index].kode = kode;
+                coaData[index].nama = nama;
+                coaData[index].kat = kat;
             }
 
             localStorage.setItem('siswa_coa', JSON.stringify(coaData));
@@ -542,7 +631,6 @@
             return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(num);
         }
 
-        /* HELPER UNTUK CEK KELOMPOK SALDO NORMAL KREDIT */
         function isSaldoNormalKredit(akunKey) {
             if(!akunKey) return false;
             const cleanKey = akunKey.trim();
@@ -826,6 +914,8 @@
                 [],
                 ["Nama Siswa", identitas.nama || '-'],
                 ["Kelas", identitas.kelas || '-'],
+                ["Nama Instansi", headerNeraca.instansi || '-'],
+                ["Per Tanggal", headerNeraca.tgl || '-'],
                 [],
                 ["--- REALISASI ANGGARAN (LRA) ---"],
                 ["Pendapatan LRA", document.getElementById('lraPend').innerText],
@@ -841,6 +931,14 @@
             const wsSummary = XLSX.utils.aoa_to_sheet(summary);
             wsSummary['!cols'] = [{ wch: 30 }, { wch: 25 }];
             XLSX.utils.book_append_sheet(wb, wsSummary, "Identitas & Laporan");
+
+            const coaRows = [["Kode Akun", "Nama Akun", "Kelompok / Basis", "Saldo Awal Debet", "Saldo Awal Kredit"]];
+            coaData.forEach(c => {
+                coaRows.push([c.kode, c.nama, c.kat, c.debetAwal || 0, c.kreditAwal || 0]);
+            });
+            const wsCoa = XLSX.utils.aoa_to_sheet(coaRows);
+            wsCoa['!cols'] = [{ wch: 15 }, { wch: 35 }, { wch: 20 }, { wch: 18 }, { wch: 18 }];
+            XLSX.utils.book_append_sheet(wb, wsCoa, "Neraca Saldo Awal");
 
             const jRows = [["No", "Tanggal", "Uraian", "Debet Finansial", "Kredit Finansial", "Debet LRA", "Kredit LRA", "Nominal"]];
             transaksi.forEach((t, i) => {
@@ -863,14 +961,6 @@
             wsBb['!cols'] = [{ wch: 30 }, { wch: 12 }, { wch: 30 }, { wch: 15 }, { wch: 15 }];
             XLSX.utils.book_append_sheet(wb, wsBb, "Buku Besar");
 
-            const coaRows = [["Kode Akun", "Nama Akun", "Kelompok / Basis"]];
-            coaData.forEach(c => {
-                coaRows.push([c.kode, c.nama, c.kat]);
-            });
-            const wsCoa = XLSX.utils.aoa_to_sheet(coaRows);
-            wsCoa['!cols'] = [{ wch: 15 }, { wch: 35 }, { wch: 20 }];
-            XLSX.utils.book_append_sheet(wb, wsCoa, "COA");
-
             XLSX.writeFile(wb, `Praktikum_Akuntansi_${(identitas.nama || 'Siswa').replace(/\s+/g, '_')}.xlsx`);
         }
 
@@ -882,6 +972,24 @@
             reader.onload = function(evt) {
                 const data = new Uint8Array(evt.target.result);
                 const workbook = XLSX.read(data, { type: 'array' });
+
+                if(workbook.SheetNames.includes("Neraca Saldo Awal")) {
+                    const cRows = XLSX.utils.sheet_to_json(workbook.Sheets["Neraca Saldo Awal"], { header: 1 });
+                    coaData = [];
+                    for(let i = 1; i < cRows.length; i++) {
+                        if(cRows[i].length >= 3) {
+                            coaData.push({
+                                kode: cRows[i][0],
+                                nama: cRows[i][1],
+                                kat: cRows[i][2],
+                                debetAwal: parseFloat(cRows[i][3]) || 0,
+                                kreditAwal: parseFloat(cRows[i][4]) || 0
+                            });
+                        }
+                    }
+                    localStorage.setItem('siswa_coa', JSON.stringify(coaData));
+                    initCOA();
+                }
 
                 if(workbook.SheetNames.includes("Jurnal Umum")) {
                     const rows = XLSX.utils.sheet_to_json(workbook.Sheets["Jurnal Umum"], { header: 1 });
@@ -926,9 +1034,16 @@
                     const idRows = XLSX.utils.sheet_to_json(workbook.Sheets["Identitas & Laporan"], { header: 1 });
                     if(idRows[3]) identitas.nama = idRows[3][1];
                     if(idRows[4]) identitas.kelas = idRows[4][1];
-                    document.getElementById('siswaNama').value = identitas.nama;
-                    document.getElementById('siswaKelas').value = identitas.kelas;
+                    if(idRows[5]) headerNeraca.instansi = idRows[5][1];
+                    if(idRows[6]) headerNeraca.tgl = idRows[6][1];
+
+                    document.getElementById('siswaNama').value = identitas.nama || '';
+                    document.getElementById('siswaKelas').value = identitas.kelas || '';
+                    document.getElementById('neracaInstansi').value = headerNeraca.instansi || '';
+                    document.getElementById('neracaTgl').value = headerNeraca.tgl || '';
+
                     localStorage.setItem('siswa_id', JSON.stringify(identitas));
+                    localStorage.setItem('siswa_header_neraca', JSON.stringify(headerNeraca));
                 }
 
                 renderTampilan();
