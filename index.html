@@ -283,8 +283,8 @@
                                     <th class="p-2.5 border w-24" rowspan="2">Aksi</th>
                                 </tr>
                                 <tr class="bg-slate-100 text-slate-700 border-b text-center font-bold">
-                                    <th class="p-2 border w-36">Debit</th>
-                                    <th class="p-2 border w-36">Kredit</th>
+                                    <th class="p-2 border w-40">Debit</th>
+                                    <th class="p-2 border w-40">Kredit</th>
                                 </tr>
                             </thead>
                             <tbody id="coaTbody"></tbody>
@@ -336,7 +336,7 @@
                         <div class="flex flex-col sm:flex-row justify-between items-end gap-3 pt-2">
                             <div class="w-full sm:w-1/3">
                                 <label class="block text-xs font-semibold text-slate-600 mb-1">Nominal (Rp)</label>
-                                <input type="number" id="txNominal" min="1" required placeholder="0" class="w-full px-3 py-2 border rounded-xl text-xs font-bold">
+                                <input type="text" id="txNominal" required placeholder="Rp 0" oninput="formatInputCurrency(this)" class="w-full px-3 py-2 border rounded-xl text-xs font-bold font-mono">
                             </div>
                             <button type="submit" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-6 py-2.5 rounded-xl transition shadow">
                                 Simpan Transaksi
@@ -390,11 +390,11 @@
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-slate-600 mb-1">Debet (Rp)</label>
-                            <input type="number" id="bbDebet" min="0" placeholder="0" class="w-full px-3 py-2 border rounded-xl text-xs">
+                            <input type="text" id="bbDebet" placeholder="Rp 0" oninput="formatInputCurrency(this)" class="w-full px-3 py-2 border rounded-xl text-xs font-mono">
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-slate-600 mb-1">Kredit (Rp)</label>
-                            <input type="number" id="bbKredit" min="0" placeholder="0" class="w-full px-3 py-2 border rounded-xl text-xs">
+                            <input type="text" id="bbKredit" placeholder="Rp 0" oninput="formatInputCurrency(this)" class="w-full px-3 py-2 border rounded-xl text-xs font-mono">
                         </div>
                         <div class="sm:col-span-2 md:col-span-5 flex justify-end gap-2 pt-2">
                             <button type="button" id="btnBatalBb" onclick="batalEditBb()" class="hidden bg-slate-400 hover:bg-slate-500 text-white font-bold text-xs px-4 py-2 rounded-xl transition">
@@ -553,6 +553,24 @@
         let bukuBesarManual = {};
         let identitas = { nama: '', kelas: '', instansi: '', kab: '', tgl: '' };
 
+        // FUNGSI FORMAT INPUT CURRENCY AUTOMATIC
+        function formatInputCurrency(inputEl) {
+            let val = inputEl.value.replace(/\D/g, '');
+            if (!val || val === '0') {
+                inputEl.value = '';
+                return;
+            }
+            let numberVal = parseInt(val, 10);
+            inputEl.value = 'Rp ' + numberVal.toLocaleString('id-ID');
+        }
+
+        function parseCurrencyValue(str) {
+            if (!str) return 0;
+            if (typeof str === 'number') return str;
+            let clean = str.toString().replace(/\D/g, '');
+            return parseFloat(clean) || 0;
+        }
+
         window.onload = function() {
             // Load LocalStorage COA
             const saveCoa = localStorage.getItem('siswa_coa');
@@ -667,7 +685,7 @@
         }
 
         function formatTanggalIndo(dateStr) {
-            if(!dateStr) return ' Per Tanggal: -';
+            if(!dateStr) return 'Per Tanggal: -';
             const d = new Date(dateStr);
             if(isNaN(d.getTime())) return `Per Tanggal: ${dateStr}`;
             const bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
@@ -701,6 +719,9 @@
                 totalDebet += parseFloat(item.debetAwal);
                 totalKredit += parseFloat(item.kreditAwal);
 
+                const formattedDebet = item.debetAwal > 0 ? 'Rp ' + parseInt(item.debetAwal, 10).toLocaleString('id-ID') : '';
+                const formattedKredit = item.kreditAwal > 0 ? 'Rp ' + parseInt(item.kreditAwal, 10).toLocaleString('id-ID') : '';
+
                 const tr = document.createElement('tr');
                 tr.className = 'border-b hover:bg-slate-50 transition';
                 tr.innerHTML = `
@@ -708,14 +729,14 @@
                     <td class="p-2.5 border font-medium text-slate-800">${item.nama}</td>
                     <td class="p-2.5 border text-slate-600 font-semibold">${item.kat}</td>
                     <td class="p-1 border text-right">
-                        <input type="number" min="0" value="${item.debetAwal || ''}" placeholder="0" 
-                            onchange="updateSaldoAwal(${idx}, 'debet', this.value)" 
-                            class="w-full px-2 py-1 border rounded-lg text-right font-mono text-xs focus:ring-1 focus:ring-indigo-500">
+                        <input type="text" value="${formattedDebet}" placeholder="Rp 0" 
+                            oninput="formatInputCurrency(this); updateSaldoAwal(${idx}, 'debet', this.value)" 
+                            class="w-full px-2 py-1 border rounded-lg text-right font-mono text-xs focus:ring-1 focus:ring-indigo-500 font-bold">
                     </td>
                     <td class="p-1 border text-right">
-                        <input type="number" min="0" value="${item.kreditAwal || ''}" placeholder="0" 
-                            onchange="updateSaldoAwal(${idx}, 'kredit', this.value)" 
-                            class="w-full px-2 py-1 border rounded-lg text-right font-mono text-xs focus:ring-1 focus:ring-indigo-500">
+                        <input type="text" value="${formattedKredit}" placeholder="Rp 0" 
+                            oninput="formatInputCurrency(this); updateSaldoAwal(${idx}, 'kredit', this.value)" 
+                            class="w-full px-2 py-1 border rounded-lg text-right font-mono text-xs focus:ring-1 focus:ring-indigo-500 font-bold">
                     </td>
                     <td class="p-2 border text-center space-x-1.5">
                         <button onclick="editCoa(${idx})" class="text-indigo-600 hover:text-indigo-800 p-1" title="Edit Akun"><i class="fa-solid fa-pen-to-square"></i></button>
@@ -746,14 +767,33 @@
         }
 
         function updateSaldoAwal(idx, tipe, val) {
-            const nominal = parseFloat(val) || 0;
+            const nominal = parseCurrencyValue(val);
             if(tipe === 'debet') {
                 coaData[idx].debetAwal = nominal;
             } else {
                 coaData[idx].kreditAwal = nominal;
             }
             localStorage.setItem('siswa_coa', JSON.stringify(coaData));
-            initCOA();
+            
+            // Hitung Ulang Total Saldo Awal
+            let totalDebet = 0;
+            let totalKredit = 0;
+            coaData.forEach(item => {
+                totalDebet += parseFloat(item.debetAwal || 0);
+                totalKredit += parseFloat(item.kreditAwal || 0);
+            });
+
+            document.getElementById('totalDebetSaldoAwal').innerText = formatRp(totalDebet);
+            document.getElementById('totalKreditSaldoAwal').innerText = formatRp(totalKredit);
+
+            const statusEl = document.getElementById('statusBalance');
+            if(totalDebet === totalKredit) {
+                statusEl.innerText = "BALANCE";
+                statusEl.className = "px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500 text-white";
+            } else {
+                statusEl.innerText = "UNBALANCE";
+                statusEl.className = "px-2 py-0.5 rounded-full text-[10px] font-black bg-rose-600 text-white";
+            }
         }
 
         function simpanAkun(e) {
@@ -829,7 +869,7 @@
                 finK: document.getElementById('txFinK').value,
                 lraD: document.getElementById('txLraD').value || '-',
                 lraK: document.getElementById('txLraK').value || '-',
-                nominal: parseFloat(document.getElementById('txNominal').value) || 0
+                nominal: parseCurrencyValue(document.getElementById('txNominal').value)
             };
             transaksi.push(newTx);
             localStorage.setItem('siswa_tx', JSON.stringify(transaksi));
@@ -931,8 +971,8 @@
                 id: editId === -1 ? Date.now() : editId,
                 tgl: document.getElementById('bbTgl').value,
                 ket: document.getElementById('bbKet').value,
-                debet: parseFloat(document.getElementById('bbDebet').value) || 0,
-                kredit: parseFloat(document.getElementById('bbKredit').value) || 0
+                debet: parseCurrencyValue(document.getElementById('bbDebet').value),
+                kredit: parseCurrencyValue(document.getElementById('bbKredit').value)
             };
 
             if(!bukuBesarManual[akunKey]) bukuBesarManual[akunKey] = [];
@@ -957,8 +997,8 @@
             document.getElementById('editBbIndex').value = target.id;
             document.getElementById('bbTgl').value = target.tgl;
             document.getElementById('bbKet').value = target.ket;
-            document.getElementById('bbDebet').value = target.debet;
-            document.getElementById('bbKredit').value = target.kredit;
+            document.getElementById('bbDebet').value = target.debet ? 'Rp ' + parseInt(target.debet, 10).toLocaleString('id-ID') : '';
+            document.getElementById('bbKredit').value = target.kredit ? 'Rp ' + parseInt(target.kredit, 10).toLocaleString('id-ID') : '';
 
             document.getElementById('btnSubmitBb').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan';
             document.getElementById('btnBatalBb').classList.remove('hidden');
