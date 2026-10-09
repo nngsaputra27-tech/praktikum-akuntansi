@@ -323,7 +323,7 @@
                                 <div>
                                     <div class="flex justify-between items-center border-b border-indigo-100 pb-2.5 mb-3">
                                         <span class="text-xs font-extrabold text-indigo-900 tracking-wide">1. JURNAL FINANSIAL (LO & NERACA)</span>
-                                        <span id="badgeFinBalance" class="text-[10px] font-black px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700">BALANCE</span>
+                                        <span id="badgeFinBalance" class="text-[10px] font-black px-2.5 py-1 rounded-full bg-emerald-500 text-white shadow-sm">BALANCE</span>
                                     </div>
                                     
                                     <div id="containerFinRows" class="space-y-3"></div>
@@ -345,7 +345,7 @@
                                 <div>
                                     <div class="flex justify-between items-center border-b border-amber-100 pb-2.5 mb-3">
                                         <span class="text-xs font-extrabold text-amber-900 tracking-wide">2. JURNAL PELAKSANAAN ANGGARAN (LRA)</span>
-                                        <span id="badgeLraBalance" class="text-[10px] font-black px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700">BALANCE</span>
+                                        <span id="badgeLraBalance" class="text-[10px] font-black px-2.5 py-1 rounded-full bg-emerald-500 text-white shadow-sm">BALANCE</span>
                                     </div>
 
                                     <div id="containerLraRows" class="space-y-3"></div>
@@ -1002,10 +1002,12 @@
             let val = inputEl.value.replace(/\D/g, '');
             if (!val || val === '0') {
                 inputEl.value = '';
+                hitungBalanceRealtime();
                 return;
             }
             let numberVal = parseInt(val, 10);
             inputEl.value = 'Rp ' + numberVal.toLocaleString('id-ID');
+            hitungBalanceRealtime();
         }
 
         function parseCurrencyValue(str) {
@@ -1184,7 +1186,7 @@
             return `
                 <div class="row-entry bg-white p-2.5 rounded-xl border border-slate-200 shadow-sm space-y-2" id="row_${type}_${id}">
                     <div class="flex items-center gap-2">
-                        <select class="pos-select text-xs py-1.5 px-2 border rounded-lg font-bold shrink-0 ${pos==='D'?'text-indigo-900 bg-indigo-50 border-indigo-200':'text-amber-900 bg-amber-50 border-amber-200'}">
+                        <select onchange="updatePosSelectStyle(this); hitungBalanceRealtime();" class="pos-select text-xs py-1.5 px-2 border rounded-lg font-bold shrink-0 ${pos==='D'?'text-indigo-900 bg-indigo-50 border-indigo-200':'text-amber-900 bg-amber-50 border-amber-200'}">
                             <option value="D" ${pos==='D'?'selected':''}>Debit (D)</option>
                             <option value="K" ${pos==='K'?'selected':''}>Kredit (K)</option>
                         </select>
@@ -1203,19 +1205,97 @@
             `;
         }
 
+        function updatePosSelectStyle(selectEl) {
+            if(!selectEl) return;
+            if(selectEl.value === 'D') {
+                selectEl.className = 'pos-select text-xs py-1.5 px-2 border rounded-lg font-bold shrink-0 text-indigo-900 bg-indigo-50 border-indigo-200';
+            } else {
+                selectEl.className = 'pos-select text-xs py-1.5 px-2 border rounded-lg font-bold shrink-0 text-amber-900 bg-amber-50 border-amber-200';
+            }
+        }
+
+        // --- PENGECEKAN BALANCE REAL-TIME UNTUK JURNAL FINANSIAL & LRA ---
+        function hitungBalanceRealtime() {
+            // 1. Hitung Finansial
+            let finD = 0, finK = 0;
+            document.querySelectorAll('#containerFinRows .row-entry').forEach(r => {
+                const pos = r.querySelector('.pos-select').value;
+                const nom = parseCurrencyValue(r.querySelector('.nom-input').value);
+                if(pos === 'D') finD += nom;
+                else if(pos === 'K') finK += nom;
+            });
+
+            if(document.getElementById('sumFinD')) document.getElementById('sumFinD').innerText = formatRp(finD);
+            if(document.getElementById('sumFinK')) document.getElementById('sumFinK').innerText = formatRp(finK);
+
+            const badgeFin = document.getElementById('badgeFinBalance');
+            if(badgeFin) {
+                if(finD === finK) {
+                    badgeFin.innerText = 'BALANCE';
+                    badgeFin.className = 'text-[10px] font-black px-2.5 py-1 rounded-full bg-emerald-500 text-white shadow-sm';
+                } else {
+                    badgeFin.innerText = 'UNBALANCE';
+                    badgeFin.className = 'text-[10px] font-black px-2.5 py-1 rounded-full bg-rose-600 text-white shadow-sm';
+                }
+            }
+
+            // 2. Hitung LRA
+            const isTidakLra = document.getElementById('chkTidakDijurnalLra') ? document.getElementById('chkTidakDijurnalLra').checked : false;
+            const badgeLra = document.getElementById('badgeLraBalance');
+
+            if(isTidakLra) {
+                if(document.getElementById('sumLraD')) document.getElementById('sumLraD').innerText = 'Rp 0';
+                if(document.getElementById('sumLraK')) document.getElementById('sumLraK').innerText = 'Rp 0';
+                if(badgeLra) {
+                    badgeLra.innerText = 'N/A (TIDAK DI-JURNAL)';
+                    badgeLra.className = 'text-[10px] font-black px-2.5 py-1 rounded-full bg-slate-400 text-white shadow-sm';
+                }
+            } else {
+                let lraD = 0, lraK = 0;
+                document.querySelectorAll('#containerLraRows .row-entry').forEach(r => {
+                    const pos = r.querySelector('.pos-select').value;
+                    const nom = parseCurrencyValue(r.querySelector('.nom-input').value);
+                    if(pos === 'D') lraD += nom;
+                    else if(pos === 'K') lraK += nom;
+                });
+
+                if(document.getElementById('sumLraD')) document.getElementById('sumLraD').innerText = formatRp(lraD);
+                if(document.getElementById('sumLraK')) document.getElementById('sumLraK').innerText = formatRp(lraK);
+
+                if(badgeLra) {
+                    if(lraD === lraK) {
+                        badgeLra.innerText = 'BALANCE';
+                        badgeLra.className = 'text-[10px] font-black px-2.5 py-1 rounded-full bg-emerald-500 text-white shadow-sm';
+                    } else {
+                        badgeLra.innerText = 'UNBALANCE';
+                        badgeLra.className = 'text-[10px] font-black px-2.5 py-1 rounded-full bg-rose-600 text-white shadow-sm';
+                    }
+                }
+            }
+        }
+
         function tambahBarisFin(pos = 'D') {
             const container = document.getElementById('containerFinRows');
-            if(container) container.insertAdjacentHTML('beforeend', createRowHtml('fin', pos));
+            if(container) {
+                container.insertAdjacentHTML('beforeend', createRowHtml('fin', pos));
+                hitungBalanceRealtime();
+            }
         }
 
         function tambahBarisLra(pos = 'D') {
             const container = document.getElementById('containerLraRows');
-            if(container) container.insertAdjacentHTML('beforeend', createRowHtml('lra', pos));
+            if(container) {
+                container.insertAdjacentHTML('beforeend', createRowHtml('lra', pos));
+                hitungBalanceRealtime();
+            }
         }
 
         function hapusBaris(rowId) {
             const el = document.getElementById(`row_${rowId}`);
-            if(el) el.remove();
+            if(el) {
+                el.remove();
+                hitungBalanceRealtime();
+            }
         }
 
         function resetFormJurnalDinamis() {
@@ -1231,6 +1311,7 @@
                 tambahBarisLra('D');
                 tambahBarisLra('K');
             }
+            hitungBalanceRealtime();
         }
 
         function toggleTidakDijurnalLra(chk) {
@@ -1243,10 +1324,41 @@
                 if(container) container.classList.remove('opacity-40', 'pointer-events-none');
                 if(btnTambah) btnTambah.disabled = false;
             }
+            hitungBalanceRealtime();
         }
 
         function tambahJurnal(e) {
             e.preventDefault();
+
+            // Pengecekan Balance sebelum menyimpan
+            let finD = 0, finK = 0;
+            document.querySelectorAll('#containerFinRows .row-entry').forEach(r => {
+                const pos = r.querySelector('.pos-select').value;
+                const nom = parseCurrencyValue(r.querySelector('.nom-input').value);
+                if(pos === 'D') finD += nom;
+                if(pos === 'K') finK += nom;
+            });
+
+            if(finD !== finK) {
+                alert("Jurnal Finansial dalam posisi UNBALANCE (Debit & Kredit tidak sama)! Periksa kembali input nominal Anda.");
+                return;
+            }
+
+            const isTidakLra = document.getElementById('chkTidakDijurnalLra').checked;
+            if(!isTidakLra) {
+                let lraD = 0, lraK = 0;
+                document.querySelectorAll('#containerLraRows .row-entry').forEach(r => {
+                    const pos = r.querySelector('.pos-select').value;
+                    const nom = parseCurrencyValue(r.querySelector('.nom-input').value);
+                    if(pos === 'D') lraD += nom;
+                    if(pos === 'K') lraK += nom;
+                });
+
+                if(lraD !== lraK) {
+                    alert("Jurnal Pelaksanaan Anggaran (LRA) dalam posisi UNBALANCE (Debit & Kredit tidak sama)! Periksa kembali input nominal Anda.");
+                    return;
+                }
+            }
 
             const finEntries = [];
             let finDebetTotal = 0;
@@ -1263,7 +1375,6 @@
             });
 
             const lraEntries = [];
-            const isTidakLra = document.getElementById('chkTidakDijurnalLra').checked;
 
             if(!isTidakLra) {
                 document.querySelectorAll('#containerLraRows .row-entry').forEach(r => {
