@@ -7,7 +7,7 @@
     
     <!-- Meta SEO -->
     <meta name="description" content="Aplikasi Simulasi Praktikum Akuntansi Lembaga dan Pemerintah Daerah untuk Siswa SMK AKL. Terintegrasi Dual Journaling (LO & LRA) Multi-Baris dan Microsoft Excel.">
-    <meta name="keywords" content="praktikum akuntansi, akuntansi lembaga, skpd, smk akl, jurnal umum, buku besar, neraca saldo, lra, lo, ajp">
+    <meta name="keywords" content="praktikum akuntansi, akuntansi lembaga, skpd, smk akl, jurnal umum, buku besar, neraca saldo, lra, lo, ajp, worksheet">
     <meta name="author" content="SMK AKL">
     <meta name="robots" content="index, follow">
     <meta name="theme-color" content="#1e1b4b">
@@ -110,7 +110,6 @@
             <button type="button" onclick="switchTab('neracasaldo')" id="nav-neracasaldo" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl hover:bg-indigo-900 hover:text-white transition">
                 <i class="fa-solid fa-scale-balanced text-base text-indigo-300 w-5"></i> Neraca Saldo
             </button>
-            <!-- MENU BARU AJP -->
             <button type="button" onclick="switchTab('ajp')" id="nav-ajp" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl hover:bg-indigo-900 hover:text-white transition">
                 <i class="fa-solid fa-sliders text-base text-indigo-300 w-5"></i> Jurnal Penyesuaian (AJP)
             </button>
@@ -409,7 +408,6 @@
                         </table>
                     </div>
 
-                    <!-- AREA TOMBOL LIHAT JURNAL DI BAWAH KANAN TABEL -->
                     <div class="p-3 bg-slate-50 border-t border-slate-200 flex justify-end items-center">
                         <button onclick="bukaModalLihatJurnal()" class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-extrabold text-xs px-4 py-2 rounded-xl flex items-center gap-2 shadow-md transition">
                             <i class="fa-solid fa-eye"></i> Lihat Jurnal
@@ -476,7 +474,6 @@
                         </table>
                     </div>
 
-                    <!-- AREA TOMBOL LIHAT BUKU BESAR DI BAWAH KANAN TABEL BUKU BESAR -->
                     <div class="p-3 bg-slate-50 border-t border-slate-200 flex justify-end items-center">
                         <button onclick="bukaModalLihatBukuBesar()" class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-extrabold text-xs px-4 py-2 rounded-xl flex items-center gap-2 shadow-md transition">
                             <i class="fa-solid fa-book-open-reader"></i> Lihat Buku Besar
@@ -522,7 +519,6 @@
                         </table>
                     </div>
 
-                    <!-- INDIKATOR BALANCE / UNBALANCE PADA NERACA SALDO -->
                     <div class="p-3 bg-slate-50 border-t border-slate-200 flex justify-end items-center">
                         <span id="statusNsBalance" class="px-3 py-1.5 rounded-xl text-xs font-black tracking-wider bg-emerald-500 text-white shadow-sm flex items-center gap-1.5">
                             <i class="fa-solid fa-circle-check"></i> BALANCE
@@ -531,7 +527,7 @@
                 </div>
             </section>
 
-            <!-- TAB BARU 6: JURNAL PENYESUAIAN (AJP) - SINGLE PENJURNALAN & INPUT MANDIRI -->
+            <!-- TAB 6: JURNAL PENYESUAIAN (AJP) -->
             <section id="tab-ajp" class="tab-content hidden space-y-6">
                 <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
                     <h2 class="text-xs font-bold text-indigo-900 uppercase tracking-wider mb-4 flex items-center gap-2">
@@ -549,7 +545,6 @@
                             </div>
                         </div>
 
-                        <!-- MODUL SINGLE PENJURNALAN AJP MANDIRI -->
                         <div class="bg-indigo-50/40 p-4 rounded-2xl border border-indigo-100 space-y-3">
                             <div class="flex justify-between items-center border-b border-indigo-100 pb-2.5">
                                 <span class="text-xs font-extrabold text-indigo-900 tracking-wide">JURNAL PENYESUAIAN</span>
@@ -605,7 +600,7 @@
                 </div>
             </section>
 
-            <!-- TAB 7: LAPORAN KEUANGAN -->
+            <!-- TAB 7: LAPORAN KEUANGAN & WORKSHEET (KERTAS KERJA) -->
             <section id="tab-laporan" class="tab-content hidden space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
@@ -624,6 +619,66 @@
                             <div class="flex justify-between"><span>Beban LO</span><span id="loBeban" class="font-semibold text-rose-600">Rp 0</span></div>
                             <div class="border-t pt-2 flex justify-between font-extrabold text-sm"><span>Surplus / (Defisit) LO</span><span id="loSurplus" class="text-indigo-700">Rp 0</span></div>
                         </div>
+                    </div>
+                </div>
+
+                <!-- MODUL TABEL WORKSHEET (KERTAS KERJA 10 KOLOM) -->
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="p-6 bg-slate-50 border-b border-slate-200">
+                        <div class="text-center space-y-1.5 max-w-2xl mx-auto">
+                            <h2 id="displayWsSKPD" class="text-sm md:text-base font-black text-indigo-950 uppercase tracking-wide">SKPD DINAS KELAUTAN DAN PERIKANAN</h2>
+                            <p id="displayWsKab" class="text-xs font-bold text-slate-700">Kabupaten / Kota: Kepulauan Meranti</p>
+                            <div class="pt-2">
+                                <h3 class="text-xs md:text-sm font-black text-slate-900 uppercase tracking-widest bg-amber-300 text-slate-950 inline-block px-4 py-1 rounded-lg border border-amber-400 shadow-sm">
+                                    WORKSHEET / KERTAS KERJA (10 KOLOM)
+                                </h3>
+                            </div>
+                            <p id="displayWsTgl" class="text-xs font-semibold text-slate-600 pt-1">Per Tanggal: -</p>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto custom-touch-scroll">
+                        <table class="w-full text-[11px] text-left border-collapse min-w-[1000px]">
+                            <thead>
+                                <tr class="bg-indigo-950 text-white border-b text-center font-bold">
+                                    <th class="p-2 border border-indigo-900 w-24" rowspan="2">Kode</th>
+                                    <th class="p-2 border border-indigo-900" rowspan="2">Nama Akun</th>
+                                    <th class="p-2 border border-indigo-900" colspan="2">Neraca Saldo</th>
+                                    <th class="p-2 border border-indigo-900" colspan="2">AJP</th>
+                                    <th class="p-2 border border-indigo-900" colspan="2">NS Disesuaikan</th>
+                                    <th class="p-2 border border-indigo-900" colspan="2">LRA / LO</th>
+                                    <th class="p-2 border border-indigo-900" colspan="2">Neraca</th>
+                                </tr>
+                                <tr class="bg-indigo-900 text-white border-b text-center font-bold">
+                                    <th class="p-1.5 border border-indigo-800 w-24">Debet</th>
+                                    <th class="p-1.5 border border-indigo-800 w-24">Kredit</th>
+                                    <th class="p-1.5 border border-indigo-800 w-24">Debet</th>
+                                    <th class="p-1.5 border border-indigo-800 w-24">Kredit</th>
+                                    <th class="p-1.5 border border-indigo-800 w-24">Debet</th>
+                                    <th class="p-1.5 border border-indigo-800 w-24">Kredit</th>
+                                    <th class="p-1.5 border border-indigo-800 w-24">Debet</th>
+                                    <th class="p-1.5 border border-indigo-800 w-24">Kredit</th>
+                                    <th class="p-1.5 border border-indigo-800 w-24">Debet</th>
+                                    <th class="p-1.5 border border-indigo-800 w-24">Kredit</th>
+                                </tr>
+                            </thead>
+                            <tbody id="worksheetTbody"></tbody>
+                            <tfoot>
+                                <tr class="bg-indigo-950 text-white font-extrabold text-xs">
+                                    <td colspan="2" class="p-2.5 border border-indigo-900 text-center uppercase tracking-wider">TOTAL WORKSHEET</td>
+                                    <td class="p-2 border border-indigo-900 text-right font-mono text-amber-300" id="wsTotalNsD">Rp 0</td>
+                                    <td class="p-2 border border-indigo-900 text-right font-mono text-amber-300" id="wsTotalNsK">Rp 0</td>
+                                    <td class="p-2 border border-indigo-900 text-right font-mono text-amber-300" id="wsTotalAjpD">Rp 0</td>
+                                    <td class="p-2 border border-indigo-900 text-right font-mono text-amber-300" id="wsTotalAjpK">Rp 0</td>
+                                    <td class="p-2 border border-indigo-900 text-right font-mono text-amber-300" id="wsTotalNsdD">Rp 0</td>
+                                    <td class="p-2 border border-indigo-900 text-right font-mono text-amber-300" id="wsTotalNsdK">Rp 0</td>
+                                    <td class="p-2 border border-indigo-900 text-right font-mono text-amber-300" id="wsTotalLraD">Rp 0</td>
+                                    <td class="p-2 border border-indigo-900 text-right font-mono text-amber-300" id="wsTotalLraK">Rp 0</td>
+                                    <td class="p-2 border border-indigo-900 text-right font-mono text-amber-300" id="wsTotalNeracaD">Rp 0</td>
+                                    <td class="p-2 border border-indigo-900 text-right font-mono text-amber-300" id="wsTotalNeracaK">Rp 0</td>
+                                </tr>
+                            </tfoot>
+                        </table>
                     </div>
                 </div>
             </section>
@@ -663,7 +718,7 @@
         </button>
     </nav>
 
-    <!-- POP-UP ANIMASI CEKLIS (AUTO CLOSE 1.2 DETIK) -->
+    <!-- POP-UP ANIMASI CEKLIS -->
     <div id="modalSuccessTx" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center z-50 p-4 transition-opacity duration-300">
         <div class="bg-white rounded-3xl p-6 shadow-2xl flex flex-col items-center text-center space-y-3 max-w-xs w-full transform scale-95 transition-transform duration-200">
             <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center shadow-inner">
@@ -978,6 +1033,7 @@
             updateHeaderById('modalDisplaySKPD', 'modalDisplayKab', 'modalDisplayTgl');
             updateHeaderById('modalBbDisplaySKPD', 'modalBbDisplayKab', 'modalBbDisplayTgl');
             updateHeaderById('modalAjpDisplaySKPD', 'modalAjpDisplayKab', 'modalAjpDisplayTgl');
+            updateHeaderById('displayWsSKPD', 'displayWsKab', 'displayWsTgl');
         }
 
         function checkCoaBalance(totalDebet, totalKredit) {
@@ -1075,7 +1131,7 @@
                 'bukubesar': 'Buku Besar Manual',
                 'neracasaldo': 'Neraca Saldo (Hasil Buku Besar)',
                 'ajp': 'Ayat Jurnal Penyesuaian (AJP)',
-                'laporan': 'Laporan Keuangan (LRA & LO)'
+                'laporan': 'Laporan Keuangan & Worksheet'
             };
             if(document.getElementById('headerTitle')) {
                 document.getElementById('headerTitle').innerText = titleMap[tab] || 'Dashboard';
@@ -1083,6 +1139,7 @@
 
             if(tab === 'neracasaldo') renderNeracaSaldo();
             if(tab === 'bukubesar') renderBukuBesar();
+            if(tab === 'laporan') renderWorksheet();
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
 
@@ -1343,7 +1400,6 @@
             `;
         }
 
-        /* BARIS INPUT AJP MANDIRI DENGAN INPUT TEKS KODE REKENING & NAMA AKUN */
         function createAjpRowHtml(pos = 'D') {
             const id = Date.now() + Math.floor(Math.random() * 1000);
             return `
@@ -1648,7 +1704,7 @@
             if(document.getElementById('loSurplus')) document.getElementById('loSurplus').innerText = formatRp(pendLO - bebanLO);
         }
 
-        /* --- FUNGSI AJP (AYAT JURNAL PENYESUAIAN) MANDIRI --- */
+        /* --- FUNGSI AJP MANDIRI --- */
         function hitungAjpBalanceRealtime() {
             let ajpD = 0, ajpK = 0;
             document.querySelectorAll('#containerAjpRows .row-ajp-entry').forEach(r => {
@@ -1852,6 +1908,191 @@
 
             if (document.getElementById('modalAjpTotalDebit')) document.getElementById('modalAjpTotalDebit').innerText = formatRp(totalDebit);
             if (document.getElementById('modalAjpTotalKredit')) document.getElementById('modalAjpTotalKredit').innerText = formatRp(totalKredit);
+        }
+
+        /* --- FUNGSI WORKSHEET / KERTAS KERJA 10 KOLOM --- */
+        function renderWorksheet() {
+            const wsBody = document.getElementById('worksheetTbody');
+            if (!wsBody) return;
+            wsBody.innerHTML = '';
+
+            updateTampilanIdentitasHeader();
+
+            // 1. Ambil data Saldo Akhir dari Buku Besar
+            const bukuBesarBalances = {};
+            Object.keys(bukuBesarManual).forEach(akunKey => {
+                const rows = bukuBesarManual[akunKey] || [];
+                const saldoNormal = getSaldoNormal(akunKey);
+                let saldo = 0;
+
+                rows.forEach(r => {
+                    if (saldoNormal === 'KREDIT') saldo += (r.kredit - r.debet);
+                    else saldo += (r.debet - r.kredit);
+                });
+
+                let debetVal = 0, kreditVal = 0;
+                if (saldoNormal === 'KREDIT') {
+                    kreditVal = saldo >= 0 ? saldo : 0;
+                    debetVal = saldo < 0 ? Math.abs(saldo) : 0;
+                } else {
+                    debetVal = saldo >= 0 ? saldo : 0;
+                    kreditVal = saldo < 0 ? Math.abs(saldo) : 0;
+                }
+
+                bukuBesarBalances[akunKey] = { debet: debetVal, kredit: kreditVal };
+            });
+
+            // 2. Akumulasi data Penyesuaian dari AJP
+            const ajpBalances = {};
+            ajpTransaksi.forEach(t => {
+                if (t.entries) {
+                    t.entries.forEach(e => {
+                        const keyByKode = e.kode ? coaData.find(c => c.kode === e.kode) : null;
+                        const keyByNama = e.nama ? coaData.find(c => c.nama.toLowerCase() === e.nama.toLowerCase()) : null;
+
+                        let targetKey = '';
+                        if (keyByKode) {
+                            targetKey = `${keyByKode.kode} ${keyByKode.nama}`;
+                        } else if (keyByNama) {
+                            targetKey = `${keyByNama.kode} ${keyByNama.nama}`;
+                        } else {
+                            targetKey = `${e.kode || ''} ${e.nama}`.trim();
+                        }
+
+                        if (!ajpBalances[targetKey]) {
+                            ajpBalances[targetKey] = {
+                                kode: e.kode || (keyByNama ? keyByNama.kode : '-'),
+                                nama: e.nama || (keyByKode ? keyByKode.nama : targetKey),
+                                debet: 0,
+                                kredit: 0
+                            };
+                        }
+
+                        if (e.pos === 'D') ajpBalances[targetKey].debet += e.nom;
+                        if (e.pos === 'K') ajpBalances[targetKey].kredit += e.nom;
+                    });
+                }
+            });
+
+            // 3. Susun Hirarki Akun: COA Utama terlebih dahulu
+            const masterList = [];
+            const coaKeySet = new Set();
+
+            coaData.forEach(c => {
+                const fullKey = `${c.kode} ${c.nama}`;
+                coaKeySet.add(fullKey);
+                coaKeySet.add(c.kode);
+                coaKeySet.add(c.nama.toLowerCase());
+
+                masterList.push({
+                    kode: c.kode,
+                    nama: c.nama,
+                    kat: c.kat,
+                    fullKey: fullKey,
+                    isCoa: true
+                });
+            });
+
+            // 4. Tambahkan Akun AJP Mandiri di PALING BAWAH jika belum ada di COA
+            Object.keys(ajpBalances).forEach(ajpKey => {
+                const item = ajpBalances[ajpKey];
+                const matchKode = item.kode && item.kode !== '-' && coaKeySet.has(item.kode);
+                const matchNama = item.nama && coaKeySet.has(item.nama.toLowerCase());
+                const matchFull = coaKeySet.has(ajpKey);
+
+                if (!matchKode && !matchNama && !matchFull) {
+                    masterList.push({
+                        kode: item.kode || '-',
+                        nama: item.nama || ajpKey,
+                        kat: 'Penyesuaian',
+                        fullKey: ajpKey,
+                        isCoa: false
+                    });
+                }
+            });
+
+            let sumNsD = 0, sumNsK = 0;
+            let sumAjpD = 0, sumAjpK = 0;
+            let sumNsdD = 0, sumNsdK = 0;
+            let sumLraD = 0, sumLraK = 0;
+            let sumNeracaD = 0, sumNeracaK = 0;
+
+            masterList.forEach(m => {
+                // Neraca Saldo
+                let nsD = 0, nsK = 0;
+                if (bukuBesarBalances[m.fullKey]) {
+                    nsD = bukuBesarBalances[m.fullKey].debet;
+                    nsK = bukuBesarBalances[m.fullKey].kredit;
+                }
+
+                // AJP
+                let ajpD = 0, ajpK = 0;
+                let matchedAjpKey = Object.keys(ajpBalances).find(k => {
+                    const ab = ajpBalances[k];
+                    return k === m.fullKey || (m.kode !== '-' && ab.kode === m.kode) || ab.nama.toLowerCase() === m.nama.toLowerCase();
+                });
+
+                if (matchedAjpKey && ajpBalances[matchedAjpKey]) {
+                    ajpD = ajpBalances[matchedAjpKey].debet;
+                    ajpK = ajpBalances[matchedAjpKey].kredit;
+                }
+
+                // NS Disesuaikan (NSD)
+                let nsdD = 0, nsdK = 0;
+                let netBalance = (nsD - nsK) + (ajpD - ajpK);
+                if (netBalance >= 0) nsdD = netBalance;
+                else nsdK = Math.abs(netBalance);
+
+                // LRA / LO vs Neraca
+                let lraD = 0, lraK = 0;
+                let neracaD = 0, neracaK = 0;
+
+                const katUpper = (m.kat || '').toUpperCase();
+                const namaUpper = (m.nama || '').toUpperCase();
+
+                if (katUpper.includes('PENDAPATAN') || katUpper.includes('BELANJA') || katUpper.includes('BEBAN') || namaUpper.includes('PENDAPATAN') || namaUpper.includes('BELANJA') || namaUpper.includes('BEBAN')) {
+                    lraD = nsdD;
+                    lraK = nsdK;
+                } else {
+                    neracaD = nsdD;
+                    neracaK = nsdK;
+                }
+
+                sumNsD += nsD; sumNsK += nsK;
+                sumAjpD += ajpD; sumAjpK += ajpK;
+                sumNsdD += nsdD; sumNsdK += nsdK;
+                sumLraD += lraD; sumLraK += lraK;
+                sumNeracaD += neracaD; sumNeracaK += neracaK;
+
+                const tr = document.createElement('tr');
+                tr.className = 'border-b hover:bg-slate-50 font-medium';
+                tr.innerHTML = `
+                    <td class="p-1.5 border font-mono font-bold text-center text-indigo-950">${m.kode}</td>
+                    <td class="p-1.5 border ${!m.isCoa ? 'font-bold text-indigo-700' : 'text-slate-800'}">${m.nama}</td>
+                    <td class="p-1.5 border text-right font-mono">${nsD > 0 ? formatRp(nsD) : '-'}</td>
+                    <td class="p-1.5 border text-right font-mono">${nsK > 0 ? formatRp(nsK) : '-'}</td>
+                    <td class="p-1.5 border text-right font-mono text-indigo-900 font-semibold">${ajpD > 0 ? formatRp(ajpD) : '-'}</td>
+                    <td class="p-1.5 border text-right font-mono text-indigo-900 font-semibold">${ajpK > 0 ? formatRp(ajpK) : '-'}</td>
+                    <td class="p-1.5 border text-right font-mono font-bold">${nsdD > 0 ? formatRp(nsdD) : '-'}</td>
+                    <td class="p-1.5 border text-right font-mono font-bold">${nsdK > 0 ? formatRp(nsdK) : '-'}</td>
+                    <td class="p-1.5 border text-right font-mono text-emerald-700 font-bold">${lraD > 0 ? formatRp(lraD) : '-'}</td>
+                    <td class="p-1.5 border text-right font-mono text-emerald-700 font-bold">${lraK > 0 ? formatRp(lraK) : '-'}</td>
+                    <td class="p-1.5 border text-right font-mono text-blue-700 font-bold">${neracaD > 0 ? formatRp(neracaD) : '-'}</td>
+                    <td class="p-1.5 border text-right font-mono text-blue-700 font-bold">${neracaK > 0 ? formatRp(neracaK) : '-'}</td>
+                `;
+                wsBody.appendChild(tr);
+            });
+
+            if (document.getElementById('wsTotalNsD')) document.getElementById('wsTotalNsD').innerText = formatRp(sumNsD);
+            if (document.getElementById('wsTotalNsK')) document.getElementById('wsTotalNsK').innerText = formatRp(sumNsK);
+            if (document.getElementById('wsTotalAjpD')) document.getElementById('wsTotalAjpD').innerText = formatRp(sumAjpD);
+            if (document.getElementById('wsTotalAjpK')) document.getElementById('wsTotalAjpK').innerText = formatRp(sumAjpK);
+            if (document.getElementById('wsTotalNsdD')) document.getElementById('wsTotalNsdD').innerText = formatRp(sumNsdD);
+            if (document.getElementById('wsTotalNsdK')) document.getElementById('wsTotalNsdK').innerText = formatRp(sumNsdK);
+            if (document.getElementById('wsTotalLraD')) document.getElementById('wsTotalLraD').innerText = formatRp(sumLraD);
+            if (document.getElementById('wsTotalLraK')) document.getElementById('wsTotalLraK').innerText = formatRp(sumLraK);
+            if (document.getElementById('wsTotalNeracaD')) document.getElementById('wsTotalNeracaD').innerText = formatRp(sumNeracaD);
+            if (document.getElementById('wsTotalNeracaK')) document.getElementById('wsTotalNeracaK').innerText = formatRp(sumNeracaK);
         }
 
         function bukaModalLihatJurnal() {
