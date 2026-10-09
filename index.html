@@ -756,6 +756,29 @@
         let bukuBesarManual = {};
         let identitas = { nama: '', kelas: '', instansi: '', kab: '', tgl: '' };
 
+        // FUNGSI UNTUK MENENTUKAN SALDO NORMAL AKUN
+        // 'KREDIT' untuk Pendapatan, Ekuitas/Modal, Kewajiban/Utang
+        // 'DEBET' untuk Aset/Aktiva, Belanja, Beban, Anggaran
+        function getSaldoNormal(akunKey) {
+            if (!akunKey) return 'DEBET';
+            let kat = '';
+            let found = coaData.find(item => akunKey.startsWith(item.kode) || akunKey.includes(item.nama));
+            if (found) {
+                kat = found.kat.toUpperCase();
+            } else {
+                let lowerKey = akunKey.toLowerCase();
+                if (lowerKey.includes('pendapatan') || lowerKey.includes('ekuitas') || lowerKey.includes('modal') || lowerKey.includes('utang') || lowerKey.includes('kewajiban')) {
+                    return 'KREDIT';
+                }
+                return 'DEBET';
+            }
+
+            if (kat.includes('PENDAPATAN') || kat.includes('EKUITAS') || kat.includes('KEWAJIBAN') || kat.includes('MODAL') || kat.includes('UTANG')) {
+                return 'KREDIT';
+            }
+            return 'DEBET';
+        }
+
         function formatTanggalIndo(tglStr) {
             if (!tglStr) return '-';
             const bulanIndo = [
@@ -1068,6 +1091,7 @@
 
             activeKeys.forEach(akunKey => {
                 const rows = bukuBesarManual[akunKey];
+                const saldoNormal = getSaldoNormal(akunKey);
 
                 const sec = document.createElement('div');
                 sec.className = 'space-y-2';
@@ -1076,7 +1100,12 @@
                 let saldo = 0;
 
                 rows.forEach(r => {
-                    saldo += (r.debet - r.kredit);
+                    if (saldoNormal === 'KREDIT') {
+                        saldo += (r.kredit - r.debet);
+                    } else {
+                        saldo += (r.debet - r.kredit);
+                    }
+
                     rowsHtml += `
                         <tr class="border-b hover:bg-slate-50 font-medium">
                             <td class="p-2 border text-center">${r.tgl}</td>
@@ -1091,7 +1120,7 @@
                 sec.innerHTML = `
                     <div class="flex items-center gap-2 border-b-2 border-indigo-600 pb-1.5">
                         <i class="fa-solid fa-book text-indigo-600"></i>
-                        <h4 class="text-xs font-extrabold text-indigo-950 uppercase tracking-wide">Buku Besar: ${akunKey}</h4>
+                        <h4 class="text-xs font-extrabold text-indigo-950 uppercase tracking-wide">Buku Besar: ${akunKey} (Saldo Normal: ${saldoNormal})</h4>
                     </div>
 
                     <div class="overflow-x-auto custom-touch-scroll">
@@ -1688,6 +1717,7 @@
             document.getElementById('btnBatalBb').classList.add('hidden');
         }
 
+        // PERBAIKAN LOGIKA HITUNG SALDO BUKU BESAR SESUAI SALDO NORMAL
         function renderBukuBesar() {
             const akunKey = document.getElementById('bbSelect').value;
             const bbBody = document.getElementById('bbTbody');
@@ -1701,7 +1731,8 @@
                 return;
             }
 
-            if(bbJudul) bbJudul.innerText = `Buku Besar: ${akunKey}`;
+            const saldoNormal = getSaldoNormal(akunKey);
+            if(bbJudul) bbJudul.innerText = `Buku Besar: ${akunKey} (Saldo Normal: ${saldoNormal})`;
             const rows = bukuBesarManual[akunKey] || [];
 
             if(rows.length === 0) {
@@ -1711,7 +1742,12 @@
 
             let saldo = 0;
             rows.forEach((r) => {
-                saldo += (r.debet - r.kredit);
+                if (saldoNormal === 'KREDIT') {
+                    saldo += (r.kredit - r.debet);
+                } else {
+                    saldo += (r.debet - r.kredit);
+                }
+
                 const tr = document.createElement('tr');
                 tr.className = 'border-b hover:bg-slate-50';
                 tr.innerHTML = `
@@ -1763,15 +1799,29 @@
 
             activeKeys.forEach(akunKey => {
                 const rows = bukuBesarManual[akunKey];
+                const saldoNormal = getSaldoNormal(akunKey);
                 let saldoAkhir = 0;
-                rows.forEach(r => { saldoAkhir += (r.debet - r.kredit); });
+
+                rows.forEach(r => {
+                    if (saldoNormal === 'KREDIT') {
+                        saldoAkhir += (r.kredit - r.debet);
+                    } else {
+                        saldoAkhir += (r.debet - r.kredit);
+                    }
+                });
 
                 let parts = akunKey.split(' ');
                 let kode = parts[0] || '-';
                 let nama = parts.slice(1).join(' ') || akunKey;
 
-                let debetVal = saldoAkhir >= 0 ? saldoAkhir : 0;
-                let kreditVal = saldoAkhir < 0 ? Math.abs(saldoAkhir) : 0;
+                let debetVal = 0, kreditVal = 0;
+                if (saldoNormal === 'KREDIT') {
+                    kreditVal = saldoAkhir >= 0 ? saldoAkhir : 0;
+                    debetVal = saldoAkhir < 0 ? Math.abs(saldoAkhir) : 0;
+                } else {
+                    debetVal = saldoAkhir >= 0 ? saldoAkhir : 0;
+                    kreditVal = saldoAkhir < 0 ? Math.abs(saldoAkhir) : 0;
+                }
 
                 totalDebit += debetVal;
                 totalKredit += kreditVal;
