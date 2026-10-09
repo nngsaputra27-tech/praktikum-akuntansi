@@ -200,12 +200,12 @@
 
             <!-- TAB 1: DASHBOARD -->
             <section id="tab-dashboard" class="tab-content space-y-4 sm:space-y-6">
-                <!-- Identitas Siswa -->
+                <!-- Identitas Siswa & Instansi -->
                 <article class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm transition-all hover:shadow-md">
                     <h2 class="text-xs font-extrabold text-indigo-900 uppercase tracking-wider mb-3 flex items-center gap-2">
-                        <i class="fa-solid fa-id-card text-amber-500 text-sm"></i> Identitas Siswa Praktikum
+                        <i class="fa-solid fa-id-card text-amber-500 text-sm"></i> Identitas Siswa & Instansi Praktikum
                     </h2>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                         <div>
                             <label for="siswaNama" class="block text-xs font-semibold text-slate-700 mb-1">Nama Lengkap Siswa</label>
                             <input type="text" id="siswaNama" placeholder="Masukkan Nama Siswa" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-indigo-600 focus:outline-none transition" oninput="simpanIdentitas()">
@@ -214,6 +214,23 @@
                             <label for="siswaKelas" class="block text-xs font-semibold text-slate-700 mb-1">Kelas / Konsentrasi Keahlian</label>
                             <input type="text" id="siswaKelas" placeholder="Contoh: XI AKL 1" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-indigo-600 focus:outline-none transition" oninput="simpanIdentitas()">
                         </div>
+                        <div>
+                            <label for="instansiNama" class="block text-xs font-semibold text-slate-700 mb-1">Nama Instansi / SKPD</label>
+                            <input type="text" id="instansiNama" placeholder="Contoh: SKPD Dinas Pendapatan" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-indigo-600 focus:outline-none transition" oninput="simpanIdentitas()">
+                        </div>
+                        <div>
+                            <label for="instansiKabKota" class="block text-xs font-semibold text-slate-700 mb-1">Kabupaten / Kota</label>
+                            <input type="text" id="instansiKabKota" placeholder="Contoh: Kepulauan Meranti" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-indigo-600 focus:outline-none transition" oninput="simpanIdentitas()">
+                        </div>
+                        <div class="sm:col-span-2 lg:col-span-1">
+                            <label for="instansiTgl" class="block text-xs font-semibold text-slate-700 mb-1">Periode Tanggal</label>
+                            <input type="date" id="instansiTgl" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-indigo-600 focus:outline-none transition" onchange="simpanIdentitas()">
+                        </div>
+                    </div>
+                    <div class="mt-4 flex justify-end">
+                        <button onclick="simpanIdentitas(true)" class="bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-bold text-xs py-2.5 px-5 rounded-xl transition shadow flex items-center gap-2">
+                            <i class="fa-solid fa-floppy-disk"></i> Simpan Identitas Instansi
+                        </button>
                     </div>
                 </article>
 
@@ -293,15 +310,17 @@
                     <div class="p-4 sm:p-5 bg-slate-50 border-b border-slate-200 space-y-3">
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                             <div class="space-y-2 w-full sm:w-auto flex-1">
-                                <div class="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-2">
-                                    <span class="text-xs font-bold text-indigo-900 uppercase shrink-0">Instansi / SKPD:</span>
-                                    <input type="text" id="neracaInstansi" placeholder="Contoh: Dinas Pendidikan Kota" class="border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-bold text-slate-800 w-full sm:w-80 focus:ring-1 focus:ring-indigo-600" oninput="simpanHeaderNeraca()">
+                                <div class="p-3 bg-indigo-50/70 border border-indigo-100 rounded-xl space-y-1">
+                                    <div class="flex items-center gap-2">
+                                        <i class="fa-solid fa-building-columns text-indigo-700 text-xs"></i>
+                                        <span class="text-xs font-black text-indigo-950 uppercase" id="displayNamaInstansi">Pemerintah Kabupaten / Kota</span>
+                                    </div>
+                                    <div class="text-[11px] font-bold text-slate-700 flex flex-wrap gap-x-4 gap-y-1">
+                                        <span><i class="fa-solid fa-location-dot text-amber-500 mr-1"></i><span id="displayKabKota">Kabupaten / Kota</span></span>
+                                        <span><i class="fa-solid fa-calendar-days text-indigo-500 mr-1"></i>Periode: <span id="displayPeriodeTgl">-</span></span>
+                                    </div>
                                 </div>
-                                <h3 class="text-xs sm:text-sm font-black text-slate-800 tracking-wide uppercase">SALDO AWAL NERACA SALDO</h3>
-                                <div class="flex items-center gap-2">
-                                    <span class="text-xs text-slate-600 font-medium shrink-0">Per Tanggal:</span>
-                                    <input type="date" id="neracaTgl" class="border border-slate-300 rounded-lg px-2 py-1 text-xs font-semibold text-slate-700" onchange="simpanHeaderNeraca()">
-                                </div>
+                                <h3 class="text-xs sm:text-sm font-black text-slate-800 tracking-wide uppercase pt-1">SALDO AWAL NERACA SALDO</h3>
                             </div>
                             <button onclick="resetCOAKeDefault()" class="text-xs text-rose-600 hover:text-rose-700 font-semibold hover:underline shrink-0 flex items-center gap-1">
                                 <i class="fa-solid fa-rotate-left"></i> Reset COA Default
@@ -620,8 +639,7 @@
         let coaData = [];
         let transaksi = [];
         let bukuBesarManual = {};
-        let identitas = { nama: '', kelas: '' };
-        let headerNeraca = { instansi: '', tgl: '' };
+        let identitas = { nama: '', kelas: '', instansi: '', kabKota: '', tgl: '' };
 
         window.onload = function() {
             // Load COA
@@ -633,48 +651,64 @@
                 localStorage.setItem('siswa_coa', JSON.stringify(coaData));
             }
 
-            // Load Header
-            const saveHeader = localStorage.getItem('siswa_header_neraca');
-            if(saveHeader) {
-                headerNeraca = JSON.parse(saveHeader);
-                document.getElementById('neracaInstansi').value = headerNeraca.instansi || '';
-                document.getElementById('neracaTgl').value = headerNeraca.tgl || '';
-            }
-
             // Load Buku Besar
             const saveBb = localStorage.getItem('siswa_bb_manual');
             if(saveBb) bukuBesarManual = JSON.parse(saveBb);
 
             initCOA();
 
-            // Load Student ID & Transactions
+            // Load Student & Agency Identity & Transactions
             const saveId = localStorage.getItem('siswa_id');
             const saveTx = localStorage.getItem('siswa_tx');
             if(saveId) {
                 identitas = JSON.parse(saveId);
                 document.getElementById('siswaNama').value = identitas.nama || '';
                 document.getElementById('siswaKelas').value = identitas.kelas || '';
+                document.getElementById('instansiNama').value = identitas.instansi || '';
+                document.getElementById('instansiKabKota').value = identitas.kabKota || '';
+                document.getElementById('instansiTgl').value = identitas.tgl || '';
             }
             if(saveTx) transaksi = JSON.parse(saveTx);
 
+            updateTampilanIdentitas();
             renderTampilan();
         };
 
         // Sidebar Toggle Handler for Mobile Drawer
-        function toggleSidebar(open) {
-            const sidebar = document.getElementById('mainSidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            
-            if(open === undefined) {
-                sidebar.classList.toggle('-translate-x-full');
-                overlay.classList.toggle('hidden');
-            } else if(open) {
-                sidebar.classList.remove('-translate-x-full');
-                overlay.classList.remove('hidden');
-            } else {
-                sidebar.classList.add('-translate-x-full');
-                overlay.classList.add('hidden');
+        function simpanIdentitas(showToast = false) {
+            identitas.nama = document.getElementById('siswaNama').value;
+            identitas.kelas = document.getElementById('siswaKelas').value;
+            identitas.instansi = document.getElementById('instansiNama').value;
+            identitas.kabKota = document.getElementById('instansiKabKota').value;
+            identitas.tgl = document.getElementById('instansiTgl').value;
+
+            localStorage.setItem('siswa_id', JSON.stringify(identitas));
+            updateTampilanIdentitas();
+
+            if(showToast) {
+                alert("Identitas Siswa & Instansi berhasil disimpan!");
             }
+        }
+
+        function updateTampilanIdentitas() {
+            const namaInstansi = identitas.instansi || 'SKPD Dinas Pendapatan';
+            const kabKota = identitas.kabKota || 'Kabupaten / Kota';
+            
+            let formattedDate = '-';
+            if(identitas.tgl) {
+                const dateObj = new Date(identitas.tgl);
+                if(!isNaN(dateObj)) {
+                    formattedDate = dateObj.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+                }
+            }
+
+            const elInstansi = document.getElementById('displayNamaInstansi');
+            const elKabKota = document.getElementById('displayKabKota');
+            const elPeriode = document.getElementById('displayPeriodeTgl');
+
+            if(elInstansi) elInstansi.innerText = namaInstansi;
+            if(elKabKota) elKabKota.innerText = kabKota;
+            if(elPeriode) elPeriode.innerText = formattedDate;
         }
 
         // Tab Switching Handler
@@ -1192,8 +1226,9 @@
                 [],
                 ["Nama Siswa", identitas.nama || '-'],
                 ["Kelas", identitas.kelas || '-'],
-                ["Nama Instansi", headerNeraca.instansi || '-'],
-                ["Per Tanggal", headerNeraca.tgl || '-'],
+                ["Nama Instansi", identitas.instansi || '-'],
+                ["Kabupaten / Kota", identitas.kabKota || '-'],
+                ["Periode Tanggal", identitas.tgl || '-'],
                 [],
                 ["--- REALISASI ANGGARAN (LRA) ---"],
                 ["Pendapatan LRA", document.getElementById('lraPend').innerText],
@@ -1210,6 +1245,7 @@
             wsSummary['!cols'] = [{ wch: 30 }, { wch: 25 }];
             XLSX.utils.book_append_sheet(wb, wsSummary, "Identitas & Laporan");
 
+            // ... existing excel export logic ...
             const coaRows = [["Kode Akun", "Nama Akun", "Kelompok / Basis", "Saldo Awal Debet", "Saldo Awal Kredit"]];
             coaData.forEach(c => {
                 coaRows.push([c.kode, c.nama, c.kat, c.debetAwal || 0, c.kreditAwal || 0]);
@@ -1251,6 +1287,24 @@
                 try {
                     const data = new Uint8Array(evt.target.result);
                     const workbook = XLSX.read(data, { type: 'array' });
+
+                    if(workbook.SheetNames.includes("Identitas & Laporan")) {
+                        const idRows = XLSX.utils.sheet_to_json(workbook.Sheets["Identitas & Laporan"], { header: 1 });
+                        if(idRows[3]) identitas.nama = idRows[3][1];
+                        if(idRows[4]) identitas.kelas = idRows[4][1];
+                        if(idRows[5]) identitas.instansi = idRows[5][1];
+                        if(idRows[6]) identitas.kabKota = idRows[6][1];
+                        if(idRows[7]) identitas.tgl = idRows[7][1];
+
+                        document.getElementById('siswaNama').value = identitas.nama || '';
+                        document.getElementById('siswaKelas').value = identitas.kelas || '';
+                        document.getElementById('instansiNama').value = identitas.instansi || '';
+                        document.getElementById('instansiKabKota').value = identitas.kabKota || '';
+                        document.getElementById('instansiTgl').value = identitas.tgl || '';
+
+                        localStorage.setItem('siswa_id', JSON.stringify(identitas));
+                        updateTampilanIdentitas();
+                    }
 
                     if(workbook.SheetNames.includes("Neraca Saldo Awal")) {
                         const cRows = XLSX.utils.sheet_to_json(workbook.Sheets["Neraca Saldo Awal"], { header: 1 });
@@ -1307,22 +1361,6 @@
                             }
                         }
                         localStorage.setItem('siswa_bb_manual', JSON.stringify(bukuBesarManual));
-                    }
-
-                    if(workbook.SheetNames.includes("Identitas & Laporan")) {
-                        const idRows = XLSX.utils.sheet_to_json(workbook.Sheets["Identitas & Laporan"], { header: 1 });
-                        if(idRows[3]) identitas.nama = idRows[3][1];
-                        if(idRows[4]) identitas.kelas = idRows[4][1];
-                        if(idRows[5]) headerNeraca.instansi = idRows[5][1];
-                        if(idRows[6]) headerNeraca.tgl = idRows[6][1];
-
-                        document.getElementById('siswaNama').value = identitas.nama || '';
-                        document.getElementById('siswaKelas').value = identitas.kelas || '';
-                        document.getElementById('neracaInstansi').value = headerNeraca.instansi || '';
-                        document.getElementById('neracaTgl').value = headerNeraca.tgl || '';
-
-                        localStorage.setItem('siswa_id', JSON.stringify(identitas));
-                        localStorage.setItem('siswa_header_neraca', JSON.stringify(headerNeraca));
                     }
 
                     renderTampilan();
