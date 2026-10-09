@@ -575,6 +575,42 @@
         let bukuBesarManual = {};
         let identitas = { nama: '', kelas: '', instansi: '', kab: '', tgl: '' };
 
+        function formatTanggalIndo(tglStr) {
+            if (!tglStr) return '-';
+            const bulanIndo = [
+                "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+                "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+            ];
+            const parts = tglStr.split('-');
+            if (parts.length !== 3) return tglStr;
+            const thn = parts[0];
+            const bln = parseInt(parts[1], 10) - 1;
+            const tgl = parseInt(parts[2], 10);
+            return `${tgl} ${bulanIndo[bln] || ''} ${thn}`;
+        }
+
+        function updateTampilanIdentitasHeader() {
+            const namaInstansi = identitas.instansi || 'SKPD DINAS KELAUTAN DAN PERIKANAN';
+            const kabKota = identitas.kab || 'Kepulauan Meranti';
+            const tglPeriode = identitas.tgl ? formatTanggalIndo(identitas.tgl) : '-';
+
+            const elCoaSKPD = document.getElementById('displayLamp2SKPD');
+            const elCoaKab = document.getElementById('displayLamp2Kab');
+            const elCoaTgl = document.getElementById('displayLamp2Tgl');
+
+            if (elCoaSKPD) elCoaSKPD.innerText = namaInstansi.toUpperCase().startsWith('SKPD') ? namaInstansi.toUpperCase() : `SKPD ${namaInstansi.toUpperCase()}`;
+            if (elCoaKab) elCoaKab.innerText = `Kabupaten / Kota: ${kabKota}`;
+            if (elCoaTgl) elCoaTgl.innerText = `Per Tanggal: ${tglPeriode}`;
+
+            const elNsSKPD = document.getElementById('displayNsSKPD');
+            const elNsKab = document.getElementById('displayNsKab');
+            const elNsTgl = document.getElementById('displayNsTgl');
+
+            if (elNsSKPD) elNsSKPD.innerText = namaInstansi.toUpperCase().startsWith('SKPD') ? namaInstansi.toUpperCase() : `SKPD ${namaInstansi.toUpperCase()}`;
+            if (elNsKab) elNsKab.innerText = `Kabupaten / Kota: ${kabKota}`;
+            if (elNsTgl) elNsTgl.innerText = `Per Tanggal: ${tglPeriode}`;
+        }
+
         window.onload = function() {
             const saveCoa = localStorage.getItem('siswa_coa');
             if(saveCoa) {
@@ -605,6 +641,7 @@
             initCOA();
             resetFormJurnalDinamis();
             renderTampilan();
+            updateTampilanIdentitasHeader();
         };
 
         function toggleMobileMenu() {
@@ -697,9 +734,15 @@
             identitas.instansi = document.getElementById('instansiNama').value;
             identitas.kab = document.getElementById('instansiKab').value;
             identitas.tgl = document.getElementById('instansiTgl').value;
+            
             localStorage.setItem('siswa_id', JSON.stringify(identitas));
+            updateTampilanIdentitasHeader();
 
-            showSuccessModal('Identitas Tersimpan!', 'Data identitas instansi telah diperbarui.');
+            showSuccessModal('Identitas Tersimpan!', 'Data identitas instansi diperbarui. Mengalihkan ke COA...');
+
+            setTimeout(() => {
+                switchTab('coa');
+            }, 600);
         }
 
         function formatInputCurrency(inputEl) {
