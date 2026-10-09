@@ -266,7 +266,7 @@
                                     <td class="p-2.5 border text-right font-mono text-amber-300" id="totalDebetSaldoAwal">Rp 0</td>
                                     <td class="p-2.5 border text-right font-mono text-amber-300" id="totalKreditSaldoAwal">Rp 0</td>
                                     <td class="p-2.5 border text-center">
-                                        <span id="statusBalance" class="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-400 text-slate-900">BALANCE</span>
+                                        <span id="statusBalance" class="px-2.5 py-1 rounded-full text-[10px] font-black tracking-wider bg-emerald-500 text-white shadow-sm">BALANCE</span>
                                     </td>
                                 </tr>
                             </tfoot>
@@ -611,6 +611,19 @@
             if (elNsTgl) elNsTgl.innerText = `Per Tanggal: ${tglPeriode}`;
         }
 
+        function checkCoaBalance(totalDebet, totalKredit) {
+            const elStatus = document.getElementById('statusBalance');
+            if (!elStatus) return;
+
+            if (Math.abs(totalDebet - totalKredit) < 0.01) {
+                elStatus.innerText = 'BALANCE';
+                elStatus.className = 'px-2.5 py-1 rounded-full text-[10px] font-black tracking-wider bg-emerald-500 text-white shadow-sm';
+            } else {
+                elStatus.innerText = 'UNBALANCE';
+                elStatus.className = 'px-2.5 py-1 rounded-full text-[10px] font-black tracking-wider bg-rose-600 text-white shadow-sm';
+            }
+        }
+
         window.onload = function() {
             const saveCoa = localStorage.getItem('siswa_coa');
             if(saveCoa) {
@@ -833,6 +846,8 @@
 
             if(document.getElementById('totalDebetSaldoAwal')) document.getElementById('totalDebetSaldoAwal').innerText = formatRp(totalDebet);
             if(document.getElementById('totalKreditSaldoAwal')) document.getElementById('totalKreditSaldoAwal').innerText = formatRp(totalKredit);
+
+            checkCoaBalance(totalDebet, totalKredit);
         }
 
         function simpanAkun(e) {
@@ -912,6 +927,8 @@
 
             if(document.getElementById('totalDebetSaldoAwal')) document.getElementById('totalDebetSaldoAwal').innerText = formatRp(totalDebet);
             if(document.getElementById('totalKreditSaldoAwal')) document.getElementById('totalKreditSaldoAwal').innerText = formatRp(totalKredit);
+
+            checkCoaBalance(totalDebet, totalKredit);
         }
 
         function resetNominalSaldoAwal() {
