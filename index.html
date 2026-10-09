@@ -516,6 +516,13 @@
                             </tfoot>
                         </table>
                     </div>
+
+                    <!-- INDIKATOR BALANCE / UNBALANCE PADA NERACA SALDO -->
+                    <div class="p-3 bg-slate-50 border-t border-slate-200 flex justify-end items-center">
+                        <span id="statusNsBalance" class="px-3 py-1.5 rounded-xl text-xs font-black tracking-wider bg-emerald-500 text-white shadow-sm flex items-center gap-1.5">
+                            <i class="fa-solid fa-circle-check"></i> BALANCE
+                        </span>
+                    </div>
                 </div>
             </section>
 
@@ -731,7 +738,7 @@
         </div>
     </div>
 
-    <!-- SCRIPT UTAMA PERBAIKAN -->
+    <!-- SCRIPT UTAMA -->
     <script>
         const defaultCoaData = [
             { kode: '1.1.1.01', nama: 'Kas di Kas Daerah', kat: 'Aset', debetAwal: 0, kreditAwal: 0 },
@@ -756,9 +763,6 @@
         let bukuBesarManual = {};
         let identitas = { nama: '', kelas: '', instansi: '', kab: '', tgl: '' };
 
-        // FUNGSI UNTUK MENENTUKAN SALDO NORMAL AKUN
-        // 'KREDIT' untuk Pendapatan, Ekuitas/Modal, Kewajiban/Utang
-        // 'DEBET' untuk Aset/Aktiva, Belanja, Beban, Anggaran
         function getSaldoNormal(akunKey) {
             if (!akunKey) return 'DEBET';
             let kat = '';
@@ -816,7 +820,6 @@
             if (elNsKab) elNsKab.innerText = `Kabupaten / Kota: ${kabKota}`;
             if (elNsTgl) elNsTgl.innerText = `Per Tanggal: ${tglPeriode}`;
 
-            // Update Header Kop di Modal Lihat Jurnal
             const elModalSKPD = document.getElementById('modalDisplaySKPD');
             const elModalKab = document.getElementById('modalDisplayKab');
             const elModalTgl = document.getElementById('modalDisplayTgl');
@@ -825,7 +828,6 @@
             if (elModalKab) elModalKab.innerText = `Kabupaten / Kota: ${kabKota}`;
             if (elModalTgl) elModalTgl.innerText = `Per Tanggal: ${tglPeriode}`;
 
-            // Update Header Kop di Modal Lihat Buku Besar
             const elModalBbSKPD = document.getElementById('modalBbDisplaySKPD');
             const elModalBbKab = document.getElementById('modalBbDisplayKab');
             const elModalBbTgl = document.getElementById('modalBbDisplayTgl');
@@ -959,7 +961,6 @@
             }
         }
 
-        // --- LOGIKA MODAL POP UP LIHAT JURNAL (FORMAT TERPISAH) ---
         function bukaModalLihatJurnal() {
             updateTampilanIdentitasHeader();
             renderModalJurnalTerpisah();
@@ -993,7 +994,6 @@
                 if(lraTbody) lraTbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-slate-400">Belum ada data Jurnal Anggaran.</td></tr>';
             } else {
                 transaksi.forEach(t => {
-                    // 1. OLAH JURNAL FINANSIAL
                     if (t.finEntries && t.finEntries.length > 0) {
                         t.finEntries.forEach((fe, idx) => {
                             const dVal = fe.pos === 'D' ? fe.nom : 0;
@@ -1015,7 +1015,6 @@
                         });
                     }
 
-                    // 2. OLAH JURNAL PELAKSANAAN ANGGARAN (LRA)
                     if (!t.isTidakLra && t.lraEntries && t.lraEntries.length > 0) {
                         t.lraEntries.forEach((le, idx) => {
                             const dVal = le.pos === 'D' ? le.nom : 0;
@@ -1050,7 +1049,6 @@
                 });
             }
 
-            // SET TOTAL SALDO DI FOOTER
             if (document.getElementById('modalFinTotalDebit')) document.getElementById('modalFinTotalDebit').innerText = formatRp(finTotalDebit);
             if (document.getElementById('modalFinTotalKredit')) document.getElementById('modalFinTotalKredit').innerText = formatRp(finTotalKredit);
 
@@ -1058,7 +1056,6 @@
             if (document.getElementById('modalLraTotalKredit')) document.getElementById('modalLraTotalKredit').innerText = formatRp(lraTotalKredit);
         }
 
-        // --- LOGIKA MODAL POP UP LIHAT BUKU BESAR SEMUA AKUN ---
         function bukaModalLihatBukuBesar() {
             updateTampilanIdentitasHeader();
             renderModalBukuBesarSemuaAkun();
@@ -1384,9 +1381,7 @@
             }
         }
 
-        // --- PENGECEKAN BALANCE REAL-TIME UNTUK JURNAL FINANSIAL & LRA ---
         function hitungBalanceRealtime() {
-            // 1. Hitung Finansial
             let finD = 0, finK = 0;
             document.querySelectorAll('#containerFinRows .row-entry').forEach(r => {
                 const pos = r.querySelector('.pos-select').value;
@@ -1409,7 +1404,6 @@
                 }
             }
 
-            // 2. Hitung LRA
             const isTidakLra = document.getElementById('chkTidakDijurnalLra') ? document.getElementById('chkTidakDijurnalLra').checked : false;
             const badgeLra = document.getElementById('badgeLraBalance');
 
@@ -1500,7 +1494,6 @@
         function tambahJurnal(e) {
             e.preventDefault();
 
-            // Pengecekan Balance sebelum menyimpan
             let finD = 0, finK = 0;
             document.querySelectorAll('#containerFinRows .row-entry').forEach(r => {
                 const pos = r.querySelector('.pos-select').value;
@@ -1717,7 +1710,6 @@
             document.getElementById('btnBatalBb').classList.add('hidden');
         }
 
-        // PERBAIKAN LOGIKA HITUNG SALDO BUKU BESAR SESUAI SALDO NORMAL
         function renderBukuBesar() {
             const akunKey = document.getElementById('bbSelect').value;
             const bbBody = document.getElementById('bbTbody');
@@ -1792,6 +1784,14 @@
 
             if (activeKeys.length === 0) {
                 nsBody.innerHTML = '<tr><td colspan="4" class="p-6 text-center text-slate-400 font-medium">Belum ada posting pada Buku Besar.</td></tr>';
+                if(document.getElementById('totalNsDebit')) document.getElementById('totalNsDebit').innerText = 'Rp 0';
+                if(document.getElementById('totalNsKredit')) document.getElementById('totalNsKredit').innerText = 'Rp 0';
+                
+                const statusNs = document.getElementById('statusNsBalance');
+                if(statusNs) {
+                    statusNs.className = 'px-3 py-1.5 rounded-xl text-xs font-black tracking-wider bg-emerald-500 text-white shadow-sm flex items-center gap-1.5';
+                    statusNs.innerHTML = '<i class="fa-solid fa-circle-check"></i> BALANCE';
+                }
                 return;
             }
 
@@ -1839,6 +1839,18 @@
 
             if(document.getElementById('totalNsDebit')) document.getElementById('totalNsDebit').innerText = formatRp(totalDebit);
             if(document.getElementById('totalNsKredit')) document.getElementById('totalNsKredit').innerText = formatRp(totalKredit);
+
+            // LOGIKA PEMERIKSAAN KESEIMBANGAN NERACA SALDO
+            const statusNs = document.getElementById('statusNsBalance');
+            if(statusNs) {
+                if (Math.abs(totalDebit - totalKredit) < 0.01) {
+                    statusNs.className = 'px-3 py-1.5 rounded-xl text-xs font-black tracking-wider bg-emerald-500 text-white shadow-sm flex items-center gap-1.5';
+                    statusNs.innerHTML = '<i class="fa-solid fa-circle-check"></i> BALANCE';
+                } else {
+                    statusNs.className = 'px-3 py-1.5 rounded-xl text-xs font-black tracking-wider bg-rose-600 text-white shadow-sm flex items-center gap-1.5';
+                    statusNs.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> UNBALANCE';
+                }
+            }
         }
 
         function exportToExcel() {
