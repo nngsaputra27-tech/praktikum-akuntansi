@@ -98,7 +98,6 @@
             <button onclick="switchTab('bukubesar')" id="nav-bukubesar" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl hover:bg-indigo-900 hover:text-white transition">
                 <i class="fa-solid fa-book text-base text-indigo-300 w-5"></i> Buku Besar Manual
             </button>
-            <!-- MENU BARU: NERACA SALDO AKHIR BUKU BESAR -->
             <button onclick="switchTab('neracasaldo')" id="nav-neracasaldo" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl hover:bg-indigo-900 hover:text-white transition">
                 <i class="fa-solid fa-scale-balanced text-base text-indigo-300 w-5"></i> Neraca Saldo
             </button>
@@ -306,7 +305,7 @@
                         </table>
                     </div>
 
-                    <!-- TOMBOL RESET NOMINAL SALDO AWAL (POSISI DI BAWAH / KANAN BAWAH) -->
+                    <!-- TOMBOL RESET NOMINAL SALDO AWAL -->
                     <div class="p-4 bg-slate-50 border-t border-slate-200 flex justify-end items-center">
                         <button onclick="resetNominalSaldoAwal()" class="bg-rose-600 hover:bg-rose-700 active:scale-95 text-white font-extrabold text-xs px-4 py-2 rounded-xl flex items-center gap-1.5 shadow transition">
                             <i class="fa-solid fa-rotate-left"></i> Reset Nominal Saldo Awal
@@ -447,7 +446,7 @@
                 </div>
             </section>
 
-            <!-- TAB BARU: NERACA SALDO OTOMATIS DARI BUKU BESAR -->
+            <!-- TAB: NERACA SALDO OTOMATIS DARI BUKU BESAR -->
             <section id="tab-neracasaldo" class="tab-content hidden space-y-6">
                 <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                     <!-- KOP DOKUMEN NERACA SALDO -->
@@ -486,12 +485,18 @@
                                 </tr>
                             </thead>
                             <tbody id="neracaSaldoTbody"></tbody>
-                            <!-- BARIS TOTAL -->
+                            <!-- BARIS TOTAL: RATA TENGAH TULISAN & STATUS WARNA MERAH DI BAWAH ANGKA -->
                             <tfoot>
                                 <tr class="bg-indigo-950 text-white font-bold text-xs">
-                                    <td colspan="2" class="p-2.5 border text-right uppercase tracking-wider">Total Neraca Saldo</td>
-                                    <td class="p-2.5 border text-right font-mono text-amber-300" id="totalNsDebit">Rp 0</td>
-                                    <td class="p-2.5 border text-right font-mono text-amber-300" id="totalNsKredit">Rp 0</td>
+                                    <td colspan="2" class="p-3 border text-center uppercase tracking-wider font-extrabold text-sm">TOTAL NERACA SALDO</td>
+                                    <td class="p-3 border text-right font-mono align-top">
+                                        <div id="totalNsDebit" class="text-amber-300 font-extrabold text-sm">Rp 0</div>
+                                        <div id="statusNsDebit" class="text-[11px] font-black text-red-500 uppercase mt-0.5">BALANCE</div>
+                                    </td>
+                                    <td class="p-3 border text-right font-mono align-top">
+                                        <div id="totalNsKredit" class="text-amber-300 font-extrabold text-sm">Rp 0</div>
+                                        <div id="statusNsKredit" class="text-[11px] font-black text-red-500 uppercase mt-0.5">BALANCE</div>
+                                    </td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -499,7 +504,7 @@
                 </div>
             </section>
 
-            <!-- TAB 6: LAPORAN KEUANGAN -->
+            <!-- TAB 5: LAPORAN KEUANGAN -->
             <section id="tab-laporan" class="tab-content hidden space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
@@ -765,7 +770,6 @@
             document.getElementById('displayLamp2Kab').innerText = kabText;
             document.getElementById('displayLamp2Tgl').innerText = tglText;
 
-            // Update Header Neraca Saldo Otomatis juga
             document.getElementById('displayNsSKPD').innerText = skpdText;
             document.getElementById('displayNsKab').innerText = kabText;
             document.getElementById('displayNsTgl').innerText = tglText;
@@ -1153,6 +1157,8 @@
                 nsBody.innerHTML = '<tr><td colspan="4" class="p-6 text-center text-slate-400 font-medium">Belum ada posting pada Buku Besar. Silakan lakukan posting pada menu Buku Besar terlebih dahulu.</td></tr>';
                 document.getElementById('totalNsDebit').innerText = 'Rp 0';
                 document.getElementById('totalNsKredit').innerText = 'Rp 0';
+                document.getElementById('statusNsDebit').innerText = 'BALANCE';
+                document.getElementById('statusNsKredit').innerText = 'BALANCE';
                 return;
             }
 
@@ -1172,7 +1178,6 @@
                     }
                 });
 
-                // Ekstrak Kode dan Nama Akun
                 let parts = akunKey.split(' ');
                 let kode = parts[0] || '-';
                 let nama = parts.slice(1).join(' ') || akunKey;
@@ -1210,6 +1215,19 @@
 
             document.getElementById('totalNsDebit').innerText = formatRp(totalDebit);
             document.getElementById('totalNsKredit').innerText = formatRp(totalKredit);
+
+            const isBalanced = totalDebit === totalKredit;
+            const statusText = isBalanced ? "BALANCE" : "UNBALANCE";
+
+            const statusDebitEl = document.getElementById('statusNsDebit');
+            const statusKreditEl = document.getElementById('statusNsKredit');
+
+            statusDebitEl.innerText = statusText;
+            statusKreditEl.innerText = statusText;
+
+            // Selalu berwarna merah
+            statusDebitEl.className = "text-[11px] font-black text-red-500 uppercase mt-0.5";
+            statusKreditEl.className = "text-[11px] font-black text-red-500 uppercase mt-0.5";
         }
 
         function hapusBarisBb(akunKey, idRow) {
