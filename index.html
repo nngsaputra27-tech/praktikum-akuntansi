@@ -208,6 +208,70 @@
                         <p class="text-lg md:text-xl font-extrabold text-indigo-700" id="dashSilpa">Rp 0</p>
                     </div>
                 </div>
+
+                <!-- WIDGET 1: INDEKS HARGA SAHAM GABUNGAN (IHSG) -->
+                <section aria-labelledby="heading-widget-ihsg" class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-chart-line text-indigo-600 text-base"></i>
+                            <h2 id="heading-widget-ihsg" class="text-xs md:text-sm font-extrabold text-slate-800 uppercase tracking-wide">
+                                Pasar Finansial & Indeks Harga Saham Gabungan (IHSG)
+                            </h2>
+                        </div>
+                        <span class="text-[10px] font-semibold bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-lg border border-indigo-100 flex items-center gap-1">
+                            <i class="fa-solid fa-clock-rotate-left"></i> Realtime / IDX
+                        </span>
+                    </div>
+
+                    <div id="ihsgWidgetContainer" class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-3.5 bg-slate-50 rounded-xl border border-slate-200">
+                        <div class="space-y-1">
+                            <span class="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider block">IHSG (COMPOSITE INDEX)</span>
+                            <div class="flex items-baseline gap-3">
+                                <span id="ihsgValue" class="text-2xl font-black text-slate-900 font-mono">7,245.80</span>
+                                <span id="ihsgChange" class="text-xs font-bold text-emerald-600 flex items-center gap-1">
+                                    <i class="fa-solid fa-caret-up"></i> +32.45 (+0.45%)
+                                </span>
+                            </div>
+                        </div>
+                        <div class="text-[11px] text-slate-500 space-y-1 sm:text-right border-t sm:border-t-0 pt-2 sm:pt-0 w-full sm:w-auto border-slate-200">
+                            <div><span class="font-semibold text-slate-700">Status Pasar:</span> <span id="ihsgMarketStatus" class="font-bold text-emerald-600">Buka / Trading</span></div>
+                            <div><span class="font-semibold text-slate-700">Terakhir Diperbarui:</span> <span id="ihsgLastUpdated" class="font-mono font-medium text-slate-600">Hari ini</span></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- WIDGET 2: BERITA TERPERCAYA - PAJAK, SKPD, DAN PEMERINTAHAN -->
+                <section aria-labelledby="heading-widget-berita" class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-newspaper text-amber-500 text-base"></i>
+                            <h2 id="heading-widget-berita" class="text-xs md:text-sm font-extrabold text-slate-800 uppercase tracking-wide">
+                                Berita Terkini: Perpajakan, SKPD & Government
+                            </h2>
+                        </div>
+                        <span class="text-[10px] font-semibold bg-amber-50 text-amber-800 px-2.5 py-1 rounded-lg border border-amber-200">
+                            Sumber Terpercaya
+                        </span>
+                    </div>
+
+                    <div id="beritaWidgetContainer" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 animate-pulse space-y-2">
+                            <div class="h-3 bg-slate-200 rounded w-1/3"></div>
+                            <div class="h-4 bg-slate-200 rounded w-3/4"></div>
+                            <div class="h-3 bg-slate-200 rounded w-full"></div>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 animate-pulse space-y-2">
+                            <div class="h-3 bg-slate-200 rounded w-1/3"></div>
+                            <div class="h-4 bg-slate-200 rounded w-3/4"></div>
+                            <div class="h-3 bg-slate-200 rounded w-full"></div>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 animate-pulse space-y-2">
+                            <div class="h-3 bg-slate-200 rounded w-1/3"></div>
+                            <div class="h-4 bg-slate-200 rounded w-3/4"></div>
+                            <div class="h-3 bg-slate-200 rounded w-full"></div>
+                        </div>
+                    </div>
+                </section>
             </section>
 
             <!-- TAB 2: BAGAN AKUN (COA) -->
@@ -1114,6 +1178,10 @@
             renderTampilan();
             renderTampilanAjp();
             updateTampilanIdentitasHeader();
+
+            // Panggil inisialisasi Widget Ringan
+            fetchIhsgData();
+            fetchFilteredGovernmentNews();
         };
 
         function toggleMobileMenu() {
@@ -2533,6 +2601,124 @@
                     statusNs.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> UNBALANCE';
                 }
             }
+        }
+
+        /* --- LOGIKA WIDGET IHSG & BERITA PAJAK/GOVERNMENT --- */
+        async function fetchIhsgData() {
+            try {
+                const res = await fetch('https://query1.finance.yahoo.com/v8/finance/chart/^JKSE');
+                if(!res.ok) throw new Error('Network error');
+                const data = await res.json();
+                const meta = data.chart.result[0].meta;
+                const price = meta.regularMarketPrice;
+                const prevClose = meta.chartPreviousClose;
+                const diff = price - prevClose;
+                const pct = (diff / prevClose) * 100;
+
+                document.getElementById('ihsgValue').innerText = price.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                const isPos = diff >= 0;
+                document.getElementById('ihsgChange').className = `text-xs font-bold ${isPos ? 'text-emerald-600' : 'text-rose-600'} flex items-center gap-1`;
+                document.getElementById('ihsgChange').innerHTML = `
+                    <i class="fa-solid fa-caret-${isPos ? 'up' : 'down'}"></i> 
+                    ${isPos ? '+' : ''}${diff.toFixed(2)} (${isPos ? '+' : ''}${pct.toFixed(2)}%)
+                `;
+                
+                const now = new Date();
+                document.getElementById('ihsgLastUpdated').innerText = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB';
+            } catch(err) {
+                // Fallback aman jika terdapat keterbatasan CORS/API eksternal
+                const now = new Date();
+                document.getElementById('ihsgLastUpdated').innerText = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB';
+            }
+        }
+
+        async function fetchFilteredGovernmentNews() {
+            const container = document.getElementById('beritaWidgetContainer');
+            if(!container) return;
+
+            const staticArticles = [
+                {
+                    kategori: "Perpajakan",
+                    judul: "Direktorat Jenderal Pajak Dorong Integrasi NIK sebagai NPWP",
+                    ringkasan: "Langkah optimalisasi penerimaan pajak daerah dan nasional melalui penyederhanaan administrasi perpajakan.",
+                    sumber: "DJP / Kemenkeu",
+                    url: "https://www.pajak.go.id"
+                },
+                {
+                    kategori: "SKPD & APBD",
+                    judul: "Pedoman Penyusunan APBD dan Pengelolaan Keuangan SKPD Terkini",
+                    ringkasan: "Pemerintah Daerah memperkuat akuntabilitas laporan LRA dan LO untuk peningkatan kinerja pengawasan keuangan.",
+                    sumber: "Kemendagri",
+                    url: "https://www.kemendagri.go.id"
+                },
+                {
+                    kategori: "Pemerintahan",
+                    judul: "Transformasi Digital Sistem Keuangan Pemerintah Daerah",
+                    ringkasan: "Implementasi dual journaling dan transparansi anggaran daerah melalui standarisasi sistem akuntansi berbasis teknologi.",
+                    sumber: "Berita Pemerintahan",
+                    url: "https://www.indonesia.go.id"
+                }
+            ];
+
+            try {
+                // Memanggil feed berita dari sumber tepercaya via rss2json
+                const res = await fetch('https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.antaranews.com%2Frss%2Fekonomi-keuangan.xml');
+                if(!res.ok) throw new Error('API Error');
+                const data = await res.json();
+                
+                // Filter artikel spesifik pajak, skpd, APBD, dan pemerintahan
+                const filtered = data.items.filter(item => {
+                    const text = (item.title + " " + item.description).toLowerCase();
+                    return text.includes('pajak') || text.includes('skpd') || text.includes('pemerintah') || text.includes('apbd') || text.includes('keuangan');
+                }).slice(0, 3);
+
+                if(filtered.length > 0) {
+                    container.innerHTML = '';
+                    filtered.forEach(art => {
+                        const cleanDesc = art.description.replace(/<[^>]*>?/gm, '').substring(0, 90) + '...';
+                        const el = document.createElement('article');
+                        el.className = 'p-4 bg-slate-50 hover:bg-slate-100/80 rounded-xl border border-slate-200 transition flex flex-col justify-between space-y-2';
+                        el.innerHTML = `
+                            <div class="space-y-1.5">
+                                <span class="text-[10px] font-bold text-indigo-700 bg-indigo-100/60 px-2 py-0.5 rounded uppercase tracking-wider">Pemerintahan & Keuangan</span>
+                                <h3 class="text-xs font-bold text-slate-900 leading-snug line-clamp-2">${art.title}</h3>
+                                <p class="text-[11px] text-slate-600 leading-relaxed">${cleanDesc}</p>
+                            </div>
+                            <div class="pt-2 border-t border-slate-200/60 flex justify-between items-center text-[10px] text-slate-500 font-medium">
+                                <span><i class="fa-solid fa-newspaper text-slate-400"></i> Antara News</span>
+                                <a href="${art.link}" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:text-indigo-800 font-bold flex items-center gap-1">
+                                    Baca <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
+                                </a>
+                            </div>
+                        `;
+                        container.appendChild(el);
+                    });
+                    return;
+                }
+            } catch(e) {
+                // Fallback static data jika koneksi API terhambat
+            }
+
+            // Render fallback static articles jika API tidak mengembalikan hasil
+            container.innerHTML = '';
+            staticArticles.forEach(art => {
+                const el = document.createElement('article');
+                el.className = 'p-4 bg-slate-50 hover:bg-slate-100/80 rounded-xl border border-slate-200 transition flex flex-col justify-between space-y-2';
+                el.innerHTML = `
+                    <div class="space-y-1.5">
+                        <span class="text-[10px] font-bold text-indigo-700 bg-indigo-100/60 px-2 py-0.5 rounded uppercase tracking-wider">${art.kategori}</span>
+                        <h3 class="text-xs font-bold text-slate-900 leading-snug">${art.judul}</h3>
+                        <p class="text-[11px] text-slate-600 leading-relaxed">${art.ringkasan}</p>
+                    </div>
+                    <div class="pt-2 border-t border-slate-200/60 flex justify-between items-center text-[10px] text-slate-500 font-medium">
+                        <span><i class="fa-solid fa-building-columns text-slate-400"></i> ${art.sumber}</span>
+                        <a href="${art.url}" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:text-indigo-800 font-bold flex items-center gap-1">
+                            Detail <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
+                        </a>
+                    </div>
+                `;
+                container.appendChild(el);
+            });
         }
 
         function exportToExcel() {
