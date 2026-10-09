@@ -545,8 +545,8 @@
             <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center shadow-inner">
                 <i class="fa-solid fa-check text-3xl animate-bounce"></i>
             </div>
-            <h3 class="text-base font-extrabold text-slate-900">Data Tersimpan!</h3>
-            <p class="text-xs text-slate-500">Transaksi berhasil dicatat ke dalam jurnal.</p>
+            <h3 id="modalSuccessTitle" class="text-base font-extrabold text-slate-900">Data Tersimpan!</h3>
+            <p id="modalSuccessDesc" class="text-xs text-slate-500">Transaksi berhasil dicatat ke dalam jurnal.</p>
         </div>
     </div>
 
@@ -665,6 +665,41 @@
             if(sidebar && !sidebar.classList.contains('-translate-x-full') && window.innerWidth < 768) {
                 toggleMobileMenu();
             }
+        }
+
+        function showSuccessModal(title, desc) {
+            const modalSuccess = document.getElementById('modalSuccessTx');
+            const titleEl = document.getElementById('modalSuccessTitle');
+            const descEl = document.getElementById('modalSuccessDesc');
+
+            if(titleEl) titleEl.innerText = title;
+            if(descEl) descEl.innerText = desc;
+
+            if(modalSuccess) {
+                modalSuccess.classList.remove('hidden');
+                modalSuccess.classList.add('flex');
+                setTimeout(() => {
+                    modalSuccess.classList.add('hidden');
+                    modalSuccess.classList.remove('flex');
+                }, 1200);
+            }
+        }
+
+        function simpanIdentitasSiswa() {
+            identitas.nama = document.getElementById('siswaNama').value;
+            identitas.kelas = document.getElementById('siswaKelas').value;
+            localStorage.setItem('siswa_id', JSON.stringify(identitas));
+        }
+
+        function simpanIdentitasInstansi() {
+            identitas.nama = document.getElementById('siswaNama').value;
+            identitas.kelas = document.getElementById('siswaKelas').value;
+            identitas.instansi = document.getElementById('instansiNama').value;
+            identitas.kab = document.getElementById('instansiKab').value;
+            identitas.tgl = document.getElementById('instansiTgl').value;
+            localStorage.setItem('siswa_id', JSON.stringify(identitas));
+
+            showSuccessModal('Identitas Tersimpan!', 'Data identitas instansi telah diperbarui.');
         }
 
         function formatInputCurrency(inputEl) {
@@ -960,15 +995,7 @@
             resetFormJurnalDinamis();
             renderTampilan();
 
-            const modalSuccess = document.getElementById('modalSuccessTx');
-            if(modalSuccess) {
-                modalSuccess.classList.remove('hidden');
-                modalSuccess.classList.add('flex');
-                setTimeout(() => {
-                    modalSuccess.classList.add('hidden');
-                    modalSuccess.classList.remove('flex');
-                }, 1200);
-            }
+            showSuccessModal('Data Tersimpan!', 'Transaksi berhasil dicatat ke dalam jurnal.');
         }
 
         function hapusTx(id) {
@@ -1211,22 +1238,6 @@
 
             if(document.getElementById('totalNsDebit')) document.getElementById('totalNsDebit').innerText = formatRp(totalDebit);
             if(document.getElementById('totalNsKredit')) document.getElementById('totalNsKredit').innerText = formatRp(totalKredit);
-        }
-
-        function simpanIdentitasSiswa() {
-            identitas.nama = document.getElementById('siswaNama').value;
-            identitas.kelas = document.getElementById('siswaKelas').value;
-            localStorage.setItem('siswa_id', JSON.stringify(identitas));
-        }
-
-        function simpanIdentitasInstansi() {
-            identitas.nama = document.getElementById('siswaNama').value;
-            identitas.kelas = document.getElementById('siswaKelas').value;
-            identitas.instansi = document.getElementById('instansiNama').value;
-            identitas.kab = document.getElementById('instansiKab').value;
-            identitas.tgl = document.getElementById('instansiTgl').value;
-            localStorage.setItem('siswa_id', JSON.stringify(identitas));
-            alert("Identitas berhasil disimpan!");
         }
 
         function exportToExcel() {
