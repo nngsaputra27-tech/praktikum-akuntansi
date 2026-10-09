@@ -919,7 +919,7 @@
 
             const badgeFin = document.getElementById('badgeFinBalance');
             if(badgeFin) {
-                if(finD === finK && finD > 0) {
+                if(finD === finK && finD >= 0) {
                     badgeFin.innerText = 'BALANCE';
                     badgeFin.className = 'text-[10px] font-black px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700';
                 } else {
@@ -1394,7 +1394,6 @@
             renderBukuBesar();
         }
 
-        // PERBAIKAN TOTAL PADA FUNGSI BUKA MODAL LIHAT JURNAL
         function bukaModalLihatJurnal() {
             try {
                 const modal = document.getElementById('modalLihatJurnal');
@@ -1422,7 +1421,6 @@
                     let totalLraD = 0, totalLraK = 0;
 
                     sortedTx.forEach(t => {
-                        // 1. OLAH JURNAL FINANSIAL
                         if(t.finEntries && t.finEntries.length > 0) {
                             t.finEntries.forEach((fe, idx) => {
                                 const isDeb = fe.pos === 'D';
@@ -1466,7 +1464,6 @@
                             finBody.appendChild(trK);
                         }
 
-                        // 2. OLAH JURNAL LRA
                         if(!t.isTidakLra && t.lraEntries && t.lraEntries.length > 0) {
                             t.lraEntries.forEach((le, idx) => {
                                 const isDeb = le.pos === 'D';
