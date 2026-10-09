@@ -576,9 +576,9 @@
         </div>
     </div>
 
-    <!-- POP-UP MODAL LIHAT JURNAL FINANSIAL & PELAKSANAAN ANGGARAN -->
+    <!-- POP-UP MODAL LIHAT JURNAL FINANSIAL & PELAKSANAAN ANGGARAN (FORMAT TERPISAH) -->
     <div id="modalLihatJurnal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm hidden items-center justify-center z-50 p-3 md:p-6 transition-opacity">
-        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-5xl max-h-[90vh] flex flex-col overflow-hidden border border-slate-200">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-5xl max-h-[92vh] flex flex-col overflow-hidden border border-slate-200">
             <!-- Header Modal & Action -->
             <div class="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50 no-print">
                 <div class="flex items-center gap-2 text-indigo-950 font-extrabold text-sm">
@@ -594,35 +594,81 @@
                 </div>
             </div>
 
-            <!-- Content Area Pop Up (Kop Identitas + Tabel Jurnal) -->
-            <div class="p-5 md:p-8 overflow-y-auto space-y-6 custom-touch-scroll flex-1">
-                <!-- Kop Identitas Instansi (Sama seperti COA / Neraca Saldo) -->
-                <div class="text-center space-y-1 pb-4 border-b border-slate-200">
+            <!-- Content Area Pop Up (Kop Identitas + Tabel Terpisah) -->
+            <div class="p-5 md:p-8 overflow-y-auto space-y-8 custom-touch-scroll flex-1">
+                
+                <!-- Kop Identitas Instansi -->
+                <div class="text-center space-y-1 pb-2 border-b border-slate-200">
                     <h2 id="modalDisplaySKPD" class="text-base md:text-lg font-black text-indigo-950 uppercase tracking-wide">SKPD DINAS KELAUTAN DAN PERIKANAN</h2>
                     <p id="modalDisplayKab" class="text-xs md:text-sm font-bold text-slate-700">Kabupaten / Kota: Kepulauan Meranti</p>
                     <div class="pt-2">
                         <h3 class="text-xs md:text-sm font-black text-slate-900 uppercase tracking-widest bg-amber-300 text-slate-950 inline-block px-4 py-1 rounded-lg border border-amber-400 shadow-sm">
-                            REKAPITULASI DUAL JOURNALING (FINANSIAL & ANGGARAN LRA)
+                            REKAPITULASI DUAL JOURNALING
                         </h3>
                     </div>
                     <p id="modalDisplayTgl" class="text-xs font-semibold text-slate-600 pt-1">Per Tanggal: -</p>
                 </div>
 
-                <!-- Tabel Rekap Jurnal -->
-                <div class="overflow-x-auto custom-touch-scroll">
-                    <table class="w-full text-xs text-left border-collapse border border-slate-300 min-w-[750px]">
-                        <thead>
-                            <tr class="bg-slate-100 text-slate-800 border-b font-bold text-center">
-                                <th class="p-2.5 border border-slate-300 w-24">Tanggal</th>
-                                <th class="p-2.5 border border-slate-300">Uraian / Keterangan</th>
-                                <th class="p-2.5 border border-slate-300 w-1/3">1. Jurnal Finansial (LO / Neraca)</th>
-                                <th class="p-2.5 border border-slate-300 w-1/3">2. Jurnal Pelaksanaan Anggaran (LRA)</th>
-                                <th class="p-2.5 border border-slate-300 w-28 text-right">Nominal (Rp)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="modalJurnalTbody"></tbody>
-                    </table>
+                <!-- 1. TABEL JURNAL FINANSIAL (LO & NERACA) -->
+                <div class="space-y-2">
+                    <div class="flex items-center gap-2 border-b-2 border-indigo-600 pb-1.5">
+                        <i class="fa-solid fa-file-invoice text-indigo-600"></i>
+                        <h4 class="text-xs font-extrabold text-indigo-950 uppercase tracking-wide">1. Jurnal Finansial (LO & Neraca)</h4>
+                    </div>
+
+                    <div class="overflow-x-auto custom-touch-scroll">
+                        <table class="w-full text-xs text-left border-collapse border border-slate-300 min-w-[650px]">
+                            <thead>
+                                <tr class="bg-indigo-950 text-white border-b font-bold text-center">
+                                    <th class="p-2 border border-indigo-900 w-24">Tanggal</th>
+                                    <th class="p-2 border border-indigo-900 w-44">Keterangan</th>
+                                    <th class="p-2 border border-indigo-900">Nama Akun / Uraian</th>
+                                    <th class="p-2 border border-indigo-900 w-36 text-right">Debit (Rp)</th>
+                                    <th class="p-2 border border-indigo-900 w-36 text-right">Kredit (Rp)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="modalFinJurnalTbody"></tbody>
+                            <tfoot>
+                                <tr class="bg-indigo-100 text-indigo-950 font-extrabold text-xs">
+                                    <td colspan="3" class="p-2.5 border border-indigo-200 text-right uppercase tracking-wider">Total Saldo Jurnal Finansial</td>
+                                    <td class="p-2.5 border border-indigo-200 text-right font-mono" id="modalFinTotalDebit">Rp 0</td>
+                                    <td class="p-2.5 border border-indigo-200 text-right font-mono" id="modalFinTotalKredit">Rp 0</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
                 </div>
+
+                <!-- 2. TABEL JURNAL PELAKSANAAN ANGGARAN (LRA) -->
+                <div class="space-y-2">
+                    <div class="flex items-center gap-2 border-b-2 border-amber-600 pb-1.5">
+                        <i class="fa-solid fa-receipt text-amber-600"></i>
+                        <h4 class="text-xs font-extrabold text-amber-950 uppercase tracking-wide">2. Jurnal Pelaksanaan Anggaran (LRA)</h4>
+                    </div>
+
+                    <div class="overflow-x-auto custom-touch-scroll">
+                        <table class="w-full text-xs text-left border-collapse border border-slate-300 min-w-[650px]">
+                            <thead>
+                                <tr class="bg-amber-900 text-white border-b font-bold text-center">
+                                    <th class="p-2 border border-amber-800 w-24">Tanggal</th>
+                                    <th class="p-2 border border-amber-800 w-44">Keterangan</th>
+                                    <th class="p-2 border border-amber-800">Nama Akun / Uraian</th>
+                                    <th class="p-2 border border-amber-800 w-36 text-right">Debit (Rp)</th>
+                                    <th class="p-2 border border-amber-800 w-36 text-right">Kredit (Rp)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="modalLraJurnalTbody"></tbody>
+                            <tfoot>
+                                <tr class="bg-amber-100 text-amber-950 font-extrabold text-xs">
+                                    <td colspan="3" class="p-2.5 border border-amber-200 text-right uppercase tracking-wider">Total Saldo Jurnal Anggaran</td>
+                                    <td class="p-2.5 border border-amber-200 text-right font-mono" id="modalLraTotalDebit">Rp 0</td>
+                                    <td class="p-2.5 border border-amber-200 text-right font-mono" id="modalLraTotalKredit">Rp 0</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+
             </div>
 
             <div class="p-3 border-t border-slate-200 bg-slate-50 text-right no-print">
@@ -829,10 +875,10 @@
             }
         }
 
-        // --- LOGIKA MODAL POP UP LIHAT JURNAL ---
+        // --- LOGIKA MODAL POP UP LIHAT JURNAL (FORMAT TERPISAH) ---
         function bukaModalLihatJurnal() {
             updateTampilanIdentitasHeader();
-            renderModalJurnalTbody();
+            renderModalJurnalTerpisah();
             const modal = document.getElementById('modalLihatJurnal');
             if (modal) {
                 modal.classList.remove('hidden');
@@ -848,43 +894,84 @@
             }
         }
 
-        function renderModalJurnalTbody() {
-            const modalBody = document.getElementById('modalJurnalTbody');
-            if (!modalBody) return;
-            modalBody.innerHTML = '';
+        function renderModalJurnalTerpisah() {
+            const finTbody = document.getElementById('modalFinJurnalTbody');
+            const lraTbody = document.getElementById('modalLraJurnalTbody');
+            
+            if (finTbody) finTbody.innerHTML = '';
+            if (lraTbody) lraTbody.innerHTML = '';
+
+            let finTotalDebit = 0, finTotalKredit = 0;
+            let lraTotalDebit = 0, lraTotalKredit = 0;
 
             if (!transaksi || transaksi.length === 0) {
-                modalBody.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-slate-400 font-medium">Belum ada transaksi jurnal yang dicatat.</td></tr>';
-                return;
+                if(finTbody) finTbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-slate-400">Belum ada data Jurnal Finansial.</td></tr>';
+                if(lraTbody) lraTbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-slate-400">Belum ada data Jurnal Anggaran.</td></tr>';
+            } else {
+                transaksi.forEach(t => {
+                    // 1. OLAH JURNAL FINANSIAL
+                    if (t.finEntries && t.finEntries.length > 0) {
+                        t.finEntries.forEach((fe, idx) => {
+                            const dVal = fe.pos === 'D' ? fe.nom : 0;
+                            const kVal = fe.pos === 'K' ? fe.nom : 0;
+                            
+                            finTotalDebit += dVal;
+                            finTotalKredit += kVal;
+
+                            const tr = document.createElement('tr');
+                            tr.className = 'border-b hover:bg-slate-50 font-medium';
+                            tr.innerHTML = `
+                                <td class="p-2 border text-center">${idx === 0 ? t.tgl : ''}</td>
+                                <td class="p-2 border">${idx === 0 ? t.uraian : ''}</td>
+                                <td class="p-2 border ${fe.pos === 'K' ? 'pl-6 text-slate-600' : 'font-bold text-indigo-950'}">${fe.akun}</td>
+                                <td class="p-2 border text-right font-mono">${dVal > 0 ? formatRp(dVal) : '-'}</td>
+                                <td class="p-2 border text-right font-mono">${kVal > 0 ? formatRp(kVal) : '-'}</td>
+                            `;
+                            if(finTbody) finTbody.appendChild(tr);
+                        });
+                    }
+
+                    // 2. OLAH JURNAL PELAKSANAAN ANGGARAN (LRA)
+                    if (!t.isTidakLra && t.lraEntries && t.lraEntries.length > 0) {
+                        t.lraEntries.forEach((le, idx) => {
+                            const dVal = le.pos === 'D' ? le.nom : 0;
+                            const kVal = le.pos === 'K' ? le.nom : 0;
+
+                            lraTotalDebit += dVal;
+                            lraTotalKredit += kVal;
+
+                            const tr = document.createElement('tr');
+                            tr.className = 'border-b hover:bg-slate-50 font-medium';
+                            tr.innerHTML = `
+                                <td class="p-2 border text-center">${idx === 0 ? t.tgl : ''}</td>
+                                <td class="p-2 border">${idx === 0 ? t.uraian : ''}</td>
+                                <td class="p-2 border ${le.pos === 'K' ? 'pl-6 text-slate-600' : 'font-bold text-amber-950'}">${le.akun}</td>
+                                <td class="p-2 border text-right font-mono">${dVal > 0 ? formatRp(dVal) : '-'}</td>
+                                <td class="p-2 border text-right font-mono">${kVal > 0 ? formatRp(kVal) : '-'}</td>
+                            `;
+                            if(lraTbody) lraTbody.appendChild(tr);
+                        });
+                    } else if (t.isTidakLra) {
+                        const tr = document.createElement('tr');
+                        tr.className = 'border-b hover:bg-slate-50 font-medium text-slate-400 italic';
+                        tr.innerHTML = `
+                            <td class="p-2 border text-center">${t.tgl}</td>
+                            <td class="p-2 border">${t.uraian}</td>
+                            <td class="p-2 border">Tidak Di-jurnal</td>
+                            <td class="p-2 border text-right font-mono">-</td>
+                            <td class="p-2 border text-right font-mono">-</td>
+                        `;
+                        if(lraTbody) lraTbody.appendChild(tr);
+                    }
+                });
             }
 
-            transaksi.forEach(t => {
-                let finText = '';
-                if (t.finEntries && t.finEntries.length > 0) {
-                    t.finEntries.forEach(fe => {
-                        finText += `<div class="${fe.pos === 'D' ? 'font-bold text-indigo-900' : 'text-slate-600 pl-3'}">(${fe.pos}) ${fe.akun} - ${formatRp(fe.nom)}</div>`;
-                    });
-                }
+            // SET TOTAL SALDO DI FOOTER
+            if (document.getElementById('modalFinTotalDebit')) document.getElementById('modalFinTotalDebit').innerText = formatRp(finTotalDebit);
+            if (document.getElementById('modalFinTotalKredit')) document.getElementById('modalFinTotalKredit').innerText = formatRp(finTotalKredit);
 
-                let lraText = '<span class="text-slate-400 italic font-normal">Tidak Di-jurnal</span>';
-                if (!t.isTidakLra && t.lraEntries && t.lraEntries.length > 0) {
-                    lraText = '';
-                    t.lraEntries.forEach(le => {
-                        lraText += `<div class="${le.pos === 'D' ? 'font-bold text-amber-800' : 'text-amber-600 pl-3'}">(${le.pos}) ${le.akun} - ${formatRp(le.nom)}</div>`;
-                    });
-                }
-
-                const tr = document.createElement('tr');
-                tr.className = 'border-b border-slate-200 hover:bg-slate-50 text-xs font-medium';
-                tr.innerHTML = `
-                    <td class="p-2.5 border border-slate-200 text-center">${t.tgl}</td>
-                    <td class="p-2.5 border border-slate-200">${t.uraian}</td>
-                    <td class="p-2.5 border border-slate-200">${finText}</td>
-                    <td class="p-2.5 border border-slate-200">${lraText}</td>
-                    <td class="p-2.5 border border-slate-200 text-right font-bold font-mono text-slate-900">${formatRp(t.nominal)}</td>
-                `;
-                modalBody.appendChild(tr);
-            });
+            if (document.getElementById('modalLraTotalDebit')) document.getElementById('modalLraTotalDebit').innerText = formatRp(lraTotalDebit);
+            if (document.getElementById('modalLraTotalKredit')) document.getElementById('modalLraTotalKredit').innerText = formatRp(lraTotalKredit);
         }
 
         function simpanIdentitasSiswa() {
