@@ -664,8 +664,9 @@
                             </thead>
                             <tbody id="worksheetTbody"></tbody>
                             <tfoot>
-                                <tr class="bg-indigo-950 text-white font-extrabold text-xs">
-                                    <td colspan="2" class="p-2.5 border border-indigo-900 text-center uppercase tracking-wider">TOTAL WORKSHEET</td>
+                                <!-- BARIS 1: JUMLAH / TOTAL AWAL -->
+                                <tr class="bg-indigo-950 text-white font-extrabold text-xs border-t-2 border-indigo-900">
+                                    <td colspan="2" class="p-2 border border-indigo-900 text-center uppercase tracking-wider">JUMLAH / TOTAL</td>
                                     <td class="p-2 border border-indigo-900 text-right font-mono text-amber-300" id="wsTotalNsD">Rp 0</td>
                                     <td class="p-2 border border-indigo-900 text-right font-mono text-amber-300" id="wsTotalNsK">Rp 0</td>
                                     <td class="p-2 border border-indigo-900 text-right font-mono text-amber-300" id="wsTotalAjpD">Rp 0</td>
@@ -676,6 +677,34 @@
                                     <td class="p-2 border border-indigo-900 text-right font-mono text-amber-300" id="wsTotalLraK">Rp 0</td>
                                     <td class="p-2 border border-indigo-900 text-right font-mono text-amber-300" id="wsTotalNeracaD">Rp 0</td>
                                     <td class="p-2 border border-indigo-900 text-right font-mono text-amber-300" id="wsTotalNeracaK">Rp 0</td>
+                                </tr>
+                                <!-- BARIS 2: SURPLUS / (DEFISIT) -->
+                                <tr class="bg-indigo-900 text-amber-300 font-extrabold text-xs">
+                                    <td colspan="2" class="p-2 border border-indigo-800 text-center uppercase tracking-wider">SURPLUS / (DEFISIT)</td>
+                                    <td class="p-2 border border-indigo-800 text-right font-mono">-</td>
+                                    <td class="p-2 border border-indigo-800 text-right font-mono">-</td>
+                                    <td class="p-2 border border-indigo-800 text-right font-mono">-</td>
+                                    <td class="p-2 border border-indigo-800 text-right font-mono">-</td>
+                                    <td class="p-2 border border-indigo-800 text-right font-mono">-</td>
+                                    <td class="p-2 border border-indigo-800 text-right font-mono">-</td>
+                                    <td class="p-2 border border-indigo-800 text-right font-mono" id="wsSurplusLraD">Rp 0</td>
+                                    <td class="p-2 border border-indigo-800 text-right font-mono" id="wsSurplusLraK">Rp 0</td>
+                                    <td class="p-2 border border-indigo-800 text-right font-mono" id="wsSurplusNeracaD">Rp 0</td>
+                                    <td class="p-2 border border-indigo-800 text-right font-mono" id="wsSurplusNeracaK">Rp 0</td>
+                                </tr>
+                                <!-- BARIS 3: TOTAL AKHIR (SEIMBANG) -->
+                                <tr class="bg-indigo-950 text-white font-black text-xs border-b-2 border-indigo-900">
+                                    <td colspan="2" class="p-2.5 border border-indigo-900 text-center uppercase tracking-wider">TOTAL</td>
+                                    <td class="p-2 border border-indigo-900 text-right font-mono text-amber-300" id="wsFinalNsD">Rp 0</td>
+                                    <td class="p-2 border border-indigo-900 text-right font-mono text-amber-300" id="wsFinalNsK">Rp 0</td>
+                                    <td class="p-2 border border-indigo-900 text-right font-mono text-amber-300" id="wsFinalAjpD">Rp 0</td>
+                                    <td class="p-2 border border-indigo-900 text-right font-mono text-amber-300" id="wsFinalAjpK">Rp 0</td>
+                                    <td class="p-2 border border-indigo-900 text-right font-mono text-amber-300" id="wsFinalNsdD">Rp 0</td>
+                                    <td class="p-2 border border-indigo-900 text-right font-mono text-amber-300" id="wsFinalNsdK">Rp 0</td>
+                                    <td class="p-2 border border-indigo-900 text-right font-mono text-amber-300" id="wsFinalLraD">Rp 0</td>
+                                    <td class="p-2 border border-indigo-900 text-right font-mono text-amber-300" id="wsFinalLraK">Rp 0</td>
+                                    <td class="p-2 border border-indigo-900 text-right font-mono text-amber-300" id="wsFinalNeracaD">Rp 0</td>
+                                    <td class="p-2 border border-indigo-900 text-right font-mono text-amber-300" id="wsFinalNeracaK">Rp 0</td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -2083,6 +2112,7 @@
                 wsBody.appendChild(tr);
             });
 
+            // 1. TAMPILKAN TOTAL AWAL
             if (document.getElementById('wsTotalNsD')) document.getElementById('wsTotalNsD').innerText = formatRp(sumNsD);
             if (document.getElementById('wsTotalNsK')) document.getElementById('wsTotalNsK').innerText = formatRp(sumNsK);
             if (document.getElementById('wsTotalAjpD')) document.getElementById('wsTotalAjpD').innerText = formatRp(sumAjpD);
@@ -2093,6 +2123,37 @@
             if (document.getElementById('wsTotalLraK')) document.getElementById('wsTotalLraK').innerText = formatRp(sumLraK);
             if (document.getElementById('wsTotalNeracaD')) document.getElementById('wsTotalNeracaD').innerText = formatRp(sumNeracaD);
             if (document.getElementById('wsTotalNeracaK')) document.getElementById('wsTotalNeracaK').innerText = formatRp(sumNeracaK);
+
+            // 2. HITUNG SURPLUS / DEFISIT
+            let surplusLraD = 0, surplusLraK = 0;
+            let surplusNeracaD = 0, surplusNeracaK = 0;
+
+            let selisihLra = sumLraK - sumLraD; // Jika Kredit > Debet = SURPLUS
+            if (selisihLra >= 0) {
+                surplusLraD = selisihLra;
+                surplusNeracaK = selisihLra;
+            } else {
+                surplusLraK = Math.abs(selisihLra);
+                surplusNeracaD = Math.abs(selisihLra);
+            }
+
+            if (document.getElementById('wsSurplusLraD')) document.getElementById('wsSurplusLraD').innerText = surplusLraD > 0 ? formatRp(surplusLraD) : '-';
+            if (document.getElementById('wsSurplusLraK')) document.getElementById('wsSurplusLraK').innerText = surplusLraK > 0 ? formatRp(surplusLraK) : '-';
+            if (document.getElementById('wsSurplusNeracaD')) document.getElementById('wsSurplusNeracaD').innerText = surplusNeracaD > 0 ? formatRp(surplusNeracaD) : '-';
+            if (document.getElementById('wsSurplusNeracaK')) document.getElementById('wsSurplusNeracaK').innerText = surplusNeracaK > 0 ? formatRp(surplusNeracaK) : '-';
+
+            // 3. TAMPILKAN TOTAL FINAL BALANCED
+            if (document.getElementById('wsFinalNsD')) document.getElementById('wsFinalNsD').innerText = formatRp(sumNsD);
+            if (document.getElementById('wsFinalNsK')) document.getElementById('wsFinalNsK').innerText = formatRp(sumNsK);
+            if (document.getElementById('wsFinalAjpD')) document.getElementById('wsFinalAjpD').innerText = formatRp(sumAjpD);
+            if (document.getElementById('wsFinalAjpK')) document.getElementById('wsFinalAjpK').innerText = formatRp(sumAjpK);
+            if (document.getElementById('wsFinalNsdD')) document.getElementById('wsFinalNsdD').innerText = formatRp(sumNsdD);
+            if (document.getElementById('wsFinalNsdK')) document.getElementById('wsFinalNsdK').innerText = formatRp(sumNsdK);
+
+            if (document.getElementById('wsFinalLraD')) document.getElementById('wsFinalLraD').innerText = formatRp(sumLraD + surplusLraD);
+            if (document.getElementById('wsFinalLraK')) document.getElementById('wsFinalLraK').innerText = formatRp(sumLraK + surplusLraK);
+            if (document.getElementById('wsFinalNeracaD')) document.getElementById('wsFinalNeracaD').innerText = formatRp(sumNeracaD + surplusNeracaD);
+            if (document.getElementById('wsFinalNeracaK')) document.getElementById('wsFinalNeracaK').innerText = formatRp(sumNeracaK + surplusNeracaK);
         }
 
         function bukaModalLihatJurnal() {
