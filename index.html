@@ -271,7 +271,7 @@
                 </div>
             </section>
 
-            <!-- TAB 3: DAFTAR JURNAL (INPUT MULTI-BARIS LAYOUT AMAN & RAPI) -->
+            <!-- TAB 3: DAFTAR JURNAL -->
             <section id="tab-jurnal" class="tab-content hidden space-y-6">
                 <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
                     <h2 class="text-xs font-bold text-indigo-900 uppercase tracking-wider mb-4">Input Jurnal Transaksi Multi-Baris (Dual Journaling)</h2>
@@ -287,7 +287,6 @@
                             </div>
                         </div>
 
-                        <!-- DUA KOLOM JURNAL DENGAN LAYOUT VERTIKAL RAPI -->
                         <div class="grid grid-cols-1 xl:grid-cols-2 gap-5">
                             
                             <!-- 1. JURNAL FINANSIAL -->
@@ -298,9 +297,7 @@
                                         <span id="badgeFinBalance" class="text-[10px] font-black px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700">BALANCE</span>
                                     </div>
                                     
-                                    <div id="containerFinRows" class="space-y-3">
-                                        <!-- Baris Akun Dinamis Dimuat Di Sini -->
-                                    </div>
+                                    <div id="containerFinRows" class="space-y-3"></div>
                                 </div>
 
                                 <div class="pt-3 border-t border-indigo-100 flex flex-wrap justify-between items-center gap-2">
@@ -322,9 +319,7 @@
                                         <span id="badgeLraBalance" class="text-[10px] font-black px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700">BALANCE</span>
                                     </div>
 
-                                    <div id="containerLraRows" class="space-y-3">
-                                        <!-- Baris Akun Dinamis Dimuat Di Sini -->
-                                    </div>
+                                    <div id="containerLraRows" class="space-y-3"></div>
                                 </div>
 
                                 <div class="pt-3 border-t border-amber-100 space-y-2">
@@ -380,7 +375,7 @@
                     </div>
 
                     <div class="p-4 bg-slate-50 border-t border-slate-200 flex justify-end">
-                        <button onclick="bukaModalLihatJurnal()" class="bg-indigo-950 hover:bg-indigo-900 text-amber-400 font-extrabold text-xs px-5 py-2.5 rounded-xl shadow-md flex items-center gap-2 transition transform hover:-translate-y-0.5">
+                        <button type="button" onclick="bukaModalLihatJurnal()" class="bg-indigo-950 hover:bg-indigo-900 active:scale-95 text-amber-400 font-extrabold text-xs px-5 py-2.5 rounded-xl shadow-md flex items-center gap-2 transition cursor-pointer">
                             <i class="fa-solid fa-book-bookmark text-sm"></i> Lihat Jurnal
                         </button>
                     </div>
@@ -687,7 +682,7 @@
         </div>
     </div>
 
-    <!-- LOGIC SCRIPT AKUNTANSI & MULTI-BARIS DINAMIS BERRESPONSIF TINGGI -->
+    <!-- SCRIPT AKUNTANSI LENGKAP -->
     <script>
         const defaultCoaData = [
             { kode: '1.1.1.01', nama: 'Kas di Kas Daerah', kat: 'Aset', debetAwal: 0, kreditAwal: 0 },
@@ -824,7 +819,6 @@
             }
         }
 
-        // KODE MULTI-BARIS DINAMIS TERORGANISIR BERIKUT LAYOUT RAPI
         function makeCoaOptionsHtml() {
             let options = '<option value="">-- Pilih Akun --</option>';
             coaData.forEach(item => {
@@ -1328,12 +1322,12 @@
                 } else {
                     transaksi.forEach(t => {
                         let finText = '';
-                        if(t.finEntries) {
+                        if(t.finEntries && t.finEntries.length > 0) {
                             t.finEntries.forEach(fe => {
                                 finText += `<div class="${fe.pos==='D'?'font-bold text-indigo-900':'text-slate-600 pl-2'}">(${fe.pos}) ${fe.akun} - ${formatRp(fe.nom)}</div>`;
                             });
                         } else {
-                            finText = `<div class="font-bold text-indigo-900">(D) ${t.finD}</div><div class="text-slate-500 pl-2">(K) ${t.finK}</div>`;
+                            finText = `<div class="font-bold text-indigo-900">(D) ${t.finD || ''}</div><div class="text-slate-500 pl-2">(K) ${t.finK || ''}</div>`;
                         }
 
                         let lraText = '<span class="text-slate-400 italic font-normal">Tidak Di-jurnal</span>';
@@ -1369,8 +1363,8 @@
                         if(le.pos === 'D' && le.akun.includes('Belanja')) belLRA += le.nom;
                     });
                 } else if(t.lraD) {
-                    if(t.lraK.includes('Pendapatan')) pendLRA += t.nominal;
-                    if(t.lraD.includes('Belanja')) belLRA += t.nominal;
+                    if(t.lraK && t.lraK.includes('Pendapatan')) pendLRA += t.nominal;
+                    if(t.lraD && t.lraD.includes('Belanja')) belLRA += t.nominal;
                 }
 
                 if(t.finEntries) {
@@ -1379,8 +1373,8 @@
                         if(fe.pos === 'D' && fe.akun.includes('Beban')) bebanLO += fe.nom;
                     });
                 } else if(t.finD) {
-                    if(t.finK.includes('Pendapatan')) pendLO += t.nominal;
-                    if(t.finD.includes('Beban')) bebanLO += t.nominal;
+                    if(t.finK && t.finK.includes('Pendapatan')) pendLO += t.nominal;
+                    if(t.finD && t.finD.includes('Beban')) bebanLO += t.nominal;
                 }
             });
 
@@ -1400,129 +1394,138 @@
             renderBukuBesar();
         }
 
+        // PERBAIKAN TOTAL PADA FUNGSI BUKA MODAL LIHAT JURNAL
         function bukaModalLihatJurnal() {
-            const modal = document.getElementById('modalLihatJurnal');
-            const finBody = document.getElementById('modalJurnalFinTbody');
-            const lraBody = document.getElementById('modalJurnalLraTbody');
+            try {
+                const modal = document.getElementById('modalLihatJurnal');
+                const finBody = document.getElementById('modalJurnalFinTbody');
+                const lraBody = document.getElementById('modalJurnalLraTbody');
 
-            finBody.innerHTML = '';
-            lraBody.innerHTML = '';
+                if(!modal || !finBody || !lraBody) return;
 
-            updateTampilanLampiran2();
+                finBody.innerHTML = '';
+                lraBody.innerHTML = '';
 
-            if(transaksi.length === 0) {
-                finBody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-slate-400">Belum ada entri jurnal finansial.</td></tr>';
-                lraBody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-slate-400">Belum ada entri jurnal LRA.</td></tr>';
-                document.getElementById('totalModalFinD').innerText = 'Rp 0';
-                document.getElementById('totalModalFinK').innerText = 'Rp 0';
-                document.getElementById('totalModalLraD').innerText = 'Rp 0';
-                document.getElementById('totalModalLraK').innerText = 'Rp 0';
-            } else {
-                const sortedTx = [...transaksi].sort((a, b) => new Date(a.tgl) - new Date(b.tgl));
+                updateTampilanLampiran2();
 
-                let totalFinD = 0, totalFinK = 0;
-                let totalLraD = 0, totalLraK = 0;
+                if(transaksi.length === 0) {
+                    finBody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-slate-400">Belum ada entri jurnal finansial.</td></tr>';
+                    lraBody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-slate-400">Belum ada entri jurnal LRA.</td></tr>';
+                    if(document.getElementById('totalModalFinD')) document.getElementById('totalModalFinD').innerText = 'Rp 0';
+                    if(document.getElementById('totalModalFinK')) document.getElementById('totalModalFinK').innerText = 'Rp 0';
+                    if(document.getElementById('totalModalLraD')) document.getElementById('totalModalLraD').innerText = 'Rp 0';
+                    if(document.getElementById('totalModalLraK')) document.getElementById('totalModalLraK').innerText = 'Rp 0';
+                } else {
+                    const sortedTx = [...transaksi].sort((a, b) => new Date(a.tgl) - new Date(b.tgl));
 
-                sortedTx.forEach(t => {
-                    if(t.finEntries && t.finEntries.length > 0) {
-                        t.finEntries.forEach((fe, idx) => {
-                            const isDeb = fe.pos === 'D';
-                            if(isDeb) totalFinD += fe.nom; else totalFinK += fe.nom;
+                    let totalFinD = 0, totalFinK = 0;
+                    let totalLraD = 0, totalLraK = 0;
 
-                            const tr = document.createElement('tr');
-                            tr.className = "border-b border-slate-100 hover:bg-slate-50 font-medium text-xs";
-                            tr.innerHTML = `
-                                <td class="p-2 border text-center font-mono">${idx === 0 ? t.tgl : ''}</td>
-                                <td class="p-2 border">${idx === 0 ? t.uraian : ''}</td>
-                                <td class="p-2 border ${isDeb ? 'font-bold text-indigo-950' : 'pl-6 text-slate-700'}">${fe.akun}</td>
-                                <td class="p-2 border text-right font-mono font-bold">${isDeb ? formatRp(fe.nom) : 'Rp 0'}</td>
-                                <td class="p-2 border text-right font-mono font-bold">${!isDeb ? formatRp(fe.nom) : 'Rp 0'}</td>
+                    sortedTx.forEach(t => {
+                        // 1. OLAH JURNAL FINANSIAL
+                        if(t.finEntries && t.finEntries.length > 0) {
+                            t.finEntries.forEach((fe, idx) => {
+                                const isDeb = fe.pos === 'D';
+                                if(isDeb) totalFinD += fe.nom; else totalFinK += fe.nom;
+
+                                const tr = document.createElement('tr');
+                                tr.className = "border-b border-slate-100 hover:bg-slate-50 font-medium text-xs";
+                                tr.innerHTML = `
+                                    <td class="p-2 border text-center font-mono">${idx === 0 ? t.tgl : ''}</td>
+                                    <td class="p-2 border">${idx === 0 ? t.uraian : ''}</td>
+                                    <td class="p-2 border ${isDeb ? 'font-bold text-indigo-950' : 'pl-6 text-slate-700'}">${fe.akun}</td>
+                                    <td class="p-2 border text-right font-mono font-bold">${isDeb ? formatRp(fe.nom) : 'Rp 0'}</td>
+                                    <td class="p-2 border text-right font-mono font-bold">${!isDeb ? formatRp(fe.nom) : 'Rp 0'}</td>
+                                `;
+                                finBody.appendChild(tr);
+                            });
+                        } else if(t.finD) {
+                            totalFinD += t.nominal;
+                            totalFinK += t.nominal;
+
+                            const trD = document.createElement('tr');
+                            trD.className = "border-b border-slate-100 hover:bg-slate-50 font-medium text-xs";
+                            trD.innerHTML = `
+                                <td class="p-2 border text-center font-mono">${t.tgl}</td>
+                                <td class="p-2 border">${t.uraian}</td>
+                                <td class="p-2 border font-bold text-indigo-950">${t.finD}</td>
+                                <td class="p-2 border text-right font-mono font-bold">${formatRp(t.nominal)}</td>
+                                <td class="p-2 border text-right font-mono text-slate-300">Rp 0</td>
                             `;
-                            finBody.appendChild(tr);
-                        });
-                    } else if(t.finD) {
-                        totalFinD += t.nominal;
-                        totalFinK += t.nominal;
+                            finBody.appendChild(trD);
 
-                        const trD = document.createElement('tr');
-                        trD.className = "border-b border-slate-100 hover:bg-slate-50 font-medium text-xs";
-                        trD.innerHTML = `
-                            <td class="p-2 border text-center font-mono">${t.tgl}</td>
-                            <td class="p-2 border">${t.uraian}</td>
-                            <td class="p-2 border font-bold text-indigo-950">${t.finD}</td>
-                            <td class="p-2 border text-right font-mono font-bold">${formatRp(t.nominal)}</td>
-                            <td class="p-2 border text-right font-mono text-slate-300">Rp 0</td>
-                        `;
-                        finBody.appendChild(trD);
+                            const trK = document.createElement('tr');
+                            trK.className = "border-b border-slate-200 hover:bg-slate-50 font-medium text-xs";
+                            trK.innerHTML = `
+                                <td class="p-2 border"></td>
+                                <td class="p-2 border"></td>
+                                <td class="p-2 border pl-6 text-slate-700">${t.finK}</td>
+                                <td class="p-2 border text-right font-mono text-slate-300">Rp 0</td>
+                                <td class="p-2 border text-right font-mono font-bold">${formatRp(t.nominal)}</td>
+                            `;
+                            finBody.appendChild(trK);
+                        }
 
-                        const trK = document.createElement('tr');
-                        trK.className = "border-b border-slate-200 hover:bg-slate-50 font-medium text-xs";
-                        trK.innerHTML = `
-                            <td class="p-2 border"></td>
-                            <td class="p-2 border"></td>
-                            <td class="p-2 border pl-6 text-slate-700">${t.finK}</td>
-                            <td class="p-2 border text-right font-mono text-slate-300">Rp 0</td>
-                            <td class="p-2 border text-right font-mono font-bold">${formatRp(t.nominal)}</td>
-                        `;
-                        finBody.appendChild(trK);
+                        // 2. OLAH JURNAL LRA
+                        if(!t.isTidakLra && t.lraEntries && t.lraEntries.length > 0) {
+                            t.lraEntries.forEach((le, idx) => {
+                                const isDeb = le.pos === 'D';
+                                if(isDeb) totalLraD += le.nom; else totalLraK += le.nom;
+
+                                const tr = document.createElement('tr');
+                                tr.className = "border-b border-slate-100 hover:bg-slate-50 font-medium text-xs";
+                                tr.innerHTML = `
+                                    <td class="p-2 border text-center font-mono">${idx === 0 ? t.tgl : ''}</td>
+                                    <td class="p-2 border">${idx === 0 ? t.uraian : ''}</td>
+                                    <td class="p-2 border ${isDeb ? 'font-bold text-amber-900' : 'pl-6 text-slate-700'}">${le.akun}</td>
+                                    <td class="p-2 border text-right font-mono font-bold">${isDeb ? formatRp(le.nom) : 'Rp 0'}</td>
+                                    <td class="p-2 border text-right font-mono font-bold">${!isDeb ? formatRp(le.nom) : 'Rp 0'}</td>
+                                `;
+                                lraBody.appendChild(tr);
+                            });
+                        } else if(!t.isTidakLra && t.lraD && t.lraD !== '-') {
+                            totalLraD += t.nominal;
+                            totalLraK += t.nominal;
+
+                            const trLraD = document.createElement('tr');
+                            trLraD.className = "border-b border-slate-100 hover:bg-slate-50 font-medium text-xs";
+                            trLraD.innerHTML = `
+                                <td class="p-2 border text-center font-mono">${t.tgl}</td>
+                                <td class="p-2 border">${t.uraian}</td>
+                                <td class="p-2 border font-bold text-amber-900">${t.lraD}</td>
+                                <td class="p-2 border text-right font-mono font-bold">${formatRp(t.nominal)}</td>
+                                <td class="p-2 border text-right font-mono text-slate-300">Rp 0</td>
+                            `;
+                            lraBody.appendChild(trLraD);
+
+                            const trLraK = document.createElement('tr');
+                            trLraK.className = "border-b border-slate-200 hover:bg-slate-50 font-medium text-xs";
+                            trLraK.innerHTML = `
+                                <td class="p-2 border"></td>
+                                <td class="p-2 border"></td>
+                                <td class="p-2 border pl-6 text-slate-700">${t.lraK}</td>
+                                <td class="p-2 border text-right font-mono text-slate-300">Rp 0</td>
+                                <td class="p-2 border text-right font-mono font-bold">${formatRp(t.nominal)}</td>
+                            `;
+                            lraBody.appendChild(trLraK);
+                        }
+                    });
+
+                    if(lraBody.children.length === 0) {
+                        lraBody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-slate-400 italic">Seluruh transaksi bertipe "Tidak Di-jurnal" pada LRA.</td></tr>';
                     }
 
-                    if(!t.isTidakLra && t.lraEntries && t.lraEntries.length > 0) {
-                        t.lraEntries.forEach((le, idx) => {
-                            const isDeb = le.pos === 'D';
-                            if(isDeb) totalLraD += le.nom; else totalLraK += le.nom;
-
-                            const tr = document.createElement('tr');
-                            tr.className = "border-b border-slate-100 hover:bg-slate-50 font-medium text-xs";
-                            tr.innerHTML = `
-                                <td class="p-2 border text-center font-mono">${idx === 0 ? t.tgl : ''}</td>
-                                <td class="p-2 border">${idx === 0 ? t.uraian : ''}</td>
-                                <td class="p-2 border ${isDeb ? 'font-bold text-amber-900' : 'pl-6 text-slate-700'}">${le.akun}</td>
-                                <td class="p-2 border text-right font-mono font-bold">${isDeb ? formatRp(le.nom) : 'Rp 0'}</td>
-                                <td class="p-2 border text-right font-mono font-bold">${!isDeb ? formatRp(le.nom) : 'Rp 0'}</td>
-                            `;
-                            lraBody.appendChild(tr);
-                        });
-                    } else if(t.lraD && t.lraD !== '-') {
-                        totalLraD += t.nominal;
-                        totalLraK += t.nominal;
-
-                        const trLraD = document.createElement('tr');
-                        trLraD.className = "border-b border-slate-100 hover:bg-slate-50 font-medium text-xs";
-                        trLraD.innerHTML = `
-                            <td class="p-2 border text-center font-mono">${t.tgl}</td>
-                            <td class="p-2 border">${t.uraian}</td>
-                            <td class="p-2 border font-bold text-amber-900">${t.lraD}</td>
-                            <td class="p-2 border text-right font-mono font-bold">${formatRp(t.nominal)}</td>
-                            <td class="p-2 border text-right font-mono text-slate-300">Rp 0</td>
-                        `;
-                        lraBody.appendChild(trLraD);
-
-                        const trLraK = document.createElement('tr');
-                        trK.className = "border-b border-slate-200 hover:bg-slate-50 font-medium text-xs";
-                        trLraK.innerHTML = `
-                            <td class="p-2 border"></td>
-                            <td class="p-2 border"></td>
-                            <td class="p-2 border pl-6 text-slate-700">${t.lraK}</td>
-                            <td class="p-2 border text-right font-mono text-slate-300">Rp 0</td>
-                            <td class="p-2 border text-right font-mono font-bold">${formatRp(t.nominal)}</td>
-                        `;
-                        lraBody.appendChild(trLraK);
-                    }
-                });
-
-                if(lraBody.children.length === 0) {
-                    lraBody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-slate-400 italic">Seluruh transaksi bertipe "Tidak Di-jurnal" pada LRA.</td></tr>';
+                    if(document.getElementById('totalModalFinD')) document.getElementById('totalModalFinD').innerText = formatRp(totalFinD);
+                    if(document.getElementById('totalModalFinK')) document.getElementById('totalModalFinK').innerText = formatRp(totalFinK);
+                    if(document.getElementById('totalModalLraD')) document.getElementById('totalModalLraD').innerText = formatRp(totalLraD);
+                    if(document.getElementById('totalModalLraK')) document.getElementById('totalModalLraK').innerText = formatRp(totalLraK);
                 }
 
-                document.getElementById('totalModalFinD').innerText = formatRp(totalFinD);
-                document.getElementById('totalModalFinK').innerText = formatRp(totalFinK);
-                document.getElementById('totalModalLraD').innerText = formatRp(totalLraD);
-                document.getElementById('totalModalLraK').innerText = formatRp(totalLraK);
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            } catch (err) {
+                console.error("Error menampilkan modal jurnal:", err);
             }
-
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
         }
 
         function tutupModalLihatJurnal() {
@@ -1869,8 +1872,8 @@
 
             const jRows = [["No", "Tanggal", "Uraian", "Jurnal Finansial", "Jurnal LRA", "Total Nominal"]];
             transaksi.forEach((t, i) => {
-                let finR = t.finEntries ? t.finEntries.map(f => `(${f.pos}) ${f.akun}: ${f.nom}`).join(' | ') : `${t.finD} / ${t.finK}`;
-                let lraR = t.isTidakLra ? 'Tidak Di-jurnal' : (t.lraEntries ? t.lraEntries.map(l => `(${l.pos}) ${l.akun}: ${l.nom}`).join(' | ') : `${t.lraD} / ${t.lraK}`);
+                let finR = t.finEntries ? t.finEntries.map(f => `(${f.pos}) ${f.akun}: ${f.nom}`).join(' | ') : `${t.finD || ''} / ${t.finK || ''}`;
+                let lraR = t.isTidakLra ? 'Tidak Di-jurnal' : (t.lraEntries ? t.lraEntries.map(l => `(${l.pos}) ${l.akun}: ${l.nom}`).join(' | ') : `${t.lraD || ''} / ${t.lraK || ''}`);
                 jRows.push([i+1, t.tgl, t.uraian, finR, lraR, t.nominal]);
             });
             
