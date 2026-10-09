@@ -2,11 +2,21 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Aplikasi Praktikum Akuntansi Lembaga SMK - Pemerintah & Daerah</title>
+    
+    <!-- Meta SEO -->
     <meta name="description" content="Aplikasi Simulasi Praktikum Akuntansi Lembaga dan Pemerintah Daerah untuk Siswa SMK AKL. Terintegrasi Dual Journaling (LO & LRA) Multi-Baris dan Microsoft Excel.">
+    <meta name="keywords" content="praktikum akuntansi, akuntansi lembaga, skpd, smk akl, jurnal umum, buku besar, neraca saldo, lra, lo">
+    <meta name="author" content="SMK AKL">
+    <meta name="robots" content="index, follow">
     <meta name="theme-color" content="#1e1b4b">
     
+    <!-- Open Graph SEO -->
+    <meta property="og:title" content="Aplikasi Praktikum Akuntansi Lembaga SMK">
+    <meta property="og:description" content="Simulasi Akuntansi SKPD & Pemerintah Daerah untuk SMK AKL">
+    <meta property="og:type" content="website">
+
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome CDN -->
@@ -39,9 +49,12 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #94a3b8;
         }
+        .custom-touch-scroll {
+            -webkit-overflow-scrolling: touch;
+        }
     </style>
 </head>
-<body class="bg-slate-100 text-slate-800 flex flex-col md:flex-row h-screen overflow-hidden">
+<body class="bg-slate-100 text-slate-800 flex flex-col md:flex-row min-h-screen md:h-screen md:overflow-hidden">
 
     <!-- OVERLAY MOBILE DRAWER -->
     <div id="sidebarOverlay" onclick="toggleMobileMenu()" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-40 hidden md:hidden transition-opacity"></div>
@@ -90,9 +103,9 @@
     </aside>
 
     <!-- CONTENT AREA -->
-    <main class="flex-1 flex flex-col h-full overflow-hidden w-full">
+    <main class="flex-1 flex flex-col min-h-screen md:h-full md:overflow-hidden w-full">
         <!-- HEADER TOP BAR -->
-        <header class="bg-white border-b border-slate-200 px-4 py-3 md:px-6 flex items-center justify-between shadow-sm shrink-0">
+        <header class="bg-white border-b border-slate-200 px-4 py-3 md:px-6 flex items-center justify-between shadow-sm shrink-0 sticky top-0 z-30">
             <div class="flex items-center gap-3">
                 <button onclick="toggleMobileMenu()" class="md:hidden p-2 text-slate-600 hover:bg-slate-100 rounded-lg" aria-label="Buka Menu">
                     <i class="fa-solid fa-bars text-lg"></i>
@@ -115,8 +128,8 @@
             </div>
         </header>
 
-        <!-- MAIN SCROLLABLE CONTENT -->
-        <div class="flex-1 overflow-y-auto p-4 md:p-6 space-y-6 pb-24 md:pb-6">
+        <!-- MAIN SCROLLABLE CONTENT (Ditambah pb-32 agar tidak tertutup nav hp) -->
+        <div class="flex-1 md:overflow-y-auto p-4 md:p-6 space-y-6 pb-32 md:pb-6 custom-touch-scroll">
             
             <!-- TAB 1: DASHBOARD -->
             <section id="tab-dashboard" class="tab-content space-y-6">
@@ -128,23 +141,23 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Nama Lengkap Siswa</label>
+                            <label for="siswaNama" class="block text-xs font-bold text-slate-700 mb-1">Nama Lengkap Siswa</label>
                             <input type="text" id="siswaNama" placeholder="Masukkan Nama Siswa" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none" oninput="simpanIdentitasSiswa()">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Kelas / Konsentrasi Keahlian</label>
+                            <label for="siswaKelas" class="block text-xs font-bold text-slate-700 mb-1">Kelas / Konsentrasi Keahlian</label>
                             <input type="text" id="siswaKelas" placeholder="Contoh: XI AKL 1" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none" oninput="simpanIdentitasSiswa()">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Nama Instansi / SKPD</label>
+                            <label for="instansiNama" class="block text-xs font-bold text-slate-700 mb-1">Nama Instansi / SKPD</label>
                             <input type="text" id="instansiNama" placeholder="Contoh: Dinas Kelautan dan Perikanan" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Kabupaten / Kota</label>
+                            <label for="instansiKab" class="block text-xs font-bold text-slate-700 mb-1">Kabupaten / Kota</label>
                             <input type="text" id="instansiKab" placeholder="Contoh: Kepulauan Meranti" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Periode Tanggal</label>
+                            <label for="instansiTgl" class="block text-xs font-bold text-slate-700 mb-1">Periode Tanggal</label>
                             <input type="date" id="instansiTgl" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-indigo-500 focus:outline-none">
                         </div>
                     </div>
@@ -185,15 +198,15 @@
                     <form onsubmit="simpanAkun(event)" class="grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
                         <input type="hidden" id="editCoaIndex" value="-1">
                         <div>
-                            <label class="block text-xs font-semibold text-slate-600 mb-1">Kode Akun</label>
+                            <label for="inputKodeAkun" class="block text-xs font-semibold text-slate-600 mb-1">Kode Akun</label>
                             <input type="text" id="inputKodeAkun" required placeholder="Contoh: 1.1.1.02" class="w-full px-3 py-2 border rounded-xl text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Akun</label>
+                            <label for="inputNamaAkun" class="block text-xs font-semibold text-slate-600 mb-1">Nama Akun</label>
                             <input type="text" id="inputNamaAkun" required placeholder="Contoh: Kas di Bendahara Pengeluaran" class="w-full px-3 py-2 border rounded-xl text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-600 mb-1">Kelompok / Basis</label>
+                            <label for="inputKatAkun" class="block text-xs font-semibold text-slate-600 mb-1">Kelompok / Basis</label>
                             <select id="inputKatAkun" required class="w-full px-3 py-2 border rounded-xl text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">
                                 <option value="Aset">Aset</option>
                                 <option value="Kewajiban">Kewajiban</option>
@@ -234,7 +247,7 @@
                         </div>
                     </div>
 
-                    <div class="overflow-x-auto">
+                    <div class="overflow-x-auto custom-touch-scroll">
                         <table class="w-full text-xs text-left border-collapse min-w-[650px]">
                             <thead>
                                 <tr class="bg-slate-100 text-slate-700 border-b text-center font-bold">
@@ -278,11 +291,11 @@
                     <form onsubmit="tambahJurnal(event)" class="space-y-4">
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                             <div>
-                                <label class="block text-xs font-semibold text-slate-600 mb-1">Tanggal</label>
+                                <label for="txTgl" class="block text-xs font-semibold text-slate-600 mb-1">Tanggal</label>
                                 <input type="date" id="txTgl" required class="w-full px-3 py-2 border rounded-xl text-xs">
                             </div>
                             <div class="md:col-span-2">
-                                <label class="block text-xs font-semibold text-slate-600 mb-1">Keterangan / Uraian Transaksi</label>
+                                <label for="txUraian" class="block text-xs font-semibold text-slate-600 mb-1">Keterangan / Uraian Transaksi</label>
                                 <input type="text" id="txUraian" required placeholder="Masukan Uraian Transaksi..." class="w-full px-3 py-2 border rounded-xl text-xs">
                             </div>
                         </div>
@@ -358,7 +371,7 @@
                         <span class="text-xs font-extrabold text-slate-800">Daftar Jurnal Umum</span>
                         <button onclick="resetData()" class="text-xs text-rose-600 hover:underline font-semibold">Reset Data Jurnal</button>
                     </div>
-                    <div class="overflow-x-auto">
+                    <div class="overflow-x-auto custom-touch-scroll">
                         <table class="w-full text-xs text-left border-collapse min-w-[700px]">
                             <thead>
                                 <tr class="bg-slate-100 text-slate-700 border-b font-bold">
@@ -388,26 +401,26 @@
                     <h2 class="text-xs font-bold text-indigo-900 uppercase tracking-wider">Input Buku Besar (Posting Manual)</h2>
                     
                     <div class="flex flex-col sm:flex-row sm:items-center gap-3 bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <label class="text-xs font-bold text-slate-700 whitespace-nowrap">Pilih Akun Buku Besar:</label>
+                        <label for="bbSelect" class="text-xs font-bold text-slate-700 whitespace-nowrap">Pilih Akun Buku Besar:</label>
                         <select id="bbSelect" onchange="renderBukuBesar()" class="px-3 py-2 border rounded-xl text-xs select-coa w-full sm:w-80 font-bold text-indigo-950"></select>
                     </div>
 
                     <form onsubmit="tambahBukuBesarManual(event)" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3 items-end">
                         <input type="hidden" id="editBbIndex" value="-1">
                         <div>
-                            <label class="block text-xs font-semibold text-slate-600 mb-1">Tanggal</label>
+                            <label for="bbTgl" class="block text-xs font-semibold text-slate-600 mb-1">Tanggal</label>
                             <input type="date" id="bbTgl" required class="w-full px-3 py-2 border rounded-xl text-xs">
                         </div>
                         <div class="sm:col-span-2">
-                            <label class="block text-xs font-semibold text-slate-600 mb-1">Keterangan Posting</label>
+                            <label for="bbKet" class="block text-xs font-semibold text-slate-600 mb-1">Keterangan Posting</label>
                             <input type="text" id="bbKet" placeholder="Contoh: Saldo Awal / Posting Jurnal" required class="w-full px-3 py-2 border rounded-xl text-xs">
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-600 mb-1">Debet (Rp)</label>
+                            <label for="bbDebet" class="block text-xs font-semibold text-slate-600 mb-1">Debet (Rp)</label>
                             <input type="text" id="bbDebet" placeholder="Rp 0" oninput="formatInputCurrency(this)" class="w-full px-3 py-2 border rounded-xl text-xs font-mono">
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-600 mb-1">Kredit (Rp)</label>
+                            <label for="bbKredit" class="block text-xs font-semibold text-slate-600 mb-1">Kredit (Rp)</label>
                             <input type="text" id="bbKredit" placeholder="Rp 0" oninput="formatInputCurrency(this)" class="w-full px-3 py-2 border rounded-xl text-xs font-mono">
                         </div>
                         <div class="sm:col-span-2 md:col-span-5 flex justify-end gap-2 pt-2">
@@ -424,7 +437,7 @@
                         <span class="text-xs font-extrabold text-slate-800" id="bbJudulTabel">Buku Besar: Belum Memilih Akun</span>
                         <button onclick="resetBukuBesarAkunIni()" class="text-xs text-rose-600 hover:underline font-semibold">Kosongkan Akun Ini</button>
                     </div>
-                    <div class="overflow-x-auto">
+                    <div class="overflow-x-auto custom-touch-scroll">
                         <table class="w-full text-xs text-left border-collapse min-w-[600px]">
                             <thead>
                                 <tr class="bg-slate-100 text-slate-700 border-b font-bold">
@@ -464,7 +477,7 @@
                         </div>
                     </div>
 
-                    <div class="overflow-x-auto">
+                    <div class="overflow-x-auto custom-touch-scroll">
                         <table class="w-full text-xs text-left border-collapse min-w-[650px]">
                             <thead>
                                 <tr class="bg-slate-100 text-slate-700 border-b text-center font-bold">
@@ -568,7 +581,7 @@
 
     <!-- MODAL POP-UP LIHAT JURNAL UMUM LENGKAP -->
     <div id="modalLihatJurnal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
-        <div class="bg-white w-full max-w-5xl rounded-3xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden border border-slate-200">
+        <div class="bg-white w-full max-w-5xl rounded-3xl shadow-2xl flex flex-col max-h-[85vh] overflow-hidden border border-slate-200">
             <div class="px-6 py-4 bg-indigo-950 text-white flex justify-between items-center shrink-0 border-b border-indigo-900">
                 <div class="flex items-center gap-3">
                     <div class="bg-amber-400 text-indigo-950 p-2 rounded-xl font-bold">
@@ -579,12 +592,12 @@
                         <p class="text-[10px] text-indigo-300">Format Resmi Jurnal Finansial & Jurnal LRA</p>
                     </div>
                 </div>
-                <button onclick="tutupModalLihatJurnal()" class="text-slate-300 hover:text-white bg-indigo-900 hover:bg-indigo-800 rounded-lg w-8 h-8 flex items-center justify-center transition">
+                <button onclick="tutupModalLihatJurnal()" class="text-slate-300 hover:text-white bg-indigo-900 hover:bg-indigo-800 rounded-lg w-8 h-8 flex items-center justify-center transition" aria-label="Tutup Modal">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
 
-            <div class="p-6 overflow-y-auto space-y-6 flex-1 bg-slate-50">
+            <div class="p-4 md:p-6 overflow-y-auto space-y-6 flex-1 bg-slate-50 custom-touch-scroll">
                 <div class="bg-white p-4 rounded-xl border text-center space-y-1 shadow-sm">
                     <h2 id="displayModalJurnalSKPD" class="text-sm font-black text-indigo-950 uppercase">SKPD DINAS KELAUTAN DAN PERIKANAN</h2>
                     <p id="displayModalJurnalKab" class="text-xs font-bold text-slate-700">Kabupaten / Kota: Kepulauan Meranti</p>
@@ -596,8 +609,8 @@
                     <div class="p-3 bg-indigo-900 text-white font-bold text-xs uppercase tracking-wider flex items-center gap-2">
                         <i class="fa-solid fa-coins text-amber-400"></i> 1. Jurnal Finansial (LO & Neraca)
                     </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-xs text-left border-collapse">
+                    <div class="overflow-x-auto custom-touch-scroll">
+                        <table class="w-full text-xs text-left border-collapse min-w-[500px]">
                             <thead>
                                 <tr class="bg-slate-100 text-slate-700 border-b font-bold text-center">
                                     <th class="p-2.5 border w-24">Tanggal</th>
@@ -624,8 +637,8 @@
                     <div class="p-3 bg-amber-600 text-white font-bold text-xs uppercase tracking-wider flex items-center gap-2">
                         <i class="fa-solid fa-file-invoice-dollar text-amber-200"></i> 2. Jurnal Pelaksanaan Anggaran (LRA)
                     </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-xs text-left border-collapse">
+                    <div class="overflow-x-auto custom-touch-scroll">
+                        <table class="w-full text-xs text-left border-collapse min-w-[500px]">
                             <thead>
                                 <tr class="bg-slate-100 text-slate-700 border-b font-bold text-center">
                                     <th class="p-2.5 border w-24">Tanggal</th>
@@ -658,7 +671,7 @@
 
     <!-- MODAL POP-UP LIHAT SEMUA BUKU BESAR -->
     <div id="modalSemuaBb" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
-        <div class="bg-white w-full max-w-5xl rounded-3xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden border border-slate-200">
+        <div class="bg-white w-full max-w-5xl rounded-3xl shadow-2xl flex flex-col max-h-[85vh] overflow-hidden border border-slate-200">
             <div class="px-6 py-4 bg-indigo-950 text-white flex justify-between items-center shrink-0 border-b border-indigo-900">
                 <div class="flex items-center gap-3">
                     <div class="bg-amber-400 text-indigo-950 p-2 rounded-xl font-bold">
@@ -669,12 +682,12 @@
                         <p class="text-[10px] text-indigo-300">Detail rincian transaksi posting akun</p>
                     </div>
                 </div>
-                <button onclick="tutupModalSemuaBb()" class="text-slate-300 hover:text-white bg-indigo-900 hover:bg-indigo-800 rounded-lg w-8 h-8 flex items-center justify-center transition">
+                <button onclick="tutupModalSemuaBb()" class="text-slate-300 hover:text-white bg-indigo-900 hover:bg-indigo-800 rounded-lg w-8 h-8 flex items-center justify-center transition" aria-label="Tutup Modal">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
 
-            <div id="modalSemuaBbBody" class="p-6 overflow-y-auto space-y-6 flex-1 bg-slate-50"></div>
+            <div id="modalSemuaBbBody" class="p-4 md:p-6 overflow-y-auto space-y-6 flex-1 bg-slate-50 custom-touch-scroll"></div>
 
             <div class="px-6 py-3 bg-white border-t border-slate-200 flex justify-end shrink-0">
                 <button onclick="tutupModalSemuaBb()" class="bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold px-4 py-2 rounded-xl transition">Tutup</button>
@@ -813,6 +826,8 @@
                 renderNeracaSaldo();
             }
 
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
             const sidebar = document.getElementById('mainSidebar');
             if(sidebar && !sidebar.classList.contains('-translate-x-full') && window.innerWidth < 768) {
                 toggleMobileMenu();
@@ -833,18 +848,18 @@
             return `
                 <div class="row-entry bg-white p-2.5 rounded-xl border border-slate-200 shadow-sm space-y-2" id="row_${type}_${id}">
                     <div class="flex items-center gap-2">
-                        <select class="pos-select text-xs py-1.5 px-2 border rounded-lg font-bold shrink-0 ${pos==='D'?'text-indigo-900 bg-indigo-50 border-indigo-200':'text-amber-900 bg-amber-50 border-amber-200'}" onchange="updatePosStyle(this); recalcTotals();">
+                        <select aria-label="Posisi Debet/Kredit" class="pos-select text-xs py-1.5 px-2 border rounded-lg font-bold shrink-0 ${pos==='D'?'text-indigo-900 bg-indigo-50 border-indigo-200':'text-amber-900 bg-amber-50 border-amber-200'}" onchange="updatePosStyle(this); recalcTotals();">
                             <option value="D" ${pos==='D'?'selected':''}>Debit (D)</option>
                             <option value="K" ${pos==='K'?'selected':''}>Kredit (K)</option>
                         </select>
-                        <select class="akun-select flex-1 text-xs py-1.5 px-2 border rounded-lg focus:ring-1 focus:ring-indigo-500 min-w-0">
+                        <select aria-label="Pilih Akun COA" class="akun-select flex-1 text-xs py-1.5 px-2 border rounded-lg focus:ring-1 focus:ring-indigo-500 min-w-0">
                             ${coaOptions}
                         </select>
                     </div>
                     <div class="flex items-center gap-2 pt-1 border-t border-slate-100">
                         <span class="text-[11px] font-semibold text-slate-500 whitespace-nowrap">Nominal:</span>
                         <input type="text" placeholder="Rp 0" oninput="formatInputCurrency(this); recalcTotals();" class="nom-input flex-1 text-xs py-1.5 px-2 border rounded-lg text-right font-mono font-bold focus:ring-1 focus:ring-indigo-500 min-w-0">
-                        <button type="button" onclick="hapusBaris('${type}_${id}')" class="text-rose-500 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 p-1.5 rounded-lg text-xs transition shrink-0" title="Hapus Baris">
+                        <button type="button" onclick="hapusBaris('${type}_${id}')" class="text-rose-500 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 p-1.5 rounded-lg text-xs transition shrink-0" title="Hapus Baris" aria-label="Hapus Baris">
                             <i class="fa-solid fa-trash-can"></i>
                         </button>
                     </div>
@@ -1056,18 +1071,18 @@
                         <td class="p-2.5 border font-medium text-slate-800">${item.nama}</td>
                         <td class="p-2.5 border text-slate-600 font-semibold">${item.kat}</td>
                         <td class="p-1 border text-right">
-                            <input type="text" value="${formattedDebet}" placeholder="Rp 0" 
+                            <input type="text" value="${formattedDebet}" placeholder="Rp 0" aria-label="Debet Saldo Awal"
                                 oninput="formatInputCurrency(this); updateSaldoAwal(${idx}, 'debet', this.value)" 
                                 class="w-full px-2 py-1 border rounded-lg text-right font-mono text-xs focus:ring-1 focus:ring-indigo-500 font-bold">
                         </td>
                         <td class="p-1 border text-right">
-                            <input type="text" value="${formattedKredit}" placeholder="Rp 0" 
+                            <input type="text" value="${formattedKredit}" placeholder="Rp 0" aria-label="Kredit Saldo Awal"
                                 oninput="formatInputCurrency(this); updateSaldoAwal(${idx}, 'kredit', this.value)" 
                                 class="w-full px-2 py-1 border rounded-lg text-right font-mono text-xs focus:ring-1 focus:ring-indigo-500 font-bold">
                         </td>
                         <td class="p-2 border text-center space-x-1.5">
-                            <button onclick="editCoa(${idx})" class="text-indigo-600 hover:text-indigo-800 p-1" title="Edit Akun"><i class="fa-solid fa-pen-to-square"></i></button>
-                            <button onclick="hapusCoa(${idx})" class="text-rose-500 hover:text-rose-700 p-1" title="Hapus Akun"><i class="fa-solid fa-trash"></i></button>
+                            <button onclick="editCoa(${idx})" class="text-indigo-600 hover:text-indigo-800 p-1" title="Edit Akun" aria-label="Edit Akun"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button onclick="hapusCoa(${idx})" class="text-rose-500 hover:text-rose-700 p-1" title="Hapus Akun" aria-label="Hapus Akun"><i class="fa-solid fa-trash"></i></button>
                         </td>
                     `;
                     coaTbody.appendChild(tr);
@@ -1348,7 +1363,7 @@
                             <td class="p-2 border">${finText}</td>
                             <td class="p-2 border">${lraText}</td>
                             <td class="p-2 border text-right font-bold font-mono text-slate-800">${formatRp(t.nominal)}</td>
-                            <td class="p-2 border text-center"><button onclick="hapusTx(${t.id})" class="text-rose-500 hover:text-rose-700 p-1"><i class="fa-solid fa-trash"></i></button></td>
+                            <td class="p-2 border text-center"><button onclick="hapusTx(${t.id})" class="text-rose-500 hover:text-rose-700 p-1" aria-label="Hapus Transaksi"><i class="fa-solid fa-trash"></i></button></td>
                         `;
                         jBody.appendChild(tr);
                     });
@@ -1631,8 +1646,8 @@
                     <td class="p-2 border text-right font-mono">${formatRp(r.kredit)}</td>
                     <td class="p-2 border text-right font-bold font-mono text-indigo-950">${formatRp(saldo)}</td>
                     <td class="p-2 border text-center space-x-1.5">
-                        <button onclick="editBarisBb('${akunKey}', ${r.id})" class="text-indigo-600 hover:text-indigo-800 p-1" title="Edit Baris"><i class="fa-solid fa-pen-to-square"></i></button>
-                        <button onclick="hapusBarisBb('${akunKey}', ${r.id})" class="text-rose-500 hover:text-rose-700 p-1" title="Hapus Baris"><i class="fa-solid fa-trash"></i></button>
+                        <button onclick="editBarisBb('${akunKey}', ${r.id})" class="text-indigo-600 hover:text-indigo-800 p-1" title="Edit Baris" aria-label="Edit Baris"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button onclick="hapusBarisBb('${akunKey}', ${r.id})" class="text-rose-500 hover:text-rose-700 p-1" title="Hapus Baris" aria-label="Hapus Baris"><i class="fa-solid fa-trash"></i></button>
                     </td>
                 `;
                 bbBody.appendChild(tr);
@@ -1795,7 +1810,7 @@
                                 Saldo Akhir: ${formatRp(saldo)}
                             </span>
                         </div>
-                        <div class="overflow-x-auto">
+                        <div class="overflow-x-auto custom-touch-scroll">
                             <table class="w-full text-xs text-left border-collapse">
                                 <thead>
                                     <tr class="bg-slate-100 text-slate-700 border-b font-bold">
