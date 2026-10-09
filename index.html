@@ -271,7 +271,7 @@
                 </div>
             </section>
 
-            <!-- TAB 3: DAFTAR JURNAL (INPUT MULTI-BARIS) -->
+            <!-- TAB 3: DAFTAR JURNAL (INPUT MULTI-BARIS LAYOUT AMAN & RAPI) -->
             <section id="tab-jurnal" class="tab-content hidden space-y-6">
                 <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
                     <h2 class="text-xs font-bold text-indigo-900 uppercase tracking-wider mb-4">Input Jurnal Transaksi Multi-Baris (Dual Journaling)</h2>
@@ -287,62 +287,71 @@
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                            <!-- 1. JURNAL FINANSIAL (MULTI-BARIS) -->
-                            <div class="bg-indigo-50/50 p-4 rounded-xl border border-indigo-100 space-y-3">
-                                <div class="flex justify-between items-center border-b border-indigo-100 pb-2">
-                                    <span class="text-xs font-extrabold text-indigo-900">1. JURNAL FINANSIAL (LO & NERACA)</span>
-                                    <span id="badgeFinBalance" class="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">BALANCE</span>
-                                </div>
-                                
-                                <div id="containerFinRows" class="space-y-2.5">
-                                    <!-- Dynamic rows loaded here -->
+                        <!-- DUA KOLOM JURNAL DENGAN LAYOUT VERTIKAL RAPI -->
+                        <div class="grid grid-cols-1 xl:grid-cols-2 gap-5">
+                            
+                            <!-- 1. JURNAL FINANSIAL -->
+                            <div class="bg-indigo-50/40 p-4 rounded-2xl border border-indigo-100 flex flex-col justify-between space-y-3">
+                                <div>
+                                    <div class="flex justify-between items-center border-b border-indigo-100 pb-2.5 mb-3">
+                                        <span class="text-xs font-extrabold text-indigo-900 tracking-wide">1. JURNAL FINANSIAL (LO & NERACA)</span>
+                                        <span id="badgeFinBalance" class="text-[10px] font-black px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700">BALANCE</span>
+                                    </div>
+                                    
+                                    <div id="containerFinRows" class="space-y-3">
+                                        <!-- Baris Akun Dinamis Dimuat Di Sini -->
+                                    </div>
                                 </div>
 
-                                <div class="flex justify-between items-center pt-2">
-                                    <button type="button" onclick="tambahBarisFin()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-3 py-1.5 rounded-lg transition shadow-sm flex items-center gap-1.5">
+                                <div class="pt-3 border-t border-indigo-100 flex flex-wrap justify-between items-center gap-2">
+                                    <button type="button" onclick="tambahBarisFin()" class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold text-xs px-3.5 py-2 rounded-xl transition shadow-sm flex items-center gap-1.5">
                                         <i class="fa-solid fa-plus text-[10px]"></i> Tambah Baris Akun
                                     </button>
-                                    <div class="text-[11px] font-mono text-indigo-950 text-right">
-                                        <span>D: <strong id="sumFinD">Rp 0</strong></span> | 
-                                        <span>K: <strong id="sumFinK">Rp 0</strong></span>
+                                    <div class="text-xs font-mono text-indigo-950">
+                                        <span>D: <strong id="sumFinD" class="text-indigo-700">Rp 0</strong></span> | 
+                                        <span>K: <strong id="sumFinK" class="text-indigo-700">Rp 0</strong></span>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- 2. JURNAL ANGGARAN LRA (MULTI-BARIS & OPTION TIDAK DIJURNAL) -->
-                            <div class="bg-amber-50/50 p-4 rounded-xl border border-amber-100 space-y-3">
-                                <div class="flex justify-between items-center border-b border-amber-100 pb-2">
-                                    <span class="text-xs font-extrabold text-amber-900">2. JURNAL PELAKSANAAN ANGGARAN (LRA)</span>
-                                    <span id="badgeLraBalance" class="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">BALANCE</span>
-                                </div>
+                            <!-- 2. JURNAL ANGGARAN LRA -->
+                            <div class="bg-amber-50/40 p-4 rounded-2xl border border-amber-100 flex flex-col justify-between space-y-3">
+                                <div>
+                                    <div class="flex justify-between items-center border-b border-amber-100 pb-2.5 mb-3">
+                                        <span class="text-xs font-extrabold text-amber-900 tracking-wide">2. JURNAL PELAKSANAAN ANGGARAN (LRA)</span>
+                                        <span id="badgeLraBalance" class="text-[10px] font-black px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700">BALANCE</span>
+                                    </div>
 
-                                <div id="containerLraRows" class="space-y-2.5">
-                                    <!-- Dynamic rows loaded here -->
-                                </div>
-
-                                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-2 border-t border-amber-100">
-                                    <button type="button" id="btnTambahLraRow" onclick="tambahBarisLra()" class="bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs px-3 py-1.5 rounded-lg transition shadow-sm flex items-center gap-1.5 w-fit">
-                                        <i class="fa-solid fa-plus text-[10px]"></i> Tambah Baris Akun
-                                    </button>
-
-                                    <div class="flex items-center gap-2">
-                                        <input type="checkbox" id="chkTidakDijurnalLra" onchange="toggleTidakDijurnalLra(this)" class="w-4 h-4 text-indigo-600 rounded cursor-pointer">
-                                        <label for="chkTidakDijurnalLra" class="text-xs font-bold text-slate-700 cursor-pointer select-none">
-                                            Tidak Di-jurnal
-                                        </label>
+                                    <div id="containerLraRows" class="space-y-3">
+                                        <!-- Baris Akun Dinamis Dimuat Di Sini -->
                                     </div>
                                 </div>
 
-                                <div class="text-[11px] font-mono text-amber-950 text-right pt-1">
-                                    <span>D: <strong id="sumLraD">Rp 0</strong></span> | 
-                                    <span>K: <strong id="sumLraK">Rp 0</strong></span>
+                                <div class="pt-3 border-t border-amber-100 space-y-2">
+                                    <div class="flex flex-wrap justify-between items-center gap-2">
+                                        <button type="button" id="btnTambahLraRow" onclick="tambahBarisLra()" class="bg-amber-600 hover:bg-amber-700 active:scale-95 text-white font-bold text-xs px-3.5 py-2 rounded-xl transition shadow-sm flex items-center gap-1.5">
+                                            <i class="fa-solid fa-plus text-[10px]"></i> Tambah Baris Akun
+                                        </button>
+
+                                        <div class="flex items-center gap-2 bg-white px-3 py-1.5 rounded-xl border border-amber-200 shadow-sm">
+                                            <input type="checkbox" id="chkTidakDijurnalLra" onchange="toggleTidakDijurnalLra(this)" class="w-4 h-4 text-amber-600 rounded cursor-pointer">
+                                            <label for="chkTidakDijurnalLra" class="text-xs font-bold text-amber-950 cursor-pointer select-none">
+                                                Tidak Di-jurnal
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="text-xs font-mono text-amber-950 text-right pt-1">
+                                        <span>D: <strong id="sumLraD" class="text-amber-700">Rp 0</strong></span> | 
+                                        <span>K: <strong id="sumLraK" class="text-amber-700">Rp 0</strong></span>
+                                    </div>
                                 </div>
                             </div>
+
                         </div>
 
-                        <div class="flex justify-end pt-2">
-                            <button type="submit" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-8 py-3 rounded-xl transition shadow-lg flex items-center justify-center gap-2">
+                        <div class="flex justify-end pt-3">
+                            <button type="submit" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs px-8 py-3 rounded-xl transition shadow-lg flex items-center justify-center gap-2">
                                 <i class="fa-solid fa-floppy-disk"></i> Simpan Transaksi
                             </button>
                         </div>
@@ -678,7 +687,7 @@
         </div>
     </div>
 
-    <!-- LOGIC SCRIPT AKUNTANSI & MULTI-BARIS DINAMIS -->
+    <!-- LOGIC SCRIPT AKUNTANSI & MULTI-BARIS DINAMIS BERRESPONSIF TINGGI -->
     <script>
         const defaultCoaData = [
             { kode: '1.1.1.01', nama: 'Kas di Kas Daerah', kat: 'Aset', debetAwal: 0, kreditAwal: 0 },
@@ -815,7 +824,7 @@
             }
         }
 
-        // KODE MULTI-BARIS DINAMIS
+        // KODE MULTI-BARIS DINAMIS TERORGANISIR BERIKUT LAYOUT RAPI
         function makeCoaOptionsHtml() {
             let options = '<option value="">-- Pilih Akun --</option>';
             coaData.forEach(item => {
@@ -828,18 +837,33 @@
             const coaOptions = makeCoaOptionsHtml();
             const id = Date.now() + Math.floor(Math.random() * 1000);
             return `
-                <div class="row-entry flex items-center gap-1.5" id="row_${type}_${id}">
-                    <select class="pos-select text-xs py-1.5 px-2 border rounded-lg font-bold ${pos==='D'?'text-indigo-900 bg-indigo-50':'text-amber-900 bg-amber-50'}" onchange="recalcTotals()">
-                        <option value="D" ${pos==='D'?'selected':''}>Debit (D)</option>
-                        <option value="K" ${pos==='K'?'selected':''}>Kredit (K)</option>
-                    </select>
-                    <select class="akun-select flex-1 text-xs py-1.5 px-2 border rounded-lg">
-                        ${coaOptions}
-                    </select>
-                    <input type="text" placeholder="Rp 0" oninput="formatInputCurrency(this); recalcTotals();" class="nom-input w-28 text-xs py-1.5 px-2 border rounded-lg text-right font-mono font-bold">
-                    <button type="button" onclick="hapusBaris('${type}_${id}')" class="text-rose-500 hover:text-rose-700 p-1 text-xs" title="Hapus Baris"><i class="fa-solid fa-trash"></i></button>
+                <div class="row-entry bg-white p-2.5 rounded-xl border border-slate-200 shadow-sm space-y-2" id="row_${type}_${id}">
+                    <div class="flex items-center gap-2">
+                        <select class="pos-select text-xs py-1.5 px-2 border rounded-lg font-bold shrink-0 ${pos==='D'?'text-indigo-900 bg-indigo-50 border-indigo-200':'text-amber-900 bg-amber-50 border-amber-200'}" onchange="updatePosStyle(this); recalcTotals();">
+                            <option value="D" ${pos==='D'?'selected':''}>Debit (D)</option>
+                            <option value="K" ${pos==='K'?'selected':''}>Kredit (K)</option>
+                        </select>
+                        <select class="akun-select flex-1 text-xs py-1.5 px-2 border rounded-lg focus:ring-1 focus:ring-indigo-500 min-w-0">
+                            ${coaOptions}
+                        </select>
+                    </div>
+                    <div class="flex items-center gap-2 pt-1 border-t border-slate-100">
+                        <span class="text-[11px] font-semibold text-slate-500 whitespace-nowrap">Nominal:</span>
+                        <input type="text" placeholder="Rp 0" oninput="formatInputCurrency(this); recalcTotals();" class="nom-input flex-1 text-xs py-1.5 px-2 border rounded-lg text-right font-mono font-bold focus:ring-1 focus:ring-indigo-500 min-w-0">
+                        <button type="button" onclick="hapusBaris('${type}_${id}')" class="text-rose-500 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 p-1.5 rounded-lg text-xs transition shrink-0" title="Hapus Baris">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
                 </div>
             `;
+        }
+
+        function updatePosStyle(selectEl) {
+            if(selectEl.value === 'D') {
+                selectEl.className = 'pos-select text-xs py-1.5 px-2 border rounded-lg font-bold shrink-0 text-indigo-900 bg-indigo-50 border-indigo-200';
+            } else {
+                selectEl.className = 'pos-select text-xs py-1.5 px-2 border rounded-lg font-bold shrink-0 text-amber-900 bg-amber-50 border-amber-200';
+            }
         }
 
         function tambahBarisFin(pos = 'D') {
@@ -888,7 +912,6 @@
         }
 
         function recalcTotals() {
-            // Hitung Finansial
             let finD = 0, finK = 0;
             document.querySelectorAll('#containerFinRows .row-entry').forEach(r => {
                 const pos = r.querySelector('.pos-select').value;
@@ -904,14 +927,13 @@
             if(badgeFin) {
                 if(finD === finK && finD > 0) {
                     badgeFin.innerText = 'BALANCE';
-                    badgeFin.className = 'text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700';
+                    badgeFin.className = 'text-[10px] font-black px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700';
                 } else {
                     badgeFin.innerText = 'UNBALANCE';
-                    badgeFin.className = 'text-[10px] font-black px-2 py-0.5 rounded-full bg-rose-100 text-rose-700';
+                    badgeFin.className = 'text-[10px] font-black px-2.5 py-1 rounded-full bg-rose-100 text-rose-700';
                 }
             }
 
-            // Hitung LRA
             let lraD = 0, lraK = 0;
             const chkTidak = document.getElementById('chkTidakDijurnalLra');
             const isTidak = chkTidak && chkTidak.checked;
@@ -932,10 +954,10 @@
             if(badgeLra) {
                 if(isTidak || (lraD === lraK && lraD >= 0)) {
                     badgeLra.innerText = 'BALANCE';
-                    badgeLra.className = 'text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700';
+                    badgeLra.className = 'text-[10px] font-black px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700';
                 } else {
                     badgeLra.innerText = 'UNBALANCE';
-                    badgeLra.className = 'text-[10px] font-black px-2 py-0.5 rounded-full bg-rose-100 text-rose-700';
+                    badgeLra.className = 'text-[10px] font-black px-2.5 py-1 rounded-full bg-rose-100 text-rose-700';
                 }
             }
         }
@@ -1193,7 +1215,6 @@
         function tambahJurnal(e) {
             e.preventDefault();
 
-            // Ambil data Finansial
             const finEntries = [];
             let finDebetTotal = 0;
             let finKreditTotal = 0;
@@ -1220,7 +1241,6 @@
                 return;
             }
 
-            // Ambil data LRA
             const lraEntries = [];
             const isTidakLra = document.getElementById('chkTidakDijurnalLra').checked;
 
@@ -1404,7 +1424,6 @@
                 let totalLraD = 0, totalLraK = 0;
 
                 sortedTx.forEach(t => {
-                    // JURNAL FINANSIAL
                     if(t.finEntries && t.finEntries.length > 0) {
                         t.finEntries.forEach((fe, idx) => {
                             const isDeb = fe.pos === 'D';
@@ -1448,7 +1467,6 @@
                         finBody.appendChild(trK);
                     }
 
-                    // JURNAL LRA
                     if(!t.isTidakLra && t.lraEntries && t.lraEntries.length > 0) {
                         t.lraEntries.forEach((le, idx) => {
                             const isDeb = le.pos === 'D';
@@ -1481,7 +1499,7 @@
                         lraBody.appendChild(trLraD);
 
                         const trLraK = document.createElement('tr');
-                        trLraK.className = "border-b border-slate-200 hover:bg-slate-50 font-medium text-xs";
+                        trK.className = "border-b border-slate-200 hover:bg-slate-50 font-medium text-xs";
                         trLraK.innerHTML = `
                             <td class="p-2 border"></td>
                             <td class="p-2 border"></td>
