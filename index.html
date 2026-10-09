@@ -1,288 +1,223 @@
 <!DOCTYPE html>
-<html lang="id" class="h-full">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    
-    <!-- Primary Meta Tags -->
-    <title>Aplikasi Praktikum Akuntansi Lembaga SMK - Pembelajaran Dual Journaling SKPD/Lembaga</title>
-    <meta name="title" content="Aplikasi Praktikum Akuntansi Lembaga SMK - Pembelajaran Dual Journaling SKPD/Lembaga">
-    <meta name="description" content="Media pembelajaran praktikum akuntansi lembaga dan pemerintah daerah untuk siswa SMK Akuntansi (KL/AKL). Fitur Bagan Akun (COA), Jurnal Finansial & LRA, Buku Besar, Laporan LRA/LO, serta Ekspor-Impor MS Excel.">
-    <meta name="keywords" content="praktikum akuntansi lembaga, akuntansi smk, dual journaling, jurnal finansial, jurnal LRA, COA akuntansi, buku besar smk, laporan operasional, laporan realisasi anggaran, akuntansi skpd">
-    <meta name="author" content="Praktikum Akuntansi SMK">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Meta SEO Friendly -->
+    <title>Aplikasi Praktikum Akuntansi Lembaga SMK - Pemerintah & Daerah</title>
+    <meta name="description" content="Aplikasi Simulasi Praktikum Akuntansi Lembaga dan Pemerintah Daerah untuk Siswa SMK AKL. Terintegrasi Dual Journaling (LO & LRA) dan Microsoft Excel.">
+    <meta name="keywords" content="Akuntansi Lembaga, Praktikum Akuntansi SMK, Dual Journaling, LRA, LO, Neraca Saldo, Buku Besar, Siskeudes, SMK AKL">
     <meta name="robots" content="index, follow">
     <meta name="theme-color" content="#1e1b4b">
-    <link rel="canonical" href="https://praktikum-akuntansi-smk.id/">
-
-    <!-- Open Graph / Facebook -->
+    
+    <!-- Open Graph / SEO Social -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://praktikum-akuntansi-smk.id/">
-    <meta property="og:title" content="Aplikasi Praktikum Akuntansi Lembaga SMK - Interaktif & Terintegrasi Excel">
-    <meta property="og:description" content="Aplikasi praktikum akuntansi instansi pemerintah daerah untuk siswa SMK kelas XI/XII AKL. Lengkap dengan Sistem Dual Journaling dan Laporan Keuangan.">
-    <meta property="og:image" content="https://placehold.co/1200x630/1e1b4b/fbbf24?text=Praktikum+Akuntansi+Lembaga+SMK">
+    <meta property="og:title" content="Aplikasi Praktikum Akuntansi Lembaga SMK">
+    <meta property="og:description" content="Simulasi Praktikum Akuntansi Pemerintah Daerah SMK AKL Terintegrasi Dual Journaling & Excel.">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SheetJS Excel Library CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            -webkit-tap-highlight-color: transparent;
+        }
+        /* Style input agar tidak otomatis zoom di Safari iOS (iPhone) */
+        @media screen and (max-width: 768px) {
+            input, select, textarea {
+                font-size: 16px !important;
+            }
+        }
+        /* Custom scrollbar halus */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
 
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://praktikum-akuntansi-smk.id/">
-    <meta property="twitter:title" content="Aplikasi Praktikum Akuntansi Lembaga SMK">
-    <meta property="twitter:description" content="Simulasi praktikum akuntansi pemerintahan & lembaga untuk SMK AKL. Cepat, responsif di HP & Laptop.">
-    <meta property="twitter:image" content="https://placehold.co/1200x630/1e1b4b/fbbf24?text=Praktikum+Akuntansi+Lembaga+SMK">
-
-    <!-- Schema.org JSON-LD Structured Data for SEO -->
+    <!-- Structured Data JSON-LD untuk SEO -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "EducationalApplication",
       "name": "Aplikasi Praktikum Akuntansi Lembaga SMK",
-      "operatingSystem": "All (Web Browser, Android, iOS, Windows, macOS)",
       "applicationCategory": "EducationalApplication",
-      "educationalUse": "Pembelajaran Akuntansi Lembaga & Pemerintahan SMK",
-      "audience": {
-        "@type": "EducationalAudience",
-        "educationalRole": "student",
-        "audienceType": "Siswa SMK AKL / Akuntansi"
-      },
-      "description": "Aplikasi interaktif simulator akuntansi lembaga pemerintah daerah (SKPD) dengan dual journaling (Finansial & LRA) serta rekapitulasi buku besar dan laporan keuangan.",
-      "inLanguage": "id"
+      "operatingSystem": "All",
+      "description": "Media pembelajaran praktikum akuntansi lembaga dan pemerintah daerah untuk SMK Konsentrasi Keahlian Akuntansi dan Keuangan Lembaga (AKL)."
     }
     </script>
-
-    <!-- External Assets: Tailwind CSS, FontAwesome, SheetJS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
-        
-        :root {
-            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        }
-
-        /* Prevent auto-zoom on Safari iOS when clicking input elements */
-        @media screen and (max-width: 767px) {
-            input, select, textarea {
-                font-size: 16px !important;
-            }
-        }
-
-        /* Custom scrollbars for clean presentation */
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 5px;
-            height: 5px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #f1f5f9;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
-
-        /* Safe area spacing for modern iPhones (iOS Home Indicator) */
-        .pb-safe {
-            padding-bottom: env(safe-area-inset-bottom, 1rem);
-        }
-    </style>
 </head>
-<body class="bg-slate-100 text-slate-800 h-full flex flex-col md:flex-row overflow-hidden select-none">
+<body class="bg-slate-100 text-slate-800 flex flex-col md:flex-row h-screen overflow-hidden">
 
-    <!-- MOBILE TOP HEADER BAR (Mobile Only) -->
-    <header class="md:hidden bg-indigo-950 text-white flex items-center justify-between px-4 py-3 shrink-0 shadow-md border-b border-indigo-900 z-30">
-        <div class="flex items-center gap-2.5">
-            <button onclick="toggleSidebar()" aria-label="Buka Menu Utama" class="p-2 text-slate-200 hover:text-amber-400 rounded-lg hover:bg-indigo-900 focus:outline-none transition min-h-[44px] min-w-[44px] flex items-center justify-center">
-                <i class="fa-solid fa-bars text-xl"></i>
-            </button>
-            <div class="flex items-center gap-2">
-                <div class="bg-indigo-600 p-1.5 rounded-md text-amber-400 text-xs">
-                    <i class="fa-solid fa-graduation-cap"></i>
-                </div>
-                <span class="font-bold text-xs sm:text-sm tracking-tight text-white line-clamp-1">Akuntansi Lembaga SMK</span>
-            </div>
-        </div>
-        <div class="flex items-center gap-1.5">
-            <label for="excelImportMobile" class="bg-emerald-600 active:bg-emerald-700 text-white text-[11px] font-bold px-2.5 py-2 rounded-lg cursor-pointer flex items-center gap-1 shadow transition min-h-[40px]" title="Import Excel">
-                <i class="fa-solid fa-file-import text-xs"></i>
-                <span class="hidden sm:inline">Import</span>
-            </label>
-            <input type="file" id="excelImportMobile" accept=".xlsx, .xls" class="hidden" onchange="importFromExcel(event)">
-            
-            <button onclick="exportToExcel()" class="bg-amber-400 active:bg-amber-500 text-indigo-950 text-[11px] font-extrabold px-2.5 py-2 rounded-lg flex items-center gap-1 shadow transition min-h-[40px]" title="Export Excel">
-                <i class="fa-solid fa-file-excel text-xs"></i>
-                <span class="hidden sm:inline">Export</span>
-            </button>
-        </div>
-    </header>
+    <!-- OVERLAY MOBIL DRAWER BACKDROP -->
+    <div id="sidebarOverlay" onclick="toggleMobileMenu()" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-40 hidden md:hidden transition-opacity"></div>
 
-    <!-- BACKDROP OVERLAY FOR MOBILE SIDEBAR DRAWER -->
-    <div id="sidebarOverlay" onclick="toggleSidebar(false)" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-40 hidden md:hidden transition-opacity duration-300"></div>
-
-    <!-- SIDEBAR NAVIGATION (Desktop persistent & Mobile Drawer) -->
-    <aside id="mainSidebar" class="fixed inset-y-0 left-0 z-50 w-72 md:w-64 bg-indigo-950 text-slate-300 flex flex-col shrink-0 shadow-2xl md:shadow-xl md:static transition-transform duration-300 ease-in-out -translate-x-full md:translate-x-0">
-        <!-- Sidebar Brand Header -->
-        <div class="p-4 md:p-5 border-b border-indigo-900/80 flex items-center justify-between">
+    <!-- SIDEBAR NAVIGATION (Desktop & Mobile Drawer) -->
+    <aside id="mainSidebar" class="fixed md:relative inset-y-0 left-0 z-50 w-64 bg-indigo-950 text-slate-300 flex flex-col shrink-0 shadow-2xl transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
+        <div class="p-4 border-b border-indigo-900/80 flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                <div class="bg-indigo-600 p-2.5 rounded-xl text-amber-400 shadow-md">
-                    <i class="fa-solid fa-graduation-cap text-2xl md:text-xl"></i>
+                <div class="bg-amber-400 text-indigo-950 p-2 rounded-xl font-bold shadow">
+                    <i class="fa-solid fa-graduation-cap text-lg"></i>
                 </div>
                 <div>
-                    <h1 class="text-sm font-bold text-white leading-tight">Praktikum Akuntansi Lembaga</h1>
-                    <p class="text-[11px] text-amber-400 font-semibold mt-0.5">SMK XI / XII AKL</p>
+                    <h1 class="text-xs font-extrabold text-white leading-snug">Praktikum Akuntansi Lembaga</h1>
+                    <p class="text-[10px] text-amber-300 font-medium">SMK AKL Class System</p>
                 </div>
             </div>
-            <!-- Close Sidebar Button (Mobile Only) -->
-            <button onclick="toggleSidebar(false)" aria-label="Tutup Menu" class="md:hidden text-slate-400 hover:text-white p-2 rounded-lg hover:bg-indigo-900 min-h-[44px] min-w-[44px] flex items-center justify-center">
+            <button onclick="toggleMobileMenu()" class="md:hidden text-slate-400 hover:text-white p-1" aria-label="Tutup Menu">
                 <i class="fa-solid fa-xmark text-xl"></i>
             </button>
         </div>
 
-        <!-- Navigation Buttons -->
-        <nav class="flex-1 p-3 md:p-4 space-y-1.5 overflow-y-auto custom-scrollbar font-medium text-xs">
-            <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl bg-indigo-800 text-white font-semibold transition-all min-h-[44px]">
-                <i class="fa-solid fa-chart-pie text-sm text-amber-400 w-5"></i>
-                <span>Dashboard Utama</span>
+        <nav class="flex-1 p-3 space-y-1.5 overflow-y-auto text-xs font-semibold">
+            <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl bg-indigo-800 text-white shadow-md transition">
+                <i class="fa-solid fa-chart-pie text-base text-amber-400 w-5"></i> Dashboard Utama
             </button>
-            <button onclick="switchTab('coa')" id="nav-coa" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-slate-300 hover:bg-indigo-900/80 hover:text-white transition-all min-h-[44px]">
-                <i class="fa-solid fa-list-ol text-sm w-5"></i>
-                <span>Bagan Akun (COA)</span>
+            <button onclick="switchTab('coa')" id="nav-coa" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl hover:bg-indigo-900 hover:text-white transition">
+                <i class="fa-solid fa-list-ol text-base text-indigo-300 w-5"></i> Bagan Akun (COA)
             </button>
-            <button onclick="switchTab('jurnal')" id="nav-jurnal" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-slate-300 hover:bg-indigo-900/80 hover:text-white transition-all min-h-[44px]">
-                <i class="fa-solid fa-book-open text-sm w-5"></i>
-                <span>Daftar Jurnal Umum</span>
+            <button onclick="switchTab('jurnal')" id="nav-jurnal" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl hover:bg-indigo-900 hover:text-white transition">
+                <i class="fa-solid fa-book-open text-base text-indigo-300 w-5"></i> Daftar Jurnal Umum
             </button>
-            <button onclick="switchTab('bukubesar')" id="nav-bukubesar" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-slate-300 hover:bg-indigo-900/80 hover:text-white transition-all min-h-[44px]">
-                <i class="fa-solid fa-book-bookmark text-sm w-5"></i>
-                <span>Buku Besar Manual</span>
+            <button onclick="switchTab('bukubesar')" id="nav-bukubesar" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl hover:bg-indigo-900 hover:text-white transition">
+                <i class="fa-solid fa-book text-base text-indigo-300 w-5"></i> Buku Besar Manual
             </button>
-            <button onclick="switchTab('laporan')" id="nav-laporan" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-slate-300 hover:bg-indigo-900/80 hover:text-white transition-all min-h-[44px]">
-                <i class="fa-solid fa-file-invoice-dollar text-sm w-5"></i>
-                <span>Laporan Keuangan</span>
+            <button onclick="switchTab('laporan')" id="nav-laporan" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl hover:bg-indigo-900 hover:text-white transition">
+                <i class="fa-solid fa-file-invoice-dollar text-base text-indigo-300 w-5"></i> Laporan Keuangan
             </button>
         </nav>
 
-        <!-- Sidebar Excel Actions (Desktop) -->
-        <div class="hidden md:block p-4 border-t border-indigo-900/80 space-y-2">
-            <label for="excelImportDesktop" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold py-2.5 px-3 rounded-xl cursor-pointer flex items-center justify-center gap-2 shadow transition">
-                <i class="fa-solid fa-file-import"></i> Import Excel (.xlsx)
-            </label>
-            <input type="file" id="excelImportDesktop" accept=".xlsx, .xls" class="hidden" onchange="importFromExcel(event)">
-
-            <button onclick="exportToExcel()" class="w-full bg-amber-400 hover:bg-amber-300 text-indigo-950 text-xs font-extrabold py-2.5 px-3 rounded-xl flex items-center justify-center gap-2 shadow transition">
-                <i class="fa-solid fa-file-excel"></i> Export Excel (.xlsx)
-            </button>
+        <div class="p-3 border-t border-indigo-900/80 bg-indigo-950/50 text-[10px] text-center text-indigo-300">
+            Terintegrasi MS Excel (.xlsx)
         </div>
-
-        <footer class="p-3 border-t border-indigo-900 text-[10px] text-center text-indigo-300/70">
-            Aplikasi Praktikum Akuntansi Lembaga SMK &copy; 2026
-        </footer>
     </aside>
 
-    <!-- MAIN CONTENT CONTAINER -->
-    <main class="flex-1 flex flex-col h-full overflow-hidden bg-slate-100">
-        <!-- Desktop Header Bar -->
-        <header class="hidden md:flex bg-white border-b border-slate-200 px-6 py-3.5 justify-between items-center shadow-sm shrink-0">
-            <div>
-                <h2 id="headerTitle" class="text-base font-extrabold text-indigo-950 tracking-tight">Dashboard Utama</h2>
-                <p class="text-xs text-slate-500">Praktikum Akuntansi Pemerintah & Lembaga Daerah (SKPD)</p>
+    <!-- CONTENT AREA -->
+    <main class="flex-1 flex flex-col h-full overflow-hidden w-full">
+        <!-- HEADER TOP BAR -->
+        <header class="bg-white border-b border-slate-200 px-4 py-3 md:px-6 flex items-center justify-between shadow-sm shrink-0">
+            <div class="flex items-center gap-3">
+                <button onclick="toggleMobileMenu()" class="md:hidden p-2 text-slate-600 hover:bg-slate-100 rounded-lg" aria-label="Buka Menu">
+                    <i class="fa-solid fa-bars text-lg"></i>
+                </button>
+                <div>
+                    <h2 id="headerTitle" class="text-sm md:text-base font-extrabold text-slate-800">Dashboard Utama</h2>
+                    <p class="text-[10px] md:text-xs text-slate-500 hidden sm:block">Praktikum Akuntansi Pemerintah & Lembaga Daerah (SMK)</p>
+                </div>
             </div>
+
             <div class="flex items-center gap-2">
-                <span class="bg-indigo-50 text-indigo-700 font-semibold text-xs px-3 py-1 rounded-full border border-indigo-200 flex items-center gap-1.5">
-                    <i class="fa-solid fa-circle text-[8px] text-emerald-500"></i> Mode Praktikum Aktif
-                </span>
+                <label for="excelImport" class="bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white text-xs px-3 py-2 rounded-lg cursor-pointer flex items-center gap-1.5 font-bold transition shadow-sm">
+                    <i class="fa-solid fa-file-import"></i> <span class="hidden sm:inline">Import Excel</span>
+                </label>
+                <input type="file" id="excelImport" accept=".xlsx, .xls" class="hidden" onchange="importFromExcel(event)">
+
+                <button onclick="exportToExcel()" class="bg-amber-500 hover:bg-amber-600 active:scale-95 text-slate-950 text-xs font-extrabold px-3 py-2 rounded-lg flex items-center gap-1.5 transition shadow-sm">
+                    <i class="fa-solid fa-file-excel"></i> <span class="hidden sm:inline">Export Ke Excel</span>
+                </button>
             </div>
         </header>
 
-        <!-- TAB CONTENT CONTAINER WITH MOBILITY ADAPTATION -->
-        <div class="flex-1 overflow-y-auto custom-scrollbar p-3 sm:p-5 md:p-6 pb-20 md:pb-6 space-y-5">
-
+        <!-- MAIN SCROLLABLE CONTENT -->
+        <div class="flex-1 overflow-y-auto p-4 md:p-6 space-y-6 pb-24 md:pb-6">
+            
             <!-- TAB 1: DASHBOARD -->
-            <section id="tab-dashboard" class="tab-content space-y-4 sm:space-y-6">
-                <!-- Identitas Siswa & Instansi -->
-                <article class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm transition-all hover:shadow-md">
-                    <h2 class="text-xs font-extrabold text-indigo-900 uppercase tracking-wider mb-3 flex items-center gap-2">
-                        <i class="fa-solid fa-id-card text-amber-500 text-sm"></i> Identitas Siswa & Instansi Praktikum
-                    </h2>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+            <section id="tab-dashboard" class="tab-content space-y-6">
+                <!-- FORM IDENTITAS SISWA & INSTANSI -->
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <div class="flex items-center gap-2 text-indigo-900 border-b pb-3">
+                        <i class="fa-solid fa-id-card text-amber-500 text-lg"></i>
+                        <h2 class="text-xs md:text-sm font-extrabold uppercase tracking-wide">Identitas Siswa & Instansi Praktikum</h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         <div>
-                            <label for="siswaNama" class="block text-xs font-semibold text-slate-700 mb-1">Nama Lengkap Siswa</label>
-                            <input type="text" id="siswaNama" placeholder="Masukkan Nama Siswa" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-indigo-600 focus:outline-none transition" oninput="simpanIdentitas()">
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Nama Lengkap Siswa</label>
+                            <input type="text" id="siswaNama" placeholder="Masukkan Nama Siswa" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none" oninput="simpanIdentitasSiswa()">
                         </div>
                         <div>
-                            <label for="siswaKelas" class="block text-xs font-semibold text-slate-700 mb-1">Kelas / Konsentrasi Keahlian</label>
-                            <input type="text" id="siswaKelas" placeholder="Contoh: XI AKL 1" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-indigo-600 focus:outline-none transition" oninput="simpanIdentitas()">
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Kelas / Konsentrasi Keahlian</label>
+                            <input type="text" id="siswaKelas" placeholder="Contoh: XI AKL 1" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none" oninput="simpanIdentitasSiswa()">
                         </div>
                         <div>
-                            <label for="instansiNama" class="block text-xs font-semibold text-slate-700 mb-1">Nama Instansi / SKPD</label>
-                            <input type="text" id="instansiNama" placeholder="Contoh: SKPD Dinas Pendapatan" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-indigo-600 focus:outline-none transition" oninput="simpanIdentitas()">
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Nama Instansi / SKPD</label>
+                            <input type="text" id="instansiNama" placeholder="Contoh: Dinas Pendidikan" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">
                         </div>
                         <div>
-                            <label for="instansiKabKota" class="block text-xs font-semibold text-slate-700 mb-1">Kabupaten / Kota</label>
-                            <input type="text" id="instansiKabKota" placeholder="Contoh: Kepulauan Meranti" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-indigo-600 focus:outline-none transition" oninput="simpanIdentitas()">
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Kabupaten / Kota</label>
+                            <input type="text" id="instansiKab" placeholder="Contoh: Kepulauan Meranti" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">
                         </div>
-                        <div class="sm:col-span-2 lg:col-span-1">
-                            <label for="instansiTgl" class="block text-xs font-semibold text-slate-700 mb-1">Periode Tanggal</label>
-                            <input type="date" id="instansiTgl" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-indigo-600 focus:outline-none transition" onchange="simpanIdentitas()">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Periode Tanggal</label>
+                            <input type="date" id="instansiTgl" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-indigo-500 focus:outline-none">
                         </div>
                     </div>
-                    <div class="mt-4 flex justify-end">
-                        <button onclick="simpanIdentitas(true)" class="bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-bold text-xs py-2.5 px-5 rounded-xl transition shadow flex items-center gap-2">
+
+                    <!-- TOMBOL SIMPAN DENGAN POP UP CEKLIS -->
+                    <div class="flex justify-end pt-2 border-t">
+                        <button onclick="simpanIdentitasInstansi()" class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-extrabold text-xs px-5 py-2.5 rounded-xl flex items-center gap-2 shadow-md transition">
                             <i class="fa-solid fa-floppy-disk"></i> Simpan Identitas Instansi
                         </button>
                     </div>
-                </article>
-
-                <!-- Ringkasan Statistik -->
-                <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-                    <div class="bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
-                        <span class="text-[11px] text-slate-500 font-semibold uppercase tracking-wider">Total Transaksi</span>
-                        <p class="text-xl sm:text-2xl font-black text-slate-800 mt-2" id="dashTotalTx">0</p>
-                    </div>
-                    <div class="bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
-                        <span class="text-[11px] text-slate-500 font-semibold uppercase tracking-wider">Pendapatan LRA</span>
-                        <p class="text-lg sm:text-xl font-black text-emerald-600 mt-2 truncate" id="dashPendLRA">Rp 0</p>
-                    </div>
-                    <div class="bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
-                        <span class="text-[11px] text-slate-500 font-semibold uppercase tracking-wider">Belanja LRA</span>
-                        <p class="text-lg sm:text-xl font-black text-rose-600 mt-2 truncate" id="dashBelanjaLRA">Rp 0</p>
-                    </div>
-                    <div class="bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
-                        <span class="text-[11px] text-slate-500 font-semibold uppercase tracking-wider">SiLPA / (SiKPA)</span>
-                        <p class="text-lg sm:text-xl font-black text-indigo-700 mt-2 truncate" id="dashSilpa">Rp 0</p>
-                    </div>
                 </div>
 
-                <!-- Petunjuk Singkat Penggunaan -->
-                <article class="bg-indigo-900 text-slate-100 p-4 sm:p-5 rounded-2xl shadow-md space-y-2">
-                    <h3 class="font-bold text-xs sm:text-sm text-amber-400 flex items-center gap-2">
-                        <i class="fa-solid fa-circle-info"></i> Panduan Praktikum Dual Journaling SMK
-                    </h3>
-                    <p class="text-xs text-indigo-100 leading-relaxed">
-                        Aplikasi ini menerapkan metode <strong>Dual Journaling</strong> untuk instansi pemerintah (SKPD). Setiap transaksi yang mempengaruhi anggaran harus mencatat <strong>Jurnal Finansial (LO/Neraca)</strong> berbasis akrual dan <strong>Jurnal Pelaksanaan Anggaran (LRA)</strong> berbasis kas secara terpisah.
-                    </p>
-                </article>
+                <!-- RINGKASAN REKAPITULASI -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                        <span class="text-[11px] text-slate-500 font-bold uppercase tracking-wider block mb-1">Total Transaksi</span>
+                        <p class="text-xl md:text-2xl font-black text-slate-800" id="dashTotalTx">0</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                        <span class="text-[11px] text-slate-500 font-bold uppercase tracking-wider block mb-1">Pendapatan LRA</span>
+                        <p class="text-lg md:text-xl font-extrabold text-emerald-600" id="dashPendLRA">Rp 0</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                        <span class="text-[11px] text-slate-500 font-bold uppercase tracking-wider block mb-1">Belanja LRA</span>
+                        <p class="text-lg md:text-xl font-extrabold text-rose-600" id="dashBelanjaLRA">Rp 0</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                        <span class="text-[11px] text-slate-500 font-bold uppercase tracking-wider block mb-1">SiLPA / (SiKPA)</span>
+                        <p class="text-lg md:text-xl font-extrabold text-indigo-700" id="dashSilpa">Rp 0</p>
+                    </div>
+                </div>
             </section>
 
-            <!-- TAB 2: BAGAN AKUN (COA) & NERACA SALDO AWAL -->
-            <section id="tab-coa" class="tab-content hidden space-y-4 sm:space-y-6">
+            <!-- TAB 2: BAGAN AKUN (COA) & NERACA SALDO AWAL (LAMPIRAN 2) -->
+            <section id="tab-coa" class="tab-content hidden space-y-6">
                 <!-- FORM TAMBAH / EDIT AKUN -->
-                <article class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm">
-                    <h2 id="coaFormTitle" class="text-xs font-extrabold text-indigo-900 uppercase tracking-wider mb-3">Tambah Akun Baru</h2>
-                    <form onsubmit="simpanAkun(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 items-end">
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                    <h2 id="coaFormTitle" class="text-xs font-bold text-indigo-900 uppercase tracking-wider mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-plus-circle text-indigo-600"></i> Tambah Akun Baru
+                    </h2>
+                    <form onsubmit="simpanAkun(event)" class="grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
                         <input type="hidden" id="editCoaIndex" value="-1">
                         <div>
-                            <label for="inputKodeAkun" class="block text-xs font-semibold text-slate-700 mb-1">Kode Akun</label>
-                            <input type="text" id="inputKodeAkun" required placeholder="Contoh: 1.1.1.02" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-indigo-600 focus:outline-none">
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Kode Akun</label>
+                            <input type="text" id="inputKodeAkun" required placeholder="Contoh: 1.1.1.02" class="w-full px-3 py-2 border rounded-xl text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">
                         </div>
                         <div>
-                            <label for="inputNamaAkun" class="block text-xs font-semibold text-slate-700 mb-1">Nama Akun</label>
-                            <input type="text" id="inputNamaAkun" required placeholder="Contoh: Kas di Bendahara Pengeluaran" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-indigo-600 focus:outline-none">
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Akun</label>
+                            <input type="text" id="inputNamaAkun" required placeholder="Contoh: Kas di Bendahara Pengeluaran" class="w-full px-3 py-2 border rounded-xl text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">
                         </div>
                         <div>
-                            <label for="inputKatAkun" class="block text-xs font-semibold text-slate-700 mb-1">Kelompok / Basis</label>
-                            <select id="inputKatAkun" required class="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-indigo-600 focus:outline-none">
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Kelompok / Basis</label>
+                            <select id="inputKatAkun" required class="w-full px-3 py-2 border rounded-xl text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">
                                 <option value="Aset">Aset</option>
                                 <option value="Kewajiban">Kewajiban</option>
                                 <option value="Ekuitas">Ekuitas</option>
@@ -293,333 +228,310 @@
                                 <option value="Anggaran">Anggaran</option>
                             </select>
                         </div>
-                        <div class="flex gap-2 pt-1">
-                            <button type="submit" id="btnSimpanCoa" class="flex-1 bg-indigo-600 active:bg-indigo-700 hover:bg-indigo-700 text-white font-bold text-xs py-2.5 px-3 rounded-xl transition shadow min-h-[44px] flex items-center justify-center gap-1.5">
+                        <div class="flex gap-2">
+                            <button type="submit" id="btnSimpanCoa" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs py-2.5 rounded-xl transition shadow">
                                 <i class="fa-solid fa-plus"></i> Tambah Akun
                             </button>
-                            <button type="button" id="btnBatalCoa" onclick="batalEditCoa()" class="hidden bg-slate-400 hover:bg-slate-500 text-white font-bold text-xs px-3 py-2.5 rounded-xl transition min-h-[44px]">
+                            <button type="button" id="btnBatalCoa" onclick="batalEditCoa()" class="hidden bg-slate-400 hover:bg-slate-500 text-white font-bold text-xs px-3 py-2.5 rounded-xl transition">
                                 Batal
                             </button>
                         </div>
                     </form>
-                </article>
+                </div>
 
-                <!-- TABEL NERACA SALDO AWAL -->
-                <article class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                    <!-- HEAD KEPALA NERACA SALDO AWAL -->
-                    <div class="p-4 sm:p-5 bg-slate-50 border-b border-slate-200 space-y-3">
-                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-                            <div class="space-y-2 w-full sm:w-auto flex-1">
-                                <div class="p-3 bg-indigo-50/70 border border-indigo-100 rounded-xl space-y-1">
-                                    <div class="flex items-center gap-2">
-                                        <i class="fa-solid fa-building-columns text-indigo-700 text-xs"></i>
-                                        <span class="text-xs font-black text-indigo-950 uppercase" id="displayNamaInstansi">Pemerintah Kabupaten / Kota</span>
-                                    </div>
-                                    <div class="text-[11px] font-bold text-slate-700 flex flex-wrap gap-x-4 gap-y-1">
-                                        <span><i class="fa-solid fa-location-dot text-amber-500 mr-1"></i><span id="displayKabKota">Kabupaten / Kota</span></span>
-                                        <span><i class="fa-solid fa-calendar-days text-indigo-500 mr-1"></i>Periode: <span id="displayPeriodeTgl">-</span></span>
-                                    </div>
-                                </div>
-                                <h3 class="text-xs sm:text-sm font-black text-slate-800 tracking-wide uppercase pt-1">SALDO AWAL NERACA SALDO</h3>
+                <!-- LAMPIRAN 2: TABEL NERACA SALDO AWAL (HEADER RATA TENGAH) -->
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                    <!-- KOP DOKUMEN / HEADER RATA TENGAH -->
+                    <div class="p-6 bg-slate-50 border-b border-slate-200 relative">
+                        <div class="text-center space-y-1.5 max-w-2xl mx-auto">
+                            <!-- NAMA SKPD/INSTANSI -->
+                            <h2 id="displayLamp2SKPD" class="text-sm md:text-base font-black text-indigo-950 uppercase tracking-wide">
+                                SKPD DINAS PENDIDIKAN
+                            </h2>
+                            <!-- KABUPATEN / KOTA -->
+                            <p id="displayLamp2Kab" class="text-xs font-bold text-slate-700">
+                                Kabupaten / Kota: Kepulauan Meranti
+                            </p>
+                            <!-- JUDUL LAPORAN -->
+                            <div class="pt-2">
+                                <h3 class="text-xs md:text-sm font-black text-slate-900 uppercase tracking-widest bg-amber-300 text-slate-950 inline-block px-4 py-1 rounded-lg border border-amber-400 shadow-sm">
+                                    SALDO AWAL NERACA SALDO
+                                </h3>
                             </div>
-                            <button onclick="resetCOAKeDefault()" class="text-xs text-rose-600 hover:text-rose-700 font-semibold hover:underline shrink-0 flex items-center gap-1">
-                                <i class="fa-solid fa-rotate-left"></i> Reset COA Default
+                            <!-- PERIODE TANGGAL -->
+                            <p id="displayLamp2Tgl" class="text-xs font-semibold text-slate-600 pt-1">
+                                Per Tanggal: 1 Januari 2026
+                            </p>
+                        </div>
+
+                        <!-- TOMBOL RESET DEFAULT DI SUDUT -->
+                        <div class="mt-4 md:mt-0 md:absolute md:top-4 md:right-4 text-center md:text-right">
+                            <button onclick="resetCOAKeDefault()" class="text-[11px] text-rose-600 hover:text-rose-800 font-bold hover:underline">
+                                Reset COA Default
                             </button>
                         </div>
                     </div>
 
-                    <!-- Horizontal Scroll Container for Mobile Table -->
-                    <div class="overflow-x-auto custom-scrollbar">
-                        <table class="w-full text-xs text-left border-collapse min-w-[640px]">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs text-left border-collapse min-w-[650px]">
                             <thead>
-                                <tr class="bg-slate-100 text-slate-700 border-b text-center">
-                                    <th class="p-2.5 border border-slate-200 w-28" rowspan="2">Kode Akun</th>
-                                    <th class="p-2.5 border border-slate-200" rowspan="2">Nama Akun</th>
-                                    <th class="p-2.5 border border-slate-200 w-36" rowspan="2">Kelompok / Basis</th>
-                                    <th class="p-2.5 border border-slate-200" colspan="2">Saldo Awal (Rp)</th>
-                                    <th class="p-2.5 border border-slate-200 w-20" rowspan="2">Aksi</th>
+                                <tr class="bg-slate-100 text-slate-700 border-b text-center font-bold">
+                                    <th class="p-2.5 border w-32" rowspan="2">Kode Akun</th>
+                                    <th class="p-2.5 border" rowspan="2">Nama Akun</th>
+                                    <th class="p-2.5 border w-36" rowspan="2">Kelompok / Basis</th>
+                                    <th class="p-2.5 border" colspan="2">Saldo Awal (Rp)</th>
+                                    <th class="p-2.5 border w-24" rowspan="2">Aksi</th>
                                 </tr>
-                                <tr class="bg-slate-100 text-slate-700 border-b text-center">
-                                    <th class="p-2 border border-slate-200 w-36">Debit</th>
-                                    <th class="p-2 border border-slate-200 w-36">Kredit</th>
+                                <tr class="bg-slate-100 text-slate-700 border-b text-center font-bold">
+                                    <th class="p-2 border w-36">Debit</th>
+                                    <th class="p-2 border w-36">Kredit</th>
                                 </tr>
                             </thead>
                             <tbody id="coaTbody"></tbody>
+                            <!-- BARIS TOTAL -->
                             <tfoot>
                                 <tr class="bg-indigo-950 text-white font-bold text-xs">
-                                    <td colspan="3" class="p-2.5 border border-indigo-900 text-right uppercase">Total Saldo Awal</td>
-                                    <td class="p-2.5 border border-indigo-900 text-right font-mono" id="totalDebetSaldoAwal">Rp 0</td>
-                                    <td class="p-2.5 border border-indigo-900 text-right font-mono" id="totalKreditSaldoAwal">Rp 0</td>
-                                    <td class="p-2.5 border border-indigo-900 text-center">
-                                        <span id="statusBalance" class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-amber-400 text-slate-900">BALANCE</span>
+                                    <td colspan="3" class="p-2.5 border text-right uppercase tracking-wider">Total Saldo Awal</td>
+                                    <td class="p-2.5 border text-right font-mono text-amber-300" id="totalDebetSaldoAwal">Rp 0</td>
+                                    <td class="p-2.5 border text-right font-mono text-amber-300" id="totalKreditSaldoAwal">Rp 0</td>
+                                    <td class="p-2.5 border text-center">
+                                        <span id="statusBalance" class="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-400 text-slate-900">BALANCE</span>
                                     </td>
                                 </tr>
                             </tfoot>
                         </table>
                     </div>
-                </article>
+                </div>
             </section>
 
             <!-- TAB 3: DAFTAR JURNAL -->
-            <section id="tab-jurnal" class="tab-content hidden space-y-4 sm:space-y-6">
-                <!-- FORM INPUT TRANSACTION DUAL JOURNALING -->
-                <article class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm">
-                    <h2 class="text-xs font-extrabold text-indigo-900 uppercase tracking-wider mb-4">Input Jurnal Transaksi (Dual Journaling)</h2>
+            <section id="tab-jurnal" class="tab-content hidden space-y-6">
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                    <h2 class="text-xs font-bold text-indigo-900 uppercase tracking-wider mb-4">Input Jurnal Transaksi (Dual Journaling)</h2>
                     <form onsubmit="tambahJurnal(event)" class="space-y-4">
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                             <div>
-                                <label for="txTgl" class="block text-xs font-semibold text-slate-700 mb-1">Tanggal Transaksi</label>
-                                <input type="date" id="txTgl" required class="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs sm:text-sm">
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Tanggal</label>
+                                <input type="date" id="txTgl" required class="w-full px-3 py-2 border rounded-xl text-xs">
                             </div>
-                            <div class="sm:col-span-2">
-                                <label for="txUraian" class="block text-xs font-semibold text-slate-700 mb-1">Keterangan / Uraian Transaksi</label>
-                                <input type="text" id="txUraian" required placeholder="Contoh: Penerimaan Pajak Hotel atau Pembayaran Gaji" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs sm:text-sm">
+                            <div class="md:col-span-2">
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Keterangan / Uraian Transaksi</label>
+                                <input type="text" id="txUraian" required placeholder="Uraian Transaksi" class="w-full px-3 py-2 border rounded-xl text-xs">
                             </div>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <!-- Finansial -->
-                            <div class="bg-indigo-50/70 p-3.5 rounded-xl border border-indigo-100 space-y-2">
-                                <span class="text-xs font-extrabold text-indigo-800 flex items-center gap-1.5">
-                                    <i class="fa-solid fa-1 text-indigo-600"></i> Jurnal Finansial (LO & Neraca)
-                                </span>
-                                <div>
-                                    <label class="block text-[11px] text-slate-600 font-medium mb-0.5">(D) Debet Finansial</label>
-                                    <select id="txFinD" required class="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs select-coa bg-white"></select>
-                                </div>
-                                <div>
-                                    <label class="block text-[11px] text-slate-600 font-medium mb-0.5">(K) Kredit Finansial</label>
-                                    <select id="txFinK" required class="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs select-coa bg-white"></select>
-                                </div>
+                            <div class="bg-indigo-50/50 p-3.5 rounded-xl border border-indigo-100 space-y-2">
+                                <span class="text-xs font-bold text-indigo-800 block">1. Jurnal Finansial (LO & Neraca)</span>
+                                <select id="txFinD" required class="w-full px-2.5 py-1.5 border rounded-lg text-xs select-coa"></select>
+                                <select id="txFinK" required class="w-full px-2.5 py-1.5 border rounded-lg text-xs select-coa"></select>
                             </div>
-                            <!-- LRA -->
-                            <div class="bg-amber-50/70 p-3.5 rounded-xl border border-amber-200/80 space-y-2">
-                                <span class="text-xs font-extrabold text-amber-900 flex items-center gap-1.5">
-                                    <i class="fa-solid fa-2 text-amber-600"></i> Jurnal Anggaran (LRA)
-                                </span>
-                                <div>
-                                    <label class="block text-[11px] text-slate-600 font-medium mb-0.5">(D) Debet LRA</label>
-                                    <select id="txLraD" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs select-coa bg-white"></select>
-                                </div>
-                                <div>
-                                    <label class="block text-[11px] text-slate-600 font-medium mb-0.5">(K) Kredit LRA</label>
-                                    <select id="txLraK" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs select-coa bg-white"></select>
-                                </div>
+                            <div class="bg-amber-50/50 p-3.5 rounded-xl border border-amber-100 space-y-2">
+                                <span class="text-xs font-bold text-amber-900 block">2. Jurnal Pelaksanaan Anggaran (LRA)</span>
+                                <select id="txLraD" class="w-full px-2.5 py-1.5 border rounded-lg text-xs select-coa"></select>
+                                <select id="txLraK" class="w-full px-2.5 py-1.5 border rounded-lg text-xs select-coa"></select>
                             </div>
                         </div>
 
-                        <div class="flex flex-col sm:flex-row justify-between items-stretch sm:items-end gap-3 pt-2">
-                            <div class="w-full sm:w-1/2 md:w-1/3">
-                                <label for="txNominal" class="block text-xs font-semibold text-slate-700 mb-1">Nominal Transaksi (Rp)</label>
-                                <input type="number" id="txNominal" min="1" required placeholder="0" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs sm:text-sm font-bold text-slate-800">
+                        <div class="flex flex-col sm:flex-row justify-between items-end gap-3 pt-2">
+                            <div class="w-full sm:w-1/3">
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Nominal (Rp)</label>
+                                <input type="number" id="txNominal" min="1" required placeholder="0" class="w-full px-3 py-2 border rounded-xl text-xs font-bold">
                             </div>
-                            <button type="submit" class="bg-indigo-600 active:bg-indigo-700 hover:bg-indigo-700 text-white font-bold text-xs py-3 px-6 rounded-xl transition shadow min-h-[44px] flex items-center justify-center gap-2">
-                                <i class="fa-solid fa-floppy-disk"></i> Simpan Transaksi Dual Journal
+                            <button type="submit" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-6 py-2.5 rounded-xl transition shadow">
+                                Simpan Transaksi
                             </button>
                         </div>
                     </form>
-                </article>
+                </div>
 
-                <!-- TABEL DAFTAR JURNAL UMUM -->
-                <article class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                    <div class="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
-                        <span class="text-xs font-extrabold text-slate-800">Daftar Jurnal Umum Transaksi</span>
-                        <button onclick="resetData()" class="text-xs text-rose-600 hover:underline font-semibold flex items-center gap-1">
-                            <i class="fa-solid fa-trash-can"></i> Reset Data Jurnal
-                        </button>
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="p-4 border-b flex justify-between items-center">
+                        <span class="text-xs font-extrabold text-slate-800">Daftar Jurnal Umum</span>
+                        <button onclick="resetData()" class="text-xs text-rose-600 hover:underline font-semibold">Reset Data Jurnal</button>
                     </div>
-
-                    <!-- Horizontal Scroll Table -->
-                    <div class="overflow-x-auto custom-scrollbar">
+                    <div class="overflow-x-auto">
                         <table class="w-full text-xs text-left border-collapse min-w-[700px]">
                             <thead>
-                                <tr class="bg-slate-100 text-slate-700 border-b">
-                                    <th class="p-2.5 border border-slate-200 w-24">Tgl</th>
-                                    <th class="p-2.5 border border-slate-200">Uraian Transaksi</th>
-                                    <th class="p-2.5 border border-slate-200">Jurnal Finansial (LO/Neraca)</th>
-                                    <th class="p-2.5 border border-slate-200">Jurnal Anggaran (LRA)</th>
-                                    <th class="p-2.5 border border-slate-200 text-right w-32">Nominal (Rp)</th>
-                                    <th class="p-2.5 border border-slate-200 text-center w-16">Aksi</th>
+                                <tr class="bg-slate-100 text-slate-700 border-b font-bold">
+                                    <th class="p-2.5 border">Tgl</th>
+                                    <th class="p-2.5 border">Uraian</th>
+                                    <th class="p-2.5 border">Jurnal Finansial (LO/Neraca)</th>
+                                    <th class="p-2.5 border">Jurnal Anggaran (LRA)</th>
+                                    <th class="p-2.5 border text-right">Nominal (Rp)</th>
+                                    <th class="p-2.5 border text-center">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody id="jurnalTbody"></tbody>
                         </table>
                     </div>
-                </article>
+                </div>
             </section>
 
             <!-- TAB 4: BUKU BESAR MANUAL -->
             <section id="tab-bukubesar" class="tab-content hidden space-y-4">
-                <article class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-                    <h2 class="text-xs font-extrabold text-indigo-900 uppercase tracking-wider">Input Buku Besar (Posting Manual)</h2>
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <h2 class="text-xs font-bold text-indigo-900 uppercase tracking-wider">Input Buku Besar (Posting Manual)</h2>
                     
-                    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <label for="bbSelect" class="text-xs font-bold text-slate-700 shrink-0">Pilih Akun Buku Besar:</label>
-                        <select id="bbSelect" onchange="renderBukuBesar()" class="px-3 py-2 border border-slate-300 rounded-xl text-xs sm:text-sm select-coa w-full font-bold text-indigo-950 bg-white"></select>
+                    <div class="flex flex-col sm:flex-row sm:items-center gap-3 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                        <label class="text-xs font-bold text-slate-700 whitespace-nowrap">Pilih Akun Buku Besar:</label>
+                        <select id="bbSelect" onchange="renderBukuBesar()" class="px-3 py-2 border rounded-xl text-xs select-coa w-full sm:w-80 font-bold text-indigo-950"></select>
                     </div>
 
-                    <form onsubmit="tambahBukuBesarManual(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 items-end">
+                    <form onsubmit="tambahBukuBesarManual(event)" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3 items-end">
                         <input type="hidden" id="editBbIndex" value="-1">
                         <div>
-                            <label for="bbTgl" class="block text-xs font-semibold text-slate-700 mb-1">Tanggal</label>
-                            <input type="date" id="bbTgl" required class="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs sm:text-sm">
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Tanggal</label>
+                            <input type="date" id="bbTgl" required class="w-full px-3 py-2 border rounded-xl text-xs">
                         </div>
-                        <div class="sm:col-span-2 lg:col-span-2">
-                            <label for="bbKet" class="block text-xs font-semibold text-slate-700 mb-1">Keterangan Posting</label>
-                            <input type="text" id="bbKet" placeholder="Contoh: Saldo Awal / Posting Jurnal Kas" required class="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs sm:text-sm">
-                        </div>
-                        <div>
-                            <label for="bbDebet" class="block text-xs font-semibold text-slate-700 mb-1">Debet (Rp)</label>
-                            <input type="number" id="bbDebet" min="0" placeholder="0" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs sm:text-sm">
+                        <div class="sm:col-span-2">
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Keterangan Posting</label>
+                            <input type="text" id="bbKet" placeholder="Contoh: Saldo Awal / Posting Jurnal" required class="w-full px-3 py-2 border rounded-xl text-xs">
                         </div>
                         <div>
-                            <label for="bbKredit" class="block text-xs font-semibold text-slate-700 mb-1">Kredit (Rp)</label>
-                            <input type="number" id="bbKredit" min="0" placeholder="0" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs sm:text-sm">
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Debet (Rp)</label>
+                            <input type="number" id="bbDebet" min="0" placeholder="0" class="w-full px-3 py-2 border rounded-xl text-xs">
                         </div>
-                        <div class="sm:col-span-2 lg:col-span-5 flex justify-end gap-2 pt-1">
-                            <button type="button" id="btnBatalBb" onclick="batalEditBb()" class="hidden bg-slate-400 hover:bg-slate-500 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition min-h-[44px]">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Kredit (Rp)</label>
+                            <input type="number" id="bbKredit" min="0" placeholder="0" class="w-full px-3 py-2 border rounded-xl text-xs">
+                        </div>
+                        <div class="sm:col-span-2 md:col-span-5 flex justify-end gap-2 pt-2">
+                            <button type="button" id="btnBatalBb" onclick="batalEditBb()" class="hidden bg-slate-400 hover:bg-slate-500 text-white font-bold text-xs px-4 py-2 rounded-xl transition">
                                 Batal
                             </button>
-                            <button type="submit" id="btnSubmitBb" class="w-full sm:w-auto bg-indigo-600 active:bg-indigo-700 hover:bg-indigo-700 text-white font-bold text-xs px-6 py-2.5 rounded-xl transition shadow min-h-[44px] flex items-center justify-center gap-2">
-                                <i class="fa-solid fa-paper-plane"></i> Submit Baris Buku Besar
+                            <button type="submit" id="btnSubmitBb" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl transition shadow">
+                                <i class="fa-solid fa-paper-plane"></i> Submit Buku Besar
                             </button>
                         </div>
                     </form>
-                </article>
+                </div>
 
-                <article class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                    <div class="p-3 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="p-3.5 bg-slate-50 border-b flex justify-between items-center">
                         <span class="text-xs font-extrabold text-slate-800" id="bbJudulTabel">Buku Besar: Belum Memilih Akun</span>
                         <button onclick="resetBukuBesarAkunIni()" class="text-xs text-rose-600 hover:underline font-semibold">Kosongkan Akun Ini</button>
                     </div>
-
-                    <div class="overflow-x-auto custom-scrollbar">
+                    <div class="overflow-x-auto">
                         <table class="w-full text-xs text-left border-collapse min-w-[600px]">
                             <thead>
-                                <tr class="bg-slate-100 text-slate-700 border-b">
-                                    <th class="p-2.5 border border-slate-200 w-24">Tanggal</th>
-                                    <th class="p-2.5 border border-slate-200">Keterangan</th>
-                                    <th class="p-2.5 border border-slate-200 text-right w-28">Debet (Rp)</th>
-                                    <th class="p-2.5 border border-slate-200 text-right w-28">Kredit (Rp)</th>
-                                    <th class="p-2.5 border border-slate-200 text-right w-32">Saldo (Rp)</th>
-                                    <th class="p-2.5 border border-slate-200 text-center w-20">Aksi</th>
+                                <tr class="bg-slate-100 text-slate-700 border-b font-bold">
+                                    <th class="p-2.5 border">Tanggal</th>
+                                    <th class="p-2.5 border">Keterangan</th>
+                                    <th class="p-2.5 border text-right">Debet (Rp)</th>
+                                    <th class="p-2.5 border text-right">Kredit (Rp)</th>
+                                    <th class="p-2.5 border text-right">Saldo (Rp)</th>
+                                    <th class="p-2.5 border text-center w-20">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody id="bbTbody"></tbody>
                         </table>
                     </div>
-                </article>
+                </div>
 
                 <div class="flex justify-end pt-1">
-                    <button onclick="bukaModalSemuaBb()" class="w-full sm:w-auto bg-indigo-950 active:bg-indigo-900 text-amber-400 font-extrabold text-xs px-5 py-3 rounded-xl shadow-md flex items-center justify-center gap-2 transition min-h-[44px]">
-                        <i class="fa-solid fa-layer-group text-sm"></i> Lihat Rekapitulasi Semua Buku Besar
+                    <button onclick="bukaModalSemuaBb()" class="bg-indigo-950 hover:bg-indigo-900 text-amber-400 font-bold text-xs px-5 py-3 rounded-xl shadow-md flex items-center gap-2 transition transform hover:-translate-y-0.5">
+                        <i class="fa-solid fa-layer-group text-sm"></i> Lihat Semua Buku Besar
                     </button>
                 </div>
             </section>
 
             <!-- TAB 5: LAPORAN KEUANGAN -->
-            <section id="tab-laporan" class="tab-content hidden space-y-4 sm:space-y-6">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-                    <!-- LRA -->
-                    <article class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5">
-                        <h3 class="text-xs font-black text-amber-800 uppercase tracking-wide border-b border-amber-100 pb-2.5 mb-4 flex items-center gap-2">
-                            <i class="fa-solid fa-file-invoice-dollar text-amber-600"></i> Laporan Realisasi Anggaran (LRA)
-                        </h3>
-                        <div class="space-y-3 text-xs sm:text-sm">
-                            <div class="flex justify-between items-center py-1 border-b border-slate-100">
-                                <span class="text-slate-600 font-medium">Pendapatan LRA</span>
-                                <span id="lraPend" class="font-bold text-emerald-600">Rp 0</span>
-                            </div>
-                            <div class="flex justify-between items-center py-1 border-b border-slate-100">
-                                <span class="text-slate-600 font-medium">Belanja LRA</span>
-                                <span id="lraBelanja" class="font-bold text-rose-600">Rp 0</span>
-                            </div>
-                            <div class="pt-2 flex justify-between items-center font-extrabold text-sm sm:text-base text-slate-800">
-                                <span>SiLPA / (SiKPA)</span>
-                                <span id="lraSilpa" class="text-indigo-700">Rp 0</span>
-                            </div>
+            <section id="tab-laporan" class="tab-content hidden space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+                        <h3 class="text-xs font-bold text-amber-800 border-b pb-2 mb-3">Laporan Realisasi Anggaran (LRA)</h3>
+                        <div class="space-y-2 text-xs">
+                            <div class="flex justify-between"><span>Pendapatan LRA</span><span id="lraPend" class="font-semibold text-emerald-600">Rp 0</span></div>
+                            <div class="flex justify-between"><span>Belanja LRA</span><span id="lraBelanja" class="font-semibold text-rose-600">Rp 0</span></div>
+                            <div class="border-t pt-2 flex justify-between font-extrabold text-sm"><span>SiLPA / (SiKPA)</span><span id="lraSilpa" class="text-indigo-700">Rp 0</span></div>
                         </div>
-                    </article>
+                    </div>
 
-                    <!-- LO -->
-                    <article class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5">
-                        <h3 class="text-xs font-black text-indigo-900 uppercase tracking-wide border-b border-indigo-100 pb-2.5 mb-4 flex items-center gap-2">
-                            <i class="fa-solid fa-scale-balanced text-indigo-600"></i> Laporan Operasional (LO)
-                        </h3>
-                        <div class="space-y-3 text-xs sm:text-sm">
-                            <div class="flex justify-between items-center py-1 border-b border-slate-100">
-                                <span class="text-slate-600 font-medium">Pendapatan LO</span>
-                                <span id="loPend" class="font-bold text-emerald-600">Rp 0</span>
-                            </div>
-                            <div class="flex justify-between items-center py-1 border-b border-slate-100">
-                                <span class="text-slate-600 font-medium">Beban LO</span>
-                                <span id="loBeban" class="font-bold text-rose-600">Rp 0</span>
-                            </div>
-                            <div class="pt-2 flex justify-between items-center font-extrabold text-sm sm:text-base text-slate-800">
-                                <span>Surplus / (Defisit) LO</span>
-                                <span id="loSurplus" class="text-indigo-700">Rp 0</span>
-                            </div>
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+                        <h3 class="text-xs font-bold text-indigo-800 border-b pb-2 mb-3">Laporan Operasional (LO)</h3>
+                        <div class="space-y-2 text-xs">
+                            <div class="flex justify-between"><span>Pendapatan LO</span><span id="loPend" class="font-semibold text-emerald-600">Rp 0</span></div>
+                            <div class="flex justify-between"><span>Beban LO</span><span id="loBeban" class="font-semibold text-rose-600">Rp 0</span></div>
+                            <div class="border-t pt-2 flex justify-between font-extrabold text-sm"><span>Surplus / (Defisit) LO</span><span id="loSurplus" class="text-indigo-700">Rp 0</span></div>
                         </div>
-                    </article>
+                    </div>
                 </div>
             </section>
+
         </div>
     </main>
 
-    <!-- FIXED MOBILE BOTTOM NAVIGATION BAR -->
-    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-indigo-950 text-slate-300 border-t border-indigo-900 z-30 flex justify-around items-center px-1 py-1 pb-safe shadow-lg">
-        <button onclick="switchTab('dashboard')" id="mobile-nav-dashboard" class="mobile-nav-btn flex-1 flex flex-col items-center justify-center py-2 text-white font-bold transition">
-            <i class="fa-solid fa-chart-pie text-base mb-1"></i>
-            <span class="text-[10px]">Dashboard</span>
+    <!-- BOTTOM NAVIGATION BAR FOR MOBILE (ANDROID & IPHONE) -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-indigo-950 text-slate-300 border-t border-indigo-900 z-30 flex justify-around items-center py-2 px-1 shadow-lg" style="padding-bottom: max(0.5rem, env(safe-area-inset-bottom));">
+        <button onclick="switchTab('dashboard')" id="mobile-nav-dashboard" class="flex flex-col items-center gap-1 text-[10px] text-amber-400 font-bold p-1">
+            <i class="fa-solid fa-chart-pie text-base"></i>
+            <span>Dashboard</span>
         </button>
-        <button onclick="switchTab('coa')" id="mobile-nav-coa" class="mobile-nav-btn flex-1 flex flex-col items-center justify-center py-2 text-slate-400 transition">
-            <i class="fa-solid fa-list-ol text-base mb-1"></i>
-            <span class="text-[10px]">COA</span>
+        <button onclick="switchTab('coa')" id="mobile-nav-coa" class="flex flex-col items-center gap-1 text-[10px] text-slate-400 font-medium p-1">
+            <i class="fa-solid fa-list-ol text-base"></i>
+            <span>COA</span>
         </button>
-        <button onclick="switchTab('jurnal')" id="mobile-nav-jurnal" class="mobile-nav-btn flex-1 flex flex-col items-center justify-center py-2 text-slate-400 transition">
-            <i class="fa-solid fa-book-open text-base mb-1"></i>
-            <span class="text-[10px]">Jurnal</span>
+        <button onclick="switchTab('jurnal')" id="mobile-nav-jurnal" class="flex flex-col items-center gap-1 text-[10px] text-slate-400 font-medium p-1">
+            <i class="fa-solid fa-book-open text-base"></i>
+            <span>Jurnal</span>
         </button>
-        <button onclick="switchTab('bukubesar')" id="mobile-nav-bukubesar" class="mobile-nav-btn flex-1 flex flex-col items-center justify-center py-2 text-slate-400 transition">
-            <i class="fa-solid fa-book-bookmark text-base mb-1"></i>
-            <span class="text-[10px]">Buku Besar</span>
+        <button onclick="switchTab('bukubesar')" id="mobile-nav-bukubesar" class="flex flex-col items-center gap-1 text-[10px] text-slate-400 font-medium p-1">
+            <i class="fa-solid fa-book text-base"></i>
+            <span>Buku Besar</span>
         </button>
-        <button onclick="switchTab('laporan')" id="mobile-nav-laporan" class="mobile-nav-btn flex-1 flex flex-col items-center justify-center py-2 text-slate-400 transition">
-            <i class="fa-solid fa-file-invoice-dollar text-base mb-1"></i>
-            <span class="text-[10px]">Laporan</span>
+        <button onclick="switchTab('laporan')" id="mobile-nav-laporan" class="flex flex-col items-center gap-1 text-[10px] text-slate-400 font-medium p-1">
+            <i class="fa-solid fa-file-invoice-dollar text-base"></i>
+            <span>Laporan</span>
         </button>
     </nav>
 
-    <!-- MODAL REKAPITULASI SEMUA BUKU BESAR -->
-    <div id="modalSemuaBb" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center z-50 p-2 sm:p-4">
-        <div class="bg-white w-full max-w-5xl rounded-2xl shadow-2xl flex flex-col max-h-[92vh] overflow-hidden border border-slate-200">
-            <div class="px-4 sm:px-6 py-3.5 bg-indigo-950 text-white flex justify-between items-center shrink-0 border-b border-indigo-900">
+    <!-- MODAL POP UP: CEKLIS DATA IDENTITAS TERSIMPAN -->
+    <div id="modalSavedAlert" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center z-50 p-4 transition-all">
+        <div class="bg-white w-full max-w-sm rounded-3xl p-6 shadow-2xl text-center space-y-4 border border-slate-100 transform scale-95 transition-transform duration-200">
+            <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-inner">
+                <i class="fa-solid fa-circle-check text-4xl"></i>
+            </div>
+            <div>
+                <h3 class="text-base font-extrabold text-slate-900">Data Tersimpan!</h3>
+                <p class="text-xs text-slate-500 mt-1">Identitas Instansi telah diperbarui dan dikirimkan otomatis ke Lampiran 2 (COA).</p>
+            </div>
+            <button onclick="tutupModalSavedAlert()" class="w-full bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-extrabold text-xs py-3 rounded-xl shadow-md transition">
+                Selesai / Lanjutkan
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL POP-UP LIHAT SEMUA BUKU BESAR -->
+    <div id="modalSemuaBb" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="bg-white w-full max-w-5xl rounded-3xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden border border-slate-200">
+            <div class="px-6 py-4 bg-indigo-950 text-white flex justify-between items-center shrink-0 border-b border-indigo-900">
                 <div class="flex items-center gap-3">
-                    <div class="bg-amber-400 text-indigo-950 p-2 rounded-xl font-bold text-sm">
-                        <i class="fa-solid fa-book-open-reader"></i>
+                    <div class="bg-amber-400 text-indigo-950 p-2 rounded-xl font-bold">
+                        <i class="fa-solid fa-book-open text-lg"></i>
                     </div>
                     <div>
-                        <h3 class="text-xs sm:text-sm font-extrabold">Rekapitulasi Seluruh Buku Besar</h3>
-                        <p class="text-[10px] sm:text-[11px] text-indigo-300">Rincian seluruh posting akun yang di-input</p>
+                        <h3 class="text-xs md:text-sm font-bold">Rekapitulasi Seluruh Buku Besar</h3>
+                        <p class="text-[10px] text-indigo-300">Detail rincian transaksi posting akun</p>
                     </div>
                 </div>
-                <button onclick="tutupModalSemuaBb()" class="text-slate-300 hover:text-white bg-indigo-900 hover:bg-indigo-800 rounded-lg w-9 h-9 flex items-center justify-center transition">
+                <button onclick="tutupModalSemuaBb()" class="text-slate-300 hover:text-white bg-indigo-900 hover:bg-indigo-800 rounded-lg w-8 h-8 flex items-center justify-center transition">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
 
-            <div id="modalSemuaBbBody" class="p-3 sm:p-6 overflow-y-auto custom-scrollbar space-y-4 sm:space-y-6 flex-1 bg-slate-50"></div>
+            <div id="modalSemuaBbBody" class="p-6 overflow-y-auto space-y-6 flex-1 bg-slate-50"></div>
 
-            <div class="px-4 sm:px-6 py-3 bg-white border-t border-slate-200 flex justify-end shrink-0">
-                <button onclick="tutupModalSemuaBb()" class="bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold px-5 py-2.5 rounded-xl transition min-h-[40px]">
-                    Tutup Modal
+            <div class="px-6 py-3 bg-white border-t border-slate-200 flex justify-end shrink-0">
+                <button onclick="tutupModalSemuaBb()" class="bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold px-4 py-2 rounded-xl transition">
+                    Tutup
                 </button>
             </div>
         </div>
     </div>
 
+    <!-- LOGIC SCRIPT AKUNTANSI & INTERAKSI -->
     <script>
-        // COA Master Default Data
         const defaultCoaData = [
             { kode: '1.1.1.01', nama: 'Kas di Kas Daerah', kat: 'Aset', debetAwal: 0, kreditAwal: 0 },
             { kode: '1.1.3.01', nama: 'Piutang Pajak Daerah', kat: 'Aset', debetAwal: 0, kreditAwal: 0 },
@@ -639,10 +551,10 @@
         let coaData = [];
         let transaksi = [];
         let bukuBesarManual = {};
-        let identitas = { nama: '', kelas: '', instansi: '', kabKota: '', tgl: '' };
+        let identitas = { nama: '', kelas: '', instansi: '', kab: '', tgl: '' };
 
         window.onload = function() {
-            // Load COA
+            // Load LocalStorage COA
             const saveCoa = localStorage.getItem('siswa_coa');
             if(saveCoa) {
                 coaData = JSON.parse(saveCoa);
@@ -651,113 +563,125 @@
                 localStorage.setItem('siswa_coa', JSON.stringify(coaData));
             }
 
-            // Load Buku Besar
-            const saveBb = localStorage.getItem('siswa_bb_manual');
-            if(saveBb) bukuBesarManual = JSON.parse(saveBb);
-
-            initCOA();
-
-            // Load Student & Agency Identity & Transactions
+            // Load LocalStorage Identitas & Instansi
             const saveId = localStorage.getItem('siswa_id');
-            const saveTx = localStorage.getItem('siswa_tx');
             if(saveId) {
                 identitas = JSON.parse(saveId);
                 document.getElementById('siswaNama').value = identitas.nama || '';
                 document.getElementById('siswaKelas').value = identitas.kelas || '';
                 document.getElementById('instansiNama').value = identitas.instansi || '';
-                document.getElementById('instansiKabKota').value = identitas.kabKota || '';
+                document.getElementById('instansiKab').value = identitas.kab || '';
                 document.getElementById('instansiTgl').value = identitas.tgl || '';
             }
+
+            const saveBb = localStorage.getItem('siswa_bb_manual');
+            if(saveBb) bukuBesarManual = JSON.parse(saveBb);
+
+            const saveTx = localStorage.getItem('siswa_tx');
             if(saveTx) transaksi = JSON.parse(saveTx);
 
-            updateTampilanIdentitas();
+            initCOA();
+            updateTampilanLampiran2();
             renderTampilan();
         };
 
-        // Sidebar Toggle Handler for Mobile Drawer
-        function simpanIdentitas(showToast = false) {
-            identitas.nama = document.getElementById('siswaNama').value;
-            identitas.kelas = document.getElementById('siswaKelas').value;
-            identitas.instansi = document.getElementById('instansiNama').value;
-            identitas.kabKota = document.getElementById('instansiKabKota').value;
-            identitas.tgl = document.getElementById('instansiTgl').value;
-
-            localStorage.setItem('siswa_id', JSON.stringify(identitas));
-            updateTampilanIdentitas();
-
-            if(showToast) {
-                alert("Identitas Siswa & Instansi berhasil disimpan!");
-            }
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('mainSidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
         }
 
-        function updateTampilanIdentitas() {
-            const namaInstansi = identitas.instansi || 'SKPD Dinas Pendapatan';
-            const kabKota = identitas.kabKota || 'Kabupaten / Kota';
-            
-            let formattedDate = '-';
-            if(identitas.tgl) {
-                const dateObj = new Date(identitas.tgl);
-                if(!isNaN(dateObj)) {
-                    formattedDate = dateObj.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-                }
-            }
-
-            const elInstansi = document.getElementById('displayNamaInstansi');
-            const elKabKota = document.getElementById('displayKabKota');
-            const elPeriode = document.getElementById('displayPeriodeTgl');
-
-            if(elInstansi) elInstansi.innerText = namaInstansi;
-            if(elKabKota) elKabKota.innerText = kabKota;
-            if(elPeriode) elPeriode.innerText = formattedDate;
-        }
-
-        // Tab Switching Handler
         function switchTab(tab) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             
-            // Desktop Sidebar styling
+            // Unselect Desktop Nav
             document.querySelectorAll('.nav-btn').forEach(el => {
-                el.classList.remove('bg-indigo-800', 'text-white', 'font-semibold');
-                el.classList.add('text-slate-300');
+                el.classList.remove('bg-indigo-800', 'text-white', 'shadow-md');
+                el.classList.add('hover:bg-indigo-900', 'hover:text-white');
             });
 
-            // Mobile Bottom Nav styling
-            document.querySelectorAll('.mobile-nav-btn').forEach(el => {
-                el.classList.remove('text-white', 'font-bold');
-                el.classList.add('text-slate-400');
+            // Unselect Mobile Nav
+            document.querySelectorAll('nav button[id^="mobile-nav-"]').forEach(btn => {
+                btn.classList.remove('text-amber-400', 'font-bold');
+                btn.classList.add('text-slate-400', 'font-medium');
             });
-            
+
+            // Select active tab
             document.getElementById(`tab-${tab}`).classList.remove('hidden');
             
             const activeNav = document.getElementById(`nav-${tab}`);
             if(activeNav) {
-                activeNav.classList.add('bg-indigo-800', 'text-white', 'font-semibold');
-                activeNav.classList.remove('text-slate-300');
+                activeNav.classList.add('bg-indigo-800', 'text-white', 'shadow-md');
+                activeNav.classList.remove('hover:bg-indigo-900');
             }
 
             const activeMobileNav = document.getElementById(`mobile-nav-${tab}`);
             if(activeMobileNav) {
-                activeMobileNav.classList.add('text-white', 'font-bold');
-                activeMobileNav.classList.remove('text-slate-400');
+                activeMobileNav.classList.add('text-amber-400', 'font-bold');
+                activeMobileNav.classList.remove('text-slate-400', 'font-medium');
             }
 
-            const titles = {
+            const titleMap = {
                 'dashboard': 'Dashboard Utama',
                 'coa': 'Bagan Akun (COA) & Saldo Awal',
-                'jurnal': 'Jurnal Umum (Dual Journaling)',
-                'bukubesar': 'Buku Besar Manual SKPD',
+                'jurnal': 'Daftar Jurnal Umum Transaksi',
+                'bukubesar': 'Buku Besar Manual',
                 'laporan': 'Laporan Keuangan (LRA & LO)'
             };
-            document.getElementById('headerTitle').innerText = titles[tab] || 'Praktikum Akuntansi';
+            document.getElementById('headerTitle').innerText = titleMap[tab] || 'Dashboard';
 
-            // Close mobile sidebar if open
-            toggleSidebar(false);
+            // Auto close mobile drawer if open
+            const sidebar = document.getElementById('mainSidebar');
+            if(!sidebar.classList.contains('-translate-x-full') && window.innerWidth < 768) {
+                toggleMobileMenu();
+            }
         }
 
-        function simpanHeaderNeraca() {
-            headerNeraca.instansi = document.getElementById('neracaInstansi').value;
-            headerNeraca.tgl = document.getElementById('neracaTgl').value;
-            localStorage.setItem('siswa_header_neraca', JSON.stringify(headerNeraca));
+        function simpanIdentitasSiswa() {
+            identitas.nama = document.getElementById('siswaNama').value;
+            identitas.kelas = document.getElementById('siswaKelas').value;
+            localStorage.setItem('siswa_id', JSON.stringify(identitas));
+        }
+
+        function simpanIdentitasInstansi() {
+            identitas.nama = document.getElementById('siswaNama').value;
+            identitas.kelas = document.getElementById('siswaKelas').value;
+            identitas.instansi = document.getElementById('instansiNama').value;
+            identitas.kab = document.getElementById('instansiKab').value;
+            identitas.tgl = document.getElementById('instansiTgl').value;
+
+            localStorage.setItem('siswa_id', JSON.stringify(identitas));
+            updateTampilanLampiran2();
+
+            // Tampilkan Pop Up Alert Ceklis
+            const modal = document.getElementById('modalSavedAlert');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function tutupModalSavedAlert() {
+            const modal = document.getElementById('modalSavedAlert');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function formatTanggalIndo(dateStr) {
+            if(!dateStr) return ' Per Tanggal: -';
+            const d = new Date(dateStr);
+            if(isNaN(d.getTime())) return `Per Tanggal: ${dateStr}`;
+            const bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            return `Per Tanggal: ${d.getDate()} ${bulan[d.getMonth()]} ${d.getFullYear()}`;
+        }
+
+        function updateTampilanLampiran2() {
+            const skpdText = identitas.instansi ? (identitas.instansi.toUpperCase().startsWith('SKPD') ? identitas.instansi.toUpperCase() : `SKPD ${identitas.instansi.toUpperCase()}`) : 'SKPD DINAS PENDIDIKAN';
+            const kabText = identitas.kab ? `Kabupaten / Kota: ${identitas.kab}` : 'Kabupaten / Kota: -';
+            const tglText = formatTanggalIndo(identitas.tgl);
+
+            document.getElementById('displayLamp2SKPD').innerText = skpdText;
+            document.getElementById('displayLamp2Kab').innerText = kabText;
+            document.getElementById('displayLamp2Tgl').innerText = tglText;
         }
 
         function initCOA() {
@@ -778,22 +702,22 @@
                 totalKredit += parseFloat(item.kreditAwal);
 
                 const tr = document.createElement('tr');
-                tr.className = 'border-b border-slate-200 hover:bg-slate-50 transition';
+                tr.className = 'border-b hover:bg-slate-50 transition';
                 tr.innerHTML = `
-                    <td class="p-2 border border-slate-200 font-mono font-semibold">${item.kode}</td>
-                    <td class="p-2 border border-slate-200 font-medium text-slate-800">${item.nama}</td>
-                    <td class="p-2 border border-slate-200 text-slate-600">${item.kat}</td>
-                    <td class="p-1 border border-slate-200 text-right">
+                    <td class="p-2.5 border font-mono font-bold text-indigo-950">${item.kode}</td>
+                    <td class="p-2.5 border font-medium text-slate-800">${item.nama}</td>
+                    <td class="p-2.5 border text-slate-600 font-semibold">${item.kat}</td>
+                    <td class="p-1 border text-right">
                         <input type="number" min="0" value="${item.debetAwal || ''}" placeholder="0" 
                             onchange="updateSaldoAwal(${idx}, 'debet', this.value)" 
-                            class="w-full px-2 py-1 border border-slate-300 rounded-lg text-right font-mono text-xs focus:ring-1 focus:ring-indigo-600">
+                            class="w-full px-2 py-1 border rounded-lg text-right font-mono text-xs focus:ring-1 focus:ring-indigo-500">
                     </td>
-                    <td class="p-1 border border-slate-200 text-right">
+                    <td class="p-1 border text-right">
                         <input type="number" min="0" value="${item.kreditAwal || ''}" placeholder="0" 
                             onchange="updateSaldoAwal(${idx}, 'kredit', this.value)" 
-                            class="w-full px-2 py-1 border border-slate-300 rounded-lg text-right font-mono text-xs focus:ring-1 focus:ring-indigo-600">
+                            class="w-full px-2 py-1 border rounded-lg text-right font-mono text-xs focus:ring-1 focus:ring-indigo-500">
                     </td>
-                    <td class="p-2 border border-slate-200 text-center space-x-2">
+                    <td class="p-2 border text-center space-x-1.5">
                         <button onclick="editCoa(${idx})" class="text-indigo-600 hover:text-indigo-800 p-1" title="Edit Akun"><i class="fa-solid fa-pen-to-square"></i></button>
                         <button onclick="hapusCoa(${idx})" class="text-rose-500 hover:text-rose-700 p-1" title="Hapus Akun"><i class="fa-solid fa-trash"></i></button>
                     </td>
@@ -814,10 +738,10 @@
             const statusEl = document.getElementById('statusBalance');
             if(totalDebet === totalKredit) {
                 statusEl.innerText = "BALANCE";
-                statusEl.className = "px-2 py-0.5 rounded text-[10px] font-extrabold bg-emerald-500 text-white";
+                statusEl.className = "px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500 text-white";
             } else {
                 statusEl.innerText = "UNBALANCE";
-                statusEl.className = "px-2 py-0.5 rounded text-[10px] font-extrabold bg-rose-600 text-white";
+                statusEl.className = "px-2 py-0.5 rounded-full text-[10px] font-black bg-rose-600 text-white";
             }
         }
 
@@ -860,7 +784,7 @@
             document.getElementById('inputNamaAkun').value = item.nama;
             document.getElementById('inputKatAkun').value = item.kat;
 
-            document.getElementById('coaFormTitle').innerText = 'Edit Akun COA';
+            document.getElementById('coaFormTitle').innerText = 'Edit Akun';
             document.getElementById('btnSimpanCoa').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Simpan Edit';
             document.getElementById('btnBatalCoa').classList.remove('hidden');
         }
@@ -895,12 +819,6 @@
             }
         }
 
-        function simpanIdentitas() {
-            identitas.nama = document.getElementById('siswaNama').value;
-            identitas.kelas = document.getElementById('siswaKelas').value;
-            localStorage.setItem('siswa_id', JSON.stringify(identitas));
-        }
-
         function tambahJurnal(e) {
             e.preventDefault();
             const newTx = {
@@ -927,7 +845,7 @@
         }
 
         function resetData() {
-            if(confirm("Hapus seluruh data transaksi jurnal?")) {
+            if(confirm("Hapus seluruh data transaksi?")) {
                 transaksi = [];
                 localStorage.removeItem('siswa_tx');
                 renderTampilan();
@@ -945,18 +863,12 @@
             const foundCoa = coaData.find(c => `${c.kode} ${c.nama}` === cleanKey || cleanKey.includes(c.kode));
             if(foundCoa) {
                 const kat = foundCoa.kat.toLowerCase();
-                if(kat.includes('kewajiban') || kat.includes('ekuitas') || kat.includes('pendapatan')) {
-                    return true;
-                }
-                if(kat.includes('aset') || kat.includes('belanja') || kat.includes('beban')) {
-                    return false;
-                }
+                if(kat.includes('kewajiban') || kat.includes('ekuitas') || kat.includes('pendapatan')) return true;
+                if(kat.includes('aset') || kat.includes('belanja') || kat.includes('beban')) return false;
             }
 
             const kodeAwal = cleanKey.charAt(0);
-            if(['2', '3', '4', '7'].includes(kodeAwal)) {
-                return true;
-            }
+            if(['2', '3', '4', '7'].includes(kodeAwal)) return true;
 
             return false;
         }
@@ -965,18 +877,18 @@
             const jBody = document.getElementById('jurnalTbody');
             jBody.innerHTML = '';
             if(transaksi.length === 0) {
-                jBody.innerHTML = '<tr><td colspan="6" class="p-6 text-center text-slate-400 font-medium">Belum ada transaksi jurnal terdaftar.</td></tr>';
+                jBody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-slate-400">Belum ada transaksi.</td></tr>';
             } else {
                 transaksi.forEach(t => {
                     const tr = document.createElement('tr');
-                    tr.className = 'border-b border-slate-200 hover:bg-slate-50 transition';
+                    tr.className = 'border-b hover:bg-slate-50 font-medium';
                     tr.innerHTML = `
-                        <td class="p-2.5 border border-slate-200 font-medium text-slate-700">${t.tgl}</td>
-                        <td class="p-2.5 border border-slate-200 font-semibold text-slate-800">${t.uraian}</td>
-                        <td class="p-2.5 border border-slate-200"><div class="font-bold text-indigo-900">(D) ${t.finD}</div><div class="text-slate-500 pl-3">(K) ${t.finK}</div></td>
-                        <td class="p-2.5 border border-slate-200">${t.lraD !== '-' ? `<div class="font-bold text-amber-900">(D) ${t.lraD}</div><div class="text-amber-700 pl-3">(K) ${t.lraK}</div>` : '-'}</td>
-                        <td class="p-2.5 border border-slate-200 text-right font-mono font-bold">${formatRp(t.nominal)}</td>
-                        <td class="p-2.5 border border-slate-200 text-center"><button onclick="hapusTx(${t.id})" class="text-rose-500 hover:text-rose-700 p-1" title="Hapus Jurnal"><i class="fa-solid fa-trash"></i></button></td>
+                        <td class="p-2 border">${t.tgl}</td>
+                        <td class="p-2 border">${t.uraian}</td>
+                        <td class="p-2 border"><div class="font-bold text-indigo-900">(D) ${t.finD}</div><div class="text-slate-500 pl-2">(K) ${t.finK}</div></td>
+                        <td class="p-2 border">${t.lraD !== '-' ? `<div class="font-bold text-amber-800">(D) ${t.lraD}</div><div class="text-amber-600 pl-2">(K) ${t.lraK}</div>` : '-'}</td>
+                        <td class="p-2 border text-right font-bold font-mono text-slate-800">${formatRp(t.nominal)}</td>
+                        <td class="p-2 border text-center"><button onclick="hapusTx(${t.id})" class="text-rose-500 hover:text-rose-700 p-1"><i class="fa-solid fa-trash"></i></button></td>
                     `;
                     jBody.appendChild(tr);
                 });
@@ -1006,12 +918,11 @@
             renderBukuBesar();
         }
 
-        // BUKU BESAR LOGIC
         function tambahBukuBesarManual(e) {
             e.preventDefault();
             const akunKey = document.getElementById('bbSelect').value;
             if(!akunKey) {
-                alert("Pilih Akun Buku Besar terlebih dahulu!");
+                alert("Silakan pilih Akun Buku Besar terlebih dahulu!");
                 return;
             }
 
@@ -1024,17 +935,13 @@
                 kredit: parseFloat(document.getElementById('bbKredit').value) || 0
             };
 
-            if(!bukuBesarManual[akunKey]) {
-                bukuBesarManual[akunKey] = [];
-            }
+            if(!bukuBesarManual[akunKey]) bukuBesarManual[akunKey] = [];
 
             if(editId === -1) {
                 bukuBesarManual[akunKey].push(rowData);
             } else {
                 const targetIdx = bukuBesarManual[akunKey].findIndex(item => item.id === editId);
-                if(targetIdx !== -1) {
-                    bukuBesarManual[akunKey][targetIdx] = rowData;
-                }
+                if(targetIdx !== -1) bukuBesarManual[akunKey][targetIdx] = rowData;
             }
 
             localStorage.setItem('siswa_bb_manual', JSON.stringify(bukuBesarManual));
@@ -1064,7 +971,7 @@
             document.getElementById('bbDebet').value = '';
             document.getElementById('bbKredit').value = '';
 
-            document.getElementById('btnSubmitBb').innerHTML = '<i class="fa-solid fa-paper-plane"></i> Submit Baris Buku Besar';
+            document.getElementById('btnSubmitBb').innerHTML = '<i class="fa-solid fa-paper-plane"></i> Submit Buku Besar';
             document.getElementById('btnBatalBb').classList.add('hidden');
         }
 
@@ -1076,15 +983,16 @@
 
             if(!akunKey) {
                 bbJudul.innerText = 'Buku Besar: Belum Memilih Akun';
-                bbBody.innerHTML = '<tr><td colspan="6" class="p-6 text-center text-slate-400 font-medium">Pilih akun terlebih dahulu pada dropdown di atas untuk melihat / mengisi Buku Besar.</td></tr>';
+                bbBody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-slate-400">Pilih akun terlebih dahulu untuk melihat / memasukkan data Buku Besar.</td></tr>';
                 return;
             }
 
             bbJudul.innerText = `Buku Besar: ${akunKey}`;
+
             const rows = bukuBesarManual[akunKey] || [];
 
             if(rows.length === 0) {
-                bbBody.innerHTML = '<tr><td colspan="6" class="p-6 text-center text-slate-400 font-medium">Belum ada baris entri di akun ini. Gunakan formulir di atas untuk memasukkan baris posting.</td></tr>';
+                bbBody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-slate-400">Belum ada baris entri di akun ini. Gunakan form di atas untuk menambah baris posting.</td></tr>';
                 return;
             }
 
@@ -1099,14 +1007,14 @@
                 }
 
                 const tr = document.createElement('tr');
-                tr.className = 'border-b border-slate-200 hover:bg-slate-50 transition';
+                tr.className = 'border-b hover:bg-slate-50';
                 tr.innerHTML = `
-                    <td class="p-2.5 border border-slate-200 font-medium text-slate-700">${r.tgl}</td>
-                    <td class="p-2.5 border border-slate-200 font-semibold text-slate-800">${r.ket}</td>
-                    <td class="p-2.5 border border-slate-200 text-right font-mono">${formatRp(r.debet)}</td>
-                    <td class="p-2.5 border border-slate-200 text-right font-mono">${formatRp(r.kredit)}</td>
-                    <td class="p-2.5 border border-slate-200 text-right font-bold font-mono text-indigo-900">${formatRp(saldo)}</td>
-                    <td class="p-2.5 border border-slate-200 text-center space-x-2">
+                    <td class="p-2 border">${r.tgl}</td>
+                    <td class="p-2 border">${r.ket}</td>
+                    <td class="p-2 border text-right font-mono">${formatRp(r.debet)}</td>
+                    <td class="p-2 border text-right font-mono">${formatRp(r.kredit)}</td>
+                    <td class="p-2 border text-right font-bold font-mono text-indigo-950">${formatRp(saldo)}</td>
+                    <td class="p-2 border text-center space-x-1.5">
                         <button onclick="editBarisBb('${akunKey}', ${r.id})" class="text-indigo-600 hover:text-indigo-800 p-1" title="Edit Baris"><i class="fa-solid fa-pen-to-square"></i></button>
                         <button onclick="hapusBarisBb('${akunKey}', ${r.id})" class="text-rose-500 hover:text-rose-700 p-1" title="Hapus Baris"><i class="fa-solid fa-trash"></i></button>
                     </td>
@@ -1133,7 +1041,6 @@
             }
         }
 
-        // MODAL REKAPITULASI SEMUA BUKU BESAR
         function bukaModalSemuaBb() {
             const modal = document.getElementById('modalSemuaBb');
             const modalBody = document.getElementById('modalSemuaBbBody');
@@ -1145,7 +1052,7 @@
                 modalBody.innerHTML = `
                     <div class="text-center py-12 text-slate-400 space-y-2">
                         <i class="fa-solid fa-folder-open text-4xl mb-2 text-slate-300"></i>
-                        <p class="font-bold text-slate-600 text-sm">Belum Ada Data Buku Besar yang Di-input</p>
+                        <p class="font-bold text-slate-600">Belum Ada Data Buku Besar yang Di-input</p>
                         <p class="text-xs">Silakan pilih akun dan lakukan posting data pada tab Buku Besar terlebih dahulu.</p>
                     </div>
                 `;
@@ -1164,12 +1071,12 @@
                         }
 
                         rowsHtml += `
-                            <tr class="border-b border-slate-200 hover:bg-slate-50 text-xs">
-                                <td class="p-2 border border-slate-200">${r.tgl}</td>
-                                <td class="p-2 border border-slate-200 font-medium">${r.ket}</td>
-                                <td class="p-2 border border-slate-200 text-right font-mono">${formatRp(r.debet)}</td>
-                                <td class="p-2 border border-slate-200 text-right font-mono">${formatRp(r.kredit)}</td>
-                                <td class="p-2 border border-slate-200 text-right font-bold font-mono text-indigo-900">${formatRp(saldo)}</td>
+                            <tr class="border-b hover:bg-slate-50 text-xs">
+                                <td class="p-2 border">${r.tgl}</td>
+                                <td class="p-2 border">${r.ket}</td>
+                                <td class="p-2 border text-right font-mono">${formatRp(r.debet)}</td>
+                                <td class="p-2 border text-right font-mono">${formatRp(r.kredit)}</td>
+                                <td class="p-2 border text-right font-bold font-mono">${formatRp(saldo)}</td>
                             </tr>
                         `;
                     });
@@ -1177,23 +1084,23 @@
                     const card = document.createElement('div');
                     card.className = "bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden";
                     card.innerHTML = `
-                        <div class="p-3 bg-indigo-50 border-b border-indigo-100 flex justify-between items-center flex-wrap gap-2">
+                        <div class="p-3 bg-indigo-50 border-b border-indigo-100 flex justify-between items-center">
                             <span class="text-xs font-bold text-indigo-950 flex items-center gap-2">
                                 <i class="fa-solid fa-book text-indigo-600"></i> Akun: ${akunKey}
                             </span>
-                            <span class="text-xs font-bold bg-indigo-200 text-indigo-950 px-2.5 py-1 rounded-lg">
+                            <span class="text-xs font-bold bg-indigo-200 text-indigo-900 px-2.5 py-0.5 rounded-full">
                                 Saldo Akhir: ${formatRp(saldo)}
                             </span>
                         </div>
-                        <div class="overflow-x-auto custom-scrollbar">
-                            <table class="w-full text-xs text-left border-collapse min-w-[500px]">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-xs text-left border-collapse">
                                 <thead>
-                                    <tr class="bg-slate-100 text-slate-700 border-b">
-                                        <th class="p-2 border border-slate-200">Tanggal</th>
-                                        <th class="p-2 border border-slate-200">Keterangan</th>
-                                        <th class="p-2 border border-slate-200 text-right">Debet (Rp)</th>
-                                        <th class="p-2 border border-slate-200 text-right">Kredit (Rp)</th>
-                                        <th class="p-2 border border-slate-200 text-right">Saldo (Rp)</th>
+                                    <tr class="bg-slate-100 text-slate-700 border-b font-bold">
+                                        <th class="p-2 border">Tanggal</th>
+                                        <th class="p-2 border">Keterangan</th>
+                                        <th class="p-2 border text-right">Debet (Rp)</th>
+                                        <th class="p-2 border text-right">Kredit (Rp)</th>
+                                        <th class="p-2 border text-right">Saldo (Rp)</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -1226,8 +1133,8 @@
                 [],
                 ["Nama Siswa", identitas.nama || '-'],
                 ["Kelas", identitas.kelas || '-'],
-                ["Nama Instansi", identitas.instansi || '-'],
-                ["Kabupaten / Kota", identitas.kabKota || '-'],
+                ["Nama Instansi / SKPD", identitas.instansi || '-'],
+                ["Kabupaten / Kota", identitas.kab || '-'],
                 ["Periode Tanggal", identitas.tgl || '-'],
                 [],
                 ["--- REALISASI ANGGARAN (LRA) ---"],
@@ -1242,10 +1149,9 @@
             ];
             
             const wsSummary = XLSX.utils.aoa_to_sheet(summary);
-            wsSummary['!cols'] = [{ wch: 30 }, { wch: 25 }];
+            wsSummary['!cols'] = [{ wch: 30 }, { wch: 30 }];
             XLSX.utils.book_append_sheet(wb, wsSummary, "Identitas & Laporan");
 
-            // ... existing excel export logic ...
             const coaRows = [["Kode Akun", "Nama Akun", "Kelompok / Basis", "Saldo Awal Debet", "Saldo Awal Kredit"]];
             coaData.forEach(c => {
                 coaRows.push([c.kode, c.nama, c.kat, c.debetAwal || 0, c.kreditAwal || 0]);
@@ -1284,90 +1190,86 @@
 
             const reader = new FileReader();
             reader.onload = function(evt) {
-                try {
-                    const data = new Uint8Array(evt.target.result);
-                    const workbook = XLSX.read(data, { type: 'array' });
+                const data = new Uint8Array(evt.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
 
-                    if(workbook.SheetNames.includes("Identitas & Laporan")) {
-                        const idRows = XLSX.utils.sheet_to_json(workbook.Sheets["Identitas & Laporan"], { header: 1 });
-                        if(idRows[3]) identitas.nama = idRows[3][1];
-                        if(idRows[4]) identitas.kelas = idRows[4][1];
-                        if(idRows[5]) identitas.instansi = idRows[5][1];
-                        if(idRows[6]) identitas.kabKota = idRows[6][1];
-                        if(idRows[7]) identitas.tgl = idRows[7][1];
-
-                        document.getElementById('siswaNama').value = identitas.nama || '';
-                        document.getElementById('siswaKelas').value = identitas.kelas || '';
-                        document.getElementById('instansiNama').value = identitas.instansi || '';
-                        document.getElementById('instansiKabKota').value = identitas.kabKota || '';
-                        document.getElementById('instansiTgl').value = identitas.tgl || '';
-
-                        localStorage.setItem('siswa_id', JSON.stringify(identitas));
-                        updateTampilanIdentitas();
-                    }
-
-                    if(workbook.SheetNames.includes("Neraca Saldo Awal")) {
-                        const cRows = XLSX.utils.sheet_to_json(workbook.Sheets["Neraca Saldo Awal"], { header: 1 });
-                        coaData = [];
-                        for(let i = 1; i < cRows.length; i++) {
-                            if(cRows[i].length >= 3) {
-                                coaData.push({
-                                    kode: cRows[i][0],
-                                    nama: cRows[i][1],
-                                    kat: cRows[i][2],
-                                    debetAwal: parseFloat(cRows[i][3]) || 0,
-                                    kreditAwal: parseFloat(cRows[i][4]) || 0
-                                });
-                            }
+                if(workbook.SheetNames.includes("Neraca Saldo Awal")) {
+                    const cRows = XLSX.utils.sheet_to_json(workbook.Sheets["Neraca Saldo Awal"], { header: 1 });
+                    coaData = [];
+                    for(let i = 1; i < cRows.length; i++) {
+                        if(cRows[i].length >= 3) {
+                            coaData.push({
+                                kode: cRows[i][0],
+                                nama: cRows[i][1],
+                                kat: cRows[i][2],
+                                debetAwal: parseFloat(cRows[i][3]) || 0,
+                                kreditAwal: parseFloat(cRows[i][4]) || 0
+                            });
                         }
-                        localStorage.setItem('siswa_coa', JSON.stringify(coaData));
-                        initCOA();
                     }
-
-                    if(workbook.SheetNames.includes("Jurnal Umum")) {
-                        const rows = XLSX.utils.sheet_to_json(workbook.Sheets["Jurnal Umum"], { header: 1 });
-                        transaksi = [];
-                        for(let i = 1; i < rows.length; i++) {
-                            if(rows[i].length >= 8) {
-                                transaksi.push({
-                                    id: Date.now() + i,
-                                    tgl: rows[i][1],
-                                    uraian: rows[i][2],
-                                    finD: rows[i][3],
-                                    finK: rows[i][4],
-                                    lraD: rows[i][5],
-                                    lraK: rows[i][6],
-                                    nominal: parseFloat(rows[i][7]) || 0
-                                });
-                            }
-                        }
-                        localStorage.setItem('siswa_tx', JSON.stringify(transaksi));
-                    }
-
-                    if(workbook.SheetNames.includes("Buku Besar")) {
-                        const bbRows = XLSX.utils.sheet_to_json(workbook.Sheets["Buku Besar"], { header: 1 });
-                        bukuBesarManual = {};
-                        for(let i = 1; i < bbRows.length; i++) {
-                            if(bbRows[i].length >= 5) {
-                                const aKey = bbRows[i][0];
-                                if(!bukuBesarManual[aKey]) bukuBesarManual[aKey] = [];
-                                bukuBesarManual[aKey].push({
-                                    id: Date.now() + i,
-                                    tgl: bbRows[i][1],
-                                    ket: bbRows[i][2],
-                                    debet: parseFloat(bbRows[i][3]) || 0,
-                                    kredit: parseFloat(bbRows[i][4]) || 0
-                                });
-                            }
-                        }
-                        localStorage.setItem('siswa_bb_manual', JSON.stringify(bukuBesarManual));
-                    }
-
-                    renderTampilan();
-                    alert("Data berhasil di-import dari Microsoft Excel!");
-                } catch(err) {
-                    alert("Gagal membaca berkas Excel. Pastikan format file sesuai.");
+                    localStorage.setItem('siswa_coa', JSON.stringify(coaData));
+                    initCOA();
                 }
+
+                if(workbook.SheetNames.includes("Jurnal Umum")) {
+                    const rows = XLSX.utils.sheet_to_json(workbook.Sheets["Jurnal Umum"], { header: 1 });
+                    transaksi = [];
+                    for(let i = 1; i < rows.length; i++) {
+                        if(rows[i].length >= 8) {
+                            transaksi.push({
+                                id: Date.now() + i,
+                                tgl: rows[i][1],
+                                uraian: rows[i][2],
+                                finD: rows[i][3],
+                                finK: rows[i][4],
+                                lraD: rows[i][5],
+                                lraK: rows[i][6],
+                                nominal: parseFloat(rows[i][7]) || 0
+                            });
+                        }
+                    }
+                    localStorage.setItem('siswa_tx', JSON.stringify(transaksi));
+                }
+
+                if(workbook.SheetNames.includes("Buku Besar")) {
+                    const bbRows = XLSX.utils.sheet_to_json(workbook.Sheets["Buku Besar"], { header: 1 });
+                    bukuBesarManual = {};
+                    for(let i = 1; i < bbRows.length; i++) {
+                        if(bbRows[i].length >= 5) {
+                            const aKey = bbRows[i][0];
+                            if(!bukuBesarManual[aKey]) bukuBesarManual[aKey] = [];
+                            bukuBesarManual[aKey].push({
+                                id: Date.now() + i,
+                                tgl: bbRows[i][1],
+                                ket: bbRows[i][2],
+                                debet: parseFloat(bbRows[i][3]) || 0,
+                                kredit: parseFloat(bbRows[i][4]) || 0
+                            });
+                        }
+                    }
+                    localStorage.setItem('siswa_bb_manual', JSON.stringify(bukuBesarManual));
+                }
+
+                if(workbook.SheetNames.includes("Identitas & Laporan")) {
+                    const idRows = XLSX.utils.sheet_to_json(workbook.Sheets["Identitas & Laporan"], { header: 1 });
+                    if(idRows[3]) identitas.nama = idRows[3][1];
+                    if(idRows[4]) identitas.kelas = idRows[4][1];
+                    if(idRows[5]) identitas.instansi = idRows[5][1];
+                    if(idRows[6]) identitas.kab = idRows[6][1];
+                    if(idRows[7]) identitas.tgl = idRows[7][1];
+
+                    document.getElementById('siswaNama').value = identitas.nama || '';
+                    document.getElementById('siswaKelas').value = identitas.kelas || '';
+                    document.getElementById('instansiNama').value = identitas.instansi || '';
+                    document.getElementById('instansiKab').value = identitas.kab || '';
+                    document.getElementById('instansiTgl').value = identitas.tgl || '';
+
+                    localStorage.setItem('siswa_id', JSON.stringify(identitas));
+                }
+
+                updateTampilanLampiran2();
+                renderTampilan();
+                alert("Data berhasil di-import dari Microsoft Excel!");
             };
             reader.readAsArrayBuffer(file);
         }
