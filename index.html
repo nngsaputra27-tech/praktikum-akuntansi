@@ -485,17 +485,21 @@
                                 </tr>
                             </thead>
                             <tbody id="neracaSaldoTbody"></tbody>
-                            <!-- BARIS TOTAL: RATA TENGAH TULISAN & STATUS WARNA MERAH DI BAWAH ANGKA -->
+                            <!-- BARIS TOTAL DENGAN TULISAN RATA TENGAH & APLIKASI STATUS DINAMIS DI BAWAHNYA -->
                             <tfoot>
                                 <tr class="bg-indigo-950 text-white font-bold text-xs">
                                     <td colspan="2" class="p-3 border text-center uppercase tracking-wider font-extrabold text-sm">TOTAL NERACA SALDO</td>
-                                    <td class="p-3 border text-right font-mono align-top">
-                                        <div id="totalNsDebit" class="text-amber-300 font-extrabold text-sm">Rp 0</div>
-                                        <div id="statusNsDebit" class="text-[11px] font-black text-red-500 uppercase mt-0.5">BALANCE</div>
-                                    </td>
-                                    <td class="p-3 border text-right font-mono align-top">
-                                        <div id="totalNsKredit" class="text-amber-300 font-extrabold text-sm">Rp 0</div>
-                                        <div id="statusNsKredit" class="text-[11px] font-black text-red-500 uppercase mt-0.5">BALANCE</div>
+                                    <td class="p-3 border text-right font-mono text-amber-300 font-extrabold text-sm" id="totalNsDebit">Rp 0</td>
+                                    <td class="p-3 border text-right font-mono text-amber-300 font-extrabold text-sm" id="totalNsKredit">Rp 0</td>
+                                </tr>
+                                <!-- SUB-BARIS UNTUK STATUS BALANCE/UNBALANCE DITERAPKAN DITENGAH -->
+                                <tr class="bg-indigo-900 border-t border-indigo-800">
+                                    <td colspan="4" class="py-2.5 px-4 text-center">
+                                        <div class="inline-flex items-center justify-center">
+                                            <span id="statusNsBadge" class="px-4 py-1 rounded-full text-xs font-black uppercase tracking-widest border transition-all shadow-sm">
+                                                BALANCE
+                                            </span>
+                                        </div>
                                     </td>
                                 </tr>
                             </tfoot>
@@ -1146,7 +1150,7 @@
             });
         }
 
-        // FUNGSI KHUSUS RENDER NERACA SALDO DARI SALDO AKHIR BUKU BESAR
+        // FUNGSI RENDER NERACA SALDO DENGAN SATU STATUS BADGE ELEGAN DI TENGAH
         function renderNeracaSaldo() {
             const nsBody = document.getElementById('neracaSaldoTbody');
             nsBody.innerHTML = '';
@@ -1157,8 +1161,10 @@
                 nsBody.innerHTML = '<tr><td colspan="4" class="p-6 text-center text-slate-400 font-medium">Belum ada posting pada Buku Besar. Silakan lakukan posting pada menu Buku Besar terlebih dahulu.</td></tr>';
                 document.getElementById('totalNsDebit').innerText = 'Rp 0';
                 document.getElementById('totalNsKredit').innerText = 'Rp 0';
-                document.getElementById('statusNsDebit').innerText = 'BALANCE';
-                document.getElementById('statusNsKredit').innerText = 'BALANCE';
+                
+                const statusBadge = document.getElementById('statusNsBadge');
+                statusBadge.innerText = 'BALANCE';
+                statusBadge.className = 'px-4 py-1 rounded-full text-xs font-black uppercase tracking-widest bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shadow-sm';
                 return;
             }
 
@@ -1216,18 +1222,14 @@
             document.getElementById('totalNsDebit').innerText = formatRp(totalDebit);
             document.getElementById('totalNsKredit').innerText = formatRp(totalKredit);
 
-            const isBalanced = totalDebit === totalKredit;
-            const statusText = isBalanced ? "BALANCE" : "UNBALANCE";
-
-            const statusDebitEl = document.getElementById('statusNsDebit');
-            const statusKreditEl = document.getElementById('statusNsKredit');
-
-            statusDebitEl.innerText = statusText;
-            statusKreditEl.innerText = statusText;
-
-            // Selalu berwarna merah
-            statusDebitEl.className = "text-[11px] font-black text-red-500 uppercase mt-0.5";
-            statusKreditEl.className = "text-[11px] font-black text-red-500 uppercase mt-0.5";
+            const statusBadge = document.getElementById('statusNsBadge');
+            if (totalDebit === totalKredit) {
+                statusBadge.innerText = 'BALANCE';
+                statusBadge.className = 'px-4 py-1 rounded-full text-xs font-black uppercase tracking-widest bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shadow-sm';
+            } else {
+                statusBadge.innerText = 'UNBALANCE';
+                statusBadge.className = 'px-4 py-1 rounded-full text-xs font-black uppercase tracking-widest bg-rose-500/20 text-rose-400 border border-rose-500/30 shadow-sm';
+            }
         }
 
         function hapusBarisBb(akunKey, idRow) {
