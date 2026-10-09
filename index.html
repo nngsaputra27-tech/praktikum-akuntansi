@@ -53,10 +53,11 @@
             body * {
                 visibility: hidden;
             }
-            #modalLihatJurnal, #modalLihatJurnal * {
+            #modalLihatJurnal, #modalLihatJurnal *,
+            #modalLihatBukuBesar, #modalLihatBukuBesar * {
                 visibility: visible;
             }
-            #modalLihatJurnal {
+            #modalLihatJurnal, #modalLihatBukuBesar {
                 position: absolute;
                 left: 0;
                 top: 0;
@@ -469,6 +470,13 @@
                             <tbody id="bbTbody"></tbody>
                         </table>
                     </div>
+
+                    <!-- AREA TOMBOL LIHAT BUKU BESAR DI BAWAH KANAN TABEL BUKU BESAR -->
+                    <div class="p-3 bg-slate-50 border-t border-slate-200 flex justify-end items-center">
+                        <button onclick="bukaModalLihatBukuBesar()" class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-extrabold text-xs px-4 py-2 rounded-xl flex items-center gap-2 shadow-md transition">
+                            <i class="fa-solid fa-book-open-reader"></i> Lihat Buku Besar
+                        </button>
+                    </div>
                 </div>
             </section>
 
@@ -679,6 +687,50 @@
         </div>
     </div>
 
+    <!-- POP-UP MODAL LIHAT BUKU BESAR SEMUA AKUN -->
+    <div id="modalLihatBukuBesar" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm hidden items-center justify-center z-50 p-3 md:p-6 transition-opacity">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-5xl max-h-[92vh] flex flex-col overflow-hidden border border-slate-200">
+            <!-- Header Modal & Action -->
+            <div class="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50 no-print">
+                <div class="flex items-center gap-2 text-indigo-950 font-extrabold text-sm">
+                    <i class="fa-solid fa-book-open-reader text-indigo-600"></i> Rekapitulasi Buku Besar
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="window.print()" class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold text-xs px-3 py-1.5 rounded-lg flex items-center gap-1.5 shadow-sm">
+                        <i class="fa-solid fa-print"></i> Cetak Buku Besar
+                    </button>
+                    <button onclick="tutupModalLihatBukuBesar()" class="text-slate-400 hover:text-slate-700 p-1.5 rounded-lg">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Content Area Pop Up Buku Besar -->
+            <div class="p-5 md:p-8 overflow-y-auto space-y-8 custom-touch-scroll flex-1">
+                <!-- Kop Identitas Instansi -->
+                <div class="text-center space-y-1 pb-2 border-b border-slate-200">
+                    <h2 id="modalBbDisplaySKPD" class="text-base md:text-lg font-black text-indigo-950 uppercase tracking-wide">SKPD DINAS KELAUTAN DAN PERIKANAN</h2>
+                    <p id="modalBbDisplayKab" class="text-xs md:text-sm font-bold text-slate-700">Kabupaten / Kota: Kepulauan Meranti</p>
+                    <div class="pt-2">
+                        <h3 class="text-xs md:text-sm font-black text-slate-900 uppercase tracking-widest bg-amber-300 text-slate-950 inline-block px-4 py-1 rounded-lg border border-amber-400 shadow-sm">
+                            BUKU BESAR SELURUH AKUN
+                        </h3>
+                    </div>
+                    <p id="modalBbDisplayTgl" class="text-xs font-semibold text-slate-600 pt-1">Per Tanggal: -</p>
+                </div>
+
+                <!-- Container Semua Tabel Buku Besar Per Akun -->
+                <div id="modalBbContainer" class="space-y-6"></div>
+            </div>
+
+            <div class="p-3 border-t border-slate-200 bg-slate-50 text-right no-print">
+                <button onclick="tutupModalLihatBukuBesar()" class="bg-slate-300 hover:bg-slate-400 text-slate-800 font-bold text-xs px-5 py-2 rounded-xl transition">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- SCRIPT UTAMA PERBAIKAN -->
     <script>
         const defaultCoaData = [
@@ -749,6 +801,15 @@
             if (elModalSKPD) elModalSKPD.innerText = formattedInstansi;
             if (elModalKab) elModalKab.innerText = `Kabupaten / Kota: ${kabKota}`;
             if (elModalTgl) elModalTgl.innerText = `Per Tanggal: ${tglPeriode}`;
+
+            // Update Header Kop di Modal Lihat Buku Besar
+            const elModalBbSKPD = document.getElementById('modalBbDisplaySKPD');
+            const elModalBbKab = document.getElementById('modalBbDisplayKab');
+            const elModalBbTgl = document.getElementById('modalBbDisplayTgl');
+
+            if (elModalBbSKPD) elModalBbSKPD.innerText = formattedInstansi;
+            if (elModalBbKab) elModalBbKab.innerText = `Kabupaten / Kota: ${kabKota}`;
+            if (elModalBbTgl) elModalBbTgl.innerText = `Per Tanggal: ${tglPeriode}`;
         }
 
         function checkCoaBalance(totalDebet, totalKredit) {
@@ -972,6 +1033,86 @@
 
             if (document.getElementById('modalLraTotalDebit')) document.getElementById('modalLraTotalDebit').innerText = formatRp(lraTotalDebit);
             if (document.getElementById('modalLraTotalKredit')) document.getElementById('modalLraTotalKredit').innerText = formatRp(lraTotalKredit);
+        }
+
+        // --- LOGIKA MODAL POP UP LIHAT BUKU BESAR SEMUA AKUN ---
+        function bukaModalLihatBukuBesar() {
+            updateTampilanIdentitasHeader();
+            renderModalBukuBesarSemuaAkun();
+            const modal = document.getElementById('modalLihatBukuBesar');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+        }
+
+        function tutupModalLihatBukuBesar() {
+            const modal = document.getElementById('modalLihatBukuBesar');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        function renderModalBukuBesarSemuaAkun() {
+            const container = document.getElementById('modalBbContainer');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const activeKeys = Object.keys(bukuBesarManual).filter(key => bukuBesarManual[key] && bukuBesarManual[key].length > 0);
+
+            if (activeKeys.length === 0) {
+                container.innerHTML = '<div class="p-8 text-center text-slate-400 font-medium bg-slate-50 rounded-2xl border border-slate-200">Belum ada posting pada Buku Besar di akun manapun.</div>';
+                return;
+            }
+
+            activeKeys.forEach(akunKey => {
+                const rows = bukuBesarManual[akunKey];
+
+                const sec = document.createElement('div');
+                sec.className = 'space-y-2';
+
+                let rowsHtml = '';
+                let saldo = 0;
+
+                rows.forEach(r => {
+                    saldo += (r.debet - r.kredit);
+                    rowsHtml += `
+                        <tr class="border-b hover:bg-slate-50 font-medium">
+                            <td class="p-2 border text-center">${r.tgl}</td>
+                            <td class="p-2 border">${r.ket}</td>
+                            <td class="p-2 border text-right font-mono">${r.debet > 0 ? formatRp(r.debet) : '-'}</td>
+                            <td class="p-2 border text-right font-mono">${r.kredit > 0 ? formatRp(r.kredit) : '-'}</td>
+                            <td class="p-2 border text-right font-bold font-mono text-indigo-950">${formatRp(saldo)}</td>
+                        </tr>
+                    `;
+                });
+
+                sec.innerHTML = `
+                    <div class="flex items-center gap-2 border-b-2 border-indigo-600 pb-1.5">
+                        <i class="fa-solid fa-book text-indigo-600"></i>
+                        <h4 class="text-xs font-extrabold text-indigo-950 uppercase tracking-wide">Buku Besar: ${akunKey}</h4>
+                    </div>
+
+                    <div class="overflow-x-auto custom-touch-scroll">
+                        <table class="w-full text-xs text-left border-collapse border border-slate-300 min-w-[650px]">
+                            <thead>
+                                <tr class="bg-indigo-950 text-white border-b font-bold text-center">
+                                    <th class="p-2 border border-indigo-900 w-28">Tanggal</th>
+                                    <th class="p-2 border border-indigo-900">Keterangan</th>
+                                    <th class="p-2 border border-indigo-900 w-36 text-right">Debet (Rp)</th>
+                                    <th class="p-2 border border-indigo-900 w-36 text-right">Kredit (Rp)</th>
+                                    <th class="p-2 border border-indigo-900 w-40 text-right">Saldo (Rp)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${rowsHtml}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+                container.appendChild(sec);
+            });
         }
 
         function simpanIdentitasSiswa() {
