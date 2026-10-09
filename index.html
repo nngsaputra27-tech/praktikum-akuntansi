@@ -3,607 +3,1724 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Praktikum Akuntansi Lembaga SMK</title>
+    <title>Aplikasi Praktikum Akuntansi Lembaga SMK - Pemerintah & Daerah</title>
+    <meta name="description" content="Aplikasi Simulasi Praktikum Akuntansi Lembaga dan Pemerintah Daerah untuk Siswa SMK AKL. Terintegrasi Dual Journaling (LO & LRA) dan Microsoft Excel.">
+    <meta name="theme-color" content="#1e1b4b">
+    
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
+    <!-- FontAwesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Font Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- SheetJS Excel Library CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            -webkit-tap-highlight-color: transparent;
         }
-        /* Custom scrollbar for modal pop-up */
-        .custom-scrollbar::-webkit-scrollbar {
+        @media screen and (max-width: 768px) {
+            input, select, textarea {
+                font-size: 16px !important;
+            }
+        }
+        ::-webkit-scrollbar {
             width: 6px;
+            height: 6px;
         }
-        .custom-scrollbar::-webkit-scrollbar-track {
+        ::-webkit-scrollbar-track {
             background: #f1f5f9;
-            border-radius: 4px;
         }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
+        ::-webkit-scrollbar-thumb {
             background: #cbd5e1;
             border-radius: 4px;
         }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        ::-webkit-scrollbar-thumb:hover {
             background: #94a3b8;
         }
     </style>
 </head>
-<body class="bg-slate-100 text-slate-800 antialiased min-h-screen flex">
+<body class="bg-slate-100 text-slate-800 flex flex-col md:flex-row h-screen overflow-hidden">
 
-    <!-- Sidebar Left -->
-    <aside class="w-64 bg-slate-900 text-white min-h-screen flex flex-col justify-between hidden md:flex shrink-0">
-        <div>
-            <!-- Header/Logo -->
-            <div class="p-5 flex items-center gap-3 border-b border-slate-800">
-                <div class="w-10 h-10 rounded-xl bg-amber-500 flex items-center justify-center text-slate-900 font-bold text-xl shadow-lg">
-                    <i class="fa-solid fa-graduation-cap"></i>
+    <!-- OVERLAY MOBILE DRAWER -->
+    <div id="sidebarOverlay" onclick="toggleMobileMenu()" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-40 hidden md:hidden transition-opacity"></div>
+
+    <!-- SIDEBAR NAVIGATION -->
+    <aside id="mainSidebar" class="fixed md:relative inset-y-0 left-0 z-50 w-64 bg-indigo-950 text-slate-300 flex flex-col shrink-0 shadow-2xl transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
+        <div class="p-4 border-b border-indigo-900/80 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="bg-amber-400 text-indigo-950 p-2 rounded-xl font-bold shadow">
+                    <i class="fa-solid fa-graduation-cap text-lg"></i>
                 </div>
                 <div>
-                    <h1 class="font-bold text-sm tracking-wide leading-tight">Praktikum Akuntansi</h1>
-                    <p class="text-xs text-amber-400 font-medium">Lembaga / SKPD SMK</p>
+                    <h1 class="text-xs font-extrabold text-white leading-snug">Praktikum Akuntansi</h1>
+                    <p class="text-[10px] text-amber-300 font-medium">Lembaga / SKPD SMK</p>
                 </div>
             </div>
-
-            <!-- Navigation Links -->
-            <nav class="p-4 space-y-1">
-                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all text-sm font-medium">
-                    <i class="fa-solid fa-chart-pie w-5"></i> Dashboard Utama
-                </a>
-                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all text-sm font-medium">
-                    <i class="fa-solid fa-sitemap w-5"></i> Bagan Akun (COA)
-                </a>
-                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-indigo-600 text-white shadow-md font-semibold text-sm">
-                    <i class="fa-solid fa-book-open w-5"></i> Daftar Jurnal Umum
-                </a>
-                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all text-sm font-medium">
-                    <i class="fa-solid fa-book w-5"></i> Buku Besar Manual
-                </a>
-                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all text-sm font-medium">
-                    <i class="fa-solid fa-scale-balanced w-5"></i> Neraca Saldo
-                </a>
-                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all text-sm font-medium">
-                    <i class="fa-solid fa-file-invoice-dollar w-5"></i> Laporan Keuangan
-                </a>
-            </nav>
+            <button onclick="toggleMobileMenu()" class="md:hidden text-slate-400 hover:text-white p-1" aria-label="Tutup Menu">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
         </div>
 
-        <div class="p-4 border-t border-slate-800 text-xs text-slate-500 text-center">
-            &copy; 2026 Praktikum Akuntansi Lembaga
+        <nav class="flex-1 p-3 space-y-1.5 overflow-y-auto text-xs font-semibold">
+            <button type="button" onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl bg-indigo-800 text-white shadow-md transition">
+                <i class="fa-solid fa-chart-pie text-base text-amber-400 w-5"></i> Dashboard Utama
+            </button>
+            <button type="button" onclick="switchTab('coa')" id="nav-coa" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl hover:bg-indigo-900 hover:text-white transition">
+                <i class="fa-solid fa-list-ol text-base text-indigo-300 w-5"></i> Bagan Akun (COA)
+            </button>
+            <button type="button" onclick="switchTab('jurnal')" id="nav-jurnal" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl hover:bg-indigo-900 hover:text-white transition">
+                <i class="fa-solid fa-book-open text-base text-indigo-300 w-5"></i> Daftar Jurnal Umum
+            </button>
+            <button type="button" onclick="switchTab('bukubesar')" id="nav-bukubesar" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl hover:bg-indigo-900 hover:text-white transition">
+                <i class="fa-solid fa-book text-base text-indigo-300 w-5"></i> Buku Besar Manual
+            </button>
+            <button type="button" onclick="switchTab('neracasaldo')" id="nav-neracasaldo" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl hover:bg-indigo-900 hover:text-white transition">
+                <i class="fa-solid fa-scale-balanced text-base text-indigo-300 w-5"></i> Neraca Saldo
+            </button>
+            <button type="button" onclick="switchTab('laporan')" id="nav-laporan" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl hover:bg-indigo-900 hover:text-white transition">
+                <i class="fa-solid fa-file-invoice-dollar text-base text-indigo-300 w-5"></i> Laporan Keuangan
+            </button>
+        </nav>
+
+        <div class="p-3 border-t border-indigo-900/80 bg-indigo-950/50 text-[10px] text-center text-indigo-300">
+            Terintegrasi MS Excel (.xlsx)
         </div>
     </aside>
 
-    <!-- Main Content Area -->
-    <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
-        <!-- Top Banner / Navbar -->
-        <header class="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between">
-            <div>
-                <h2 class="text-xl font-bold text-slate-800">Daftar Jurnal Umum Transaksi</h2>
-                <p class="text-xs text-slate-500">Praktikum Akuntansi Pemerintah & Lembaga Daerah (SKPD)</p>
-            </div>
+    <!-- CONTENT AREA -->
+    <main class="flex-1 flex flex-col h-full overflow-hidden w-full">
+        <!-- HEADER TOP BAR -->
+        <header class="bg-white border-b border-slate-200 px-4 py-3 md:px-6 flex items-center justify-between shadow-sm shrink-0">
             <div class="flex items-center gap-3">
-                <button class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-3.5 py-2 rounded-lg font-medium shadow-sm transition flex items-center gap-2">
-                    <i class="fa-solid fa-file-excel"></i> Import Excel
+                <button onclick="toggleMobileMenu()" class="md:hidden p-2 text-slate-600 hover:bg-slate-100 rounded-lg" aria-label="Buka Menu">
+                    <i class="fa-solid fa-bars text-lg"></i>
                 </button>
-                <button class="bg-amber-500 hover:bg-amber-600 text-slate-900 text-xs px-3.5 py-2 rounded-lg font-semibold shadow-sm transition flex items-center gap-2">
-                    <i class="fa-solid fa-download"></i> Export Ke Excel
+                <div>
+                    <h2 id="headerTitle" class="text-sm md:text-base font-extrabold text-slate-800">Dashboard Utama</h2>
+                    <p class="text-[10px] md:text-xs text-slate-500 hidden sm:block">Praktikum Akuntansi Pemerintah & Lembaga Daerah (SKPD)</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <label for="excelImport" class="bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white text-xs px-3 py-2 rounded-lg cursor-pointer flex items-center gap-1.5 font-bold transition shadow-sm">
+                    <i class="fa-solid fa-file-import"></i> <span class="hidden sm:inline">Import Excel</span>
+                </label>
+                <input type="file" id="excelImport" accept=".xlsx, .xls" class="hidden" onchange="importFromExcel(event)">
+
+                <button onclick="exportToExcel()" class="bg-amber-500 hover:bg-amber-600 active:scale-95 text-slate-950 text-xs font-extrabold px-3 py-2 rounded-lg flex items-center gap-1.5 transition shadow-sm">
+                    <i class="fa-solid fa-file-excel"></i> <span class="hidden sm:inline">Export Ke Excel</span>
                 </button>
             </div>
         </header>
 
-        <div class="p-6 max-w-7xl w-full mx-auto space-y-6">
+        <!-- MAIN SCROLLABLE CONTENT -->
+        <div class="flex-1 overflow-y-auto p-4 md:p-6 space-y-6 pb-24 md:pb-6">
+            
+            <!-- TAB 1: DASHBOARD -->
+            <section id="tab-dashboard" class="tab-content space-y-6">
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <div class="flex items-center gap-2 text-indigo-900 border-b pb-3">
+                        <i class="fa-solid fa-id-card text-amber-500 text-lg"></i>
+                        <h2 class="text-xs md:text-sm font-extrabold uppercase tracking-wide">Identitas Siswa & Instansi Praktikum</h2>
+                    </div>
 
-            <!-- Input Form Card -->
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
-                <form id="form-transaksi" onsubmit="tambahTransaksi(event)" class="space-y-4">
-                    
-                    <!-- Row 1: Tanggal & Uraian -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         <div>
-                            <label class="block text-xs font-semibold text-slate-600 mb-1">Tanggal</label>
-                            <input type="date" id="input-tanggal" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Nama Lengkap Siswa</label>
+                            <input type="text" id="siswaNama" placeholder="Masukkan Nama Siswa" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none" oninput="simpanIdentitasSiswa()">
                         </div>
-                        <div class="md:col-span-2">
-                            <label class="block text-xs font-semibold text-slate-600 mb-1">Keterangan / Uraian Transaksi</label>
-                            <input type="text" id="input-uraian" placeholder="Masukan Uraian Transaksi..." required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Kelas / Konsentrasi Keahlian</label>
+                            <input type="text" id="siswaKelas" placeholder="Contoh: XI AKL 1" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none" oninput="simpanIdentitasSiswa()">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Nama Instansi / SKPD</label>
+                            <input type="text" id="instansiNama" placeholder="Contoh: Dinas Kelautan dan Perikanan" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Kabupaten / Kota</label>
+                            <input type="text" id="instansiKab" placeholder="Contoh: Kepulauan Meranti" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Periode Tanggal</label>
+                            <input type="date" id="instansiTgl" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-indigo-500 focus:outline-none">
                         </div>
                     </div>
 
-                    <!-- Row 2: Two Columns for LO vs LRA Journal Accounts -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        
-                        <!-- 1. Jurnal Finansial (LO & Neraca) -->
-                        <div class="bg-indigo-50/50 p-4 rounded-xl border border-indigo-100 space-y-3">
-                            <div class="flex items-center gap-2 text-indigo-900 font-semibold text-xs uppercase tracking-wider">
-                                <span class="bg-indigo-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px]">1</span>
-                                Jurnal Finansial (LO & Neraca)
+                    <div class="flex justify-end pt-2 border-t">
+                        <button onclick="simpanIdentitasInstansi()" class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-extrabold text-xs px-5 py-2.5 rounded-xl flex items-center gap-2 shadow-md transition">
+                            <i class="fa-solid fa-floppy-disk"></i> Simpan Identitas Instansi
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                        <span class="text-[11px] text-slate-500 font-bold uppercase tracking-wider block mb-1">Total Transaksi</span>
+                        <p class="text-xl md:text-2xl font-black text-slate-800" id="dashTotalTx">0</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                        <span class="text-[11px] text-slate-500 font-bold uppercase tracking-wider block mb-1">Pendapatan LRA</span>
+                        <p class="text-lg md:text-xl font-extrabold text-emerald-600" id="dashPendLRA">Rp 0</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                        <span class="text-[11px] text-slate-500 font-bold uppercase tracking-wider block mb-1">Belanja LRA</span>
+                        <p class="text-lg md:text-xl font-extrabold text-rose-600" id="dashBelanjaLRA">Rp 0</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                        <span class="text-[11px] text-slate-500 font-bold uppercase tracking-wider block mb-1">SiLPA / (SiKPA)</span>
+                        <p class="text-lg md:text-xl font-extrabold text-indigo-700" id="dashSilpa">Rp 0</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 2: BAGAN AKUN (COA) -->
+            <section id="tab-coa" class="tab-content hidden space-y-6">
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                    <h2 id="coaFormTitle" class="text-xs font-bold text-indigo-900 uppercase tracking-wider mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-plus-circle text-indigo-600"></i> Tambah Akun Baru
+                    </h2>
+                    <form onsubmit="simpanAkun(event)" class="grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
+                        <input type="hidden" id="editCoaIndex" value="-1">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Kode Akun</label>
+                            <input type="text" id="inputKodeAkun" required placeholder="Contoh: 1.1.1.02" class="w-full px-3 py-2 border rounded-xl text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Akun</label>
+                            <input type="text" id="inputNamaAkun" required placeholder="Contoh: Kas di Bendahara Pengeluaran" class="w-full px-3 py-2 border rounded-xl text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Kelompok / Basis</label>
+                            <select id="inputKatAkun" required class="w-full px-3 py-2 border rounded-xl text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                                <option value="Aset">Aset</option>
+                                <option value="Kewajiban">Kewajiban</option>
+                                <option value="Ekuitas">Ekuitas</option>
+                                <option value="Pendapatan LRA">Pendapatan LRA</option>
+                                <option value="Belanja LRA">Belanja LRA</option>
+                                <option value="Pendapatan LO">Pendapatan LO</option>
+                                <option value="Beban LO">Beban LO</option>
+                                <option value="Anggaran">Anggaran</option>
+                            </select>
+                        </div>
+                        <div class="flex gap-2">
+                            <button type="submit" id="btnSimpanCoa" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs py-2.5 rounded-xl transition shadow">
+                                <i class="fa-solid fa-plus"></i> Tambah Akun
+                            </button>
+                            <button type="button" id="btnBatalCoa" onclick="batalEditCoa()" class="hidden bg-slate-400 hover:bg-slate-500 text-white font-bold text-xs px-3 py-2.5 rounded-xl transition">
+                                Batal
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="p-6 bg-slate-50 border-b border-slate-200 relative">
+                        <div class="text-center space-y-1.5 max-w-2xl mx-auto">
+                            <h2 id="displayLamp2SKPD" class="text-sm md:text-base font-black text-indigo-950 uppercase tracking-wide">SKPD DINAS KELAUTAN DAN PERIKANAN</h2>
+                            <p id="displayLamp2Kab" class="text-xs font-bold text-slate-700">Kabupaten / Kota: Kepulauan Meranti</p>
+                            <div class="pt-2">
+                                <h3 class="text-xs md:text-sm font-black text-slate-900 uppercase tracking-widest bg-amber-300 text-slate-950 inline-block px-4 py-1 rounded-lg border border-amber-400 shadow-sm">
+                                    SALDO AWAL NERACA SALDO
+                                </h3>
                             </div>
+                            <p id="displayLamp2Tgl" class="text-xs font-semibold text-slate-600 pt-1">Per Tanggal: -</p>
+                        </div>
+
+                        <div class="mt-4 md:mt-0 md:absolute md:top-4 md:right-4 text-center md:text-right">
+                            <button onclick="resetCOAKeDefault()" class="text-[11px] text-rose-600 hover:text-rose-800 font-bold hover:underline">Reset COA Default</button>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs text-left border-collapse min-w-[650px]">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-700 border-b text-center font-bold">
+                                    <th class="p-2.5 border w-32" rowspan="2">Kode Akun</th>
+                                    <th class="p-2.5 border" rowspan="2">Nama Akun</th>
+                                    <th class="p-2.5 border w-36" rowspan="2">Kelompok / Basis</th>
+                                    <th class="p-2.5 border" colspan="2">Saldo Awal (Rp)</th>
+                                    <th class="p-2.5 border w-24" rowspan="2">Aksi</th>
+                                </tr>
+                                <tr class="bg-slate-100 text-slate-700 border-b text-center font-bold">
+                                    <th class="p-2 border w-40">Debit</th>
+                                    <th class="p-2 border w-40">Kredit</th>
+                                </tr>
+                            </thead>
+                            <tbody id="coaTbody"></tbody>
+                            <tfoot>
+                                <tr class="bg-indigo-950 text-white font-bold text-xs">
+                                    <td colspan="3" class="p-2.5 border text-right uppercase tracking-wider">Total Saldo Awal</td>
+                                    <td class="p-2.5 border text-right font-mono text-amber-300" id="totalDebetSaldoAwal">Rp 0</td>
+                                    <td class="p-2.5 border text-right font-mono text-amber-300" id="totalKreditSaldoAwal">Rp 0</td>
+                                    <td class="p-2.5 border text-center">
+                                        <span id="statusBalance" class="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-400 text-slate-900">BALANCE</span>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <div class="p-4 bg-slate-50 border-t border-slate-200 flex justify-end items-center">
+                        <button onclick="resetNominalSaldoAwal()" class="bg-rose-600 hover:bg-rose-700 active:scale-95 text-white font-extrabold text-xs px-4 py-2 rounded-xl flex items-center gap-1.5 shadow transition">
+                            <i class="fa-solid fa-rotate-left"></i> Reset Nominal Saldo Awal
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 3: DAFTAR JURNAL -->
+            <section id="tab-jurnal" class="tab-content hidden space-y-6">
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                    <h2 class="text-xs font-bold text-indigo-900 uppercase tracking-wider mb-4">Input Jurnal Transaksi (Dual Journaling)</h2>
+                    <form onsubmit="tambahJurnal(event)" class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                             <div>
-                                <label class="block text-[11px] font-medium text-slate-500 mb-0.5">Debit (D)</label>
-                                <select id="lo-debit" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                                    <option value="">-- Pilih Akun --</option>
-                                    <option value="1.1.1.01 Kas di Kas Daerah">(D) 1.1.1.01 Kas di Kas Daerah</option>
-                                    <option value="1.1.3.01 Piutang Pajak Daerah">(D) 1.1.3.01 Piutang Pajak Daerah</option>
-                                    <option value="1.3.2.01 Peralatan dan Mesin">(D) 1.3.2.01 Peralatan dan Mesin</option>
-                                    <option value="5.1.1.01 Beban Gaji dan Tunjangan">(D) 5.1.1.01 Beban Gaji dan Tunjangan</option>
-                                    <option value="5.1.2.01 Beban Barang dan Jasa">(D) 5.1.2.01 Beban Barang dan Jasa</option>
-                                </select>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Tanggal</label>
+                                <input type="date" id="txTgl" required class="w-full px-3 py-2 border rounded-xl text-xs">
                             </div>
-                            <div>
-                                <label class="block text-[11px] font-medium text-slate-500 mb-0.5">Kredit (K)</label>
-                                <select id="lo-kredit" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                                    <option value="">-- Pilih Akun --</option>
-                                    <option value="1.1.1.01 Kas di Kas Daerah">(K) 1.1.1.01 Kas di Kas Daerah</option>
-                                    <option value="8.1.1.01 Pendapatan Pajak Daerah - LO">(K) 8.1.1.01 Pendapatan Pajak Daerah - LO</option>
-                                    <option value="8.1.2.01 Pendapatan Retribusi - LO">(K) 8.1.2.01 Pendapatan Retribusi - LO</option>
-                                    <option value="3.1.1.01 Ekuitas">(K) 3.1.1.01 Ekuitas</option>
-                                </select>
+                            <div class="md:col-span-2">
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Keterangan / Uraian Transaksi</label>
+                                <input type="text" id="txUraian" required placeholder="Masukan Uraian Transaksi..." class="w-full px-3 py-2 border rounded-xl text-xs">
                             </div>
                         </div>
 
-                        <!-- 2. Jurnal Pelaksanaan Anggaran (LRA) -->
-                        <div class="bg-amber-50/50 p-4 rounded-xl border border-amber-200/60 space-y-3 relative">
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center gap-2 text-amber-900 font-semibold text-xs uppercase tracking-wider">
-                                    <span class="bg-amber-500 text-slate-900 rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-bold">2</span>
-                                    Jurnal Pelaksanaan Anggaran (LRA)
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- JURNAL FINANSIAL -->
+                            <div class="bg-indigo-50/50 p-3.5 rounded-xl border border-indigo-100 space-y-2">
+                                <span class="text-xs font-bold text-indigo-800 block">1. JURNAL FINANSIAL (LO & NERACA)</span>
+                                <div>
+                                    <label class="block text-[10px] font-semibold text-slate-500 mb-0.5">Debit (D)</label>
+                                    <select id="txFinD" required class="w-full px-2.5 py-1.5 border rounded-lg text-xs select-coa"></select>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-semibold text-slate-500 mb-0.5">Kredit (K)</label>
+                                    <select id="txFinK" required class="w-full px-2.5 py-1.5 border rounded-lg text-xs select-coa"></select>
                                 </div>
                             </div>
 
-                            <div>
-                                <label class="block text-[11px] font-medium text-slate-500 mb-0.5">Debit (D)</label>
-                                <select id="lra-debit" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs bg-white focus:ring-2 focus:ring-amber-500 focus:outline-none disabled:bg-slate-100 disabled:text-slate-400">
-                                    <option value="">-- Pilih Akun --</option>
-                                    <option value="0.0.0.00 Perubahan SAL">(D) 0.0.0.00 Perubahan SAL</option>
-                                    <option value="5.1.1.01 Belanja Gaji dan Tunjangan - LRA">(D) 5.1.1.01 Belanja Gaji dan Tunjangan - LRA</option>
-                                    <option value="5.1.2.01 Belanja Barang dan Jasa - LRA">(D) 5.1.2.01 Belanja Barang dan Jasa - LRA</option>
-                                    <option value="5.2.2.01 Belanja Modal Peralatan - LRA">(D) 5.2.2.01 Belanja Modal Peralatan - LRA</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-[11px] font-medium text-slate-500 mb-0.5">Kredit (K)</label>
-                                <select id="lra-kredit" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs bg-white focus:ring-2 focus:ring-amber-500 focus:outline-none disabled:bg-slate-100 disabled:text-slate-400">
-                                    <option value="">-- Pilih Akun --</option>
-                                    <option value="0.0.0.00 Perubahan SAL">(K) 0.0.0.00 Perubahan SAL</option>
-                                    <option value="4.1.1.01 Pendapatan Pajak Daerah - LRA">(K) 4.1.1.01 Pendapatan Pajak Daerah - LRA</option>
-                                    <option value="4.1.2.01 Pendapatan Retribusi - LRA">(K) 4.1.2.01 Pendapatan Retribusi - LRA</option>
-                                </select>
-                            </div>
+                            <!-- JURNAL LRA DENGAN OPSI TIDAK DI-JURNAL -->
+                            <div class="bg-amber-50/50 p-3.5 rounded-xl border border-amber-100 space-y-2">
+                                <span class="text-xs font-bold text-amber-900 block">2. JURNAL PELAKSANAAN ANGGARAN (LRA)</span>
+                                <div>
+                                    <label class="block text-[10px] font-semibold text-slate-500 mb-0.5">Debit (D)</label>
+                                    <select id="txLraD" class="w-full px-2.5 py-1.5 border rounded-lg text-xs select-coa"></select>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-semibold text-slate-500 mb-0.5">Kredit (K)</label>
+                                    <select id="txLraK" class="w-full px-2.5 py-1.5 border rounded-lg text-xs select-coa"></select>
+                                </div>
 
-                            <!-- Opsi "Tidak Di-jurnal" (Ditambahkan sesuai instruksi Tanda Merah) -->
-                            <div class="pt-1 flex items-center gap-2">
-                                <input type="checkbox" id="check-no-lra" onchange="toggleLraInputs(this.checked)" class="w-4 h-4 text-amber-600 rounded border-slate-300 focus:ring-amber-500 cursor-pointer">
-                                <label for="check-no-lra" class="text-xs font-semibold text-amber-900 cursor-pointer select-none">
-                                    Tidak Di-jurnal <span class="text-[10px] text-slate-500 font-normal">(Centang jika tidak mempengaruhi anggaran LRA)</span>
-                                </label>
+                                <!-- TOMBOL OPSI TIDAK DI-JURNAL -->
+                                <div class="pt-1.5 flex items-center gap-2">
+                                    <input type="checkbox" id="chkTidakDijurnalLra" onchange="toggleTidakDijurnalLra(this)" class="w-4 h-4 text-indigo-600 rounded cursor-pointer">
+                                    <label for="chkTidakDijurnalLra" class="text-xs font-bold text-slate-700 cursor-pointer select-none">
+                                        Tidak Di-jurnal <span class="text-[10px] text-slate-500 font-normal">(Centang jika tidak mempengaruhi anggaran LRA)</span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
 
-                    </div>
-
-                    <!-- Row 3: Nominal & Submit Button -->
-                    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 pt-2">
-                        <div class="w-full md:w-1/3">
-                            <label class="block text-xs font-semibold text-slate-600 mb-1">Nominal (Rp)</label>
-                            <div class="relative">
-                                <span class="absolute left-3 top-2.5 text-xs text-slate-400 font-semibold">Rp</span>
-                                <input type="number" id="input-nominal" placeholder="0" required class="w-full pl-9 pr-3 py-2 border border-slate-300 rounded-lg text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                        <div class="flex flex-col sm:flex-row justify-between items-end gap-3 pt-2">
+                            <div class="w-full sm:w-1/3">
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Nominal (Rp)</label>
+                                <input type="text" id="txNominal" required placeholder="Rp 0" oninput="formatInputCurrency(this)" class="w-full px-3 py-2 border rounded-xl text-xs font-bold font-mono">
                             </div>
-                        </div>
-
-                        <div class="flex gap-2 justify-end">
-                            <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs px-6 py-2.5 rounded-xl shadow-md transition flex items-center gap-2">
+                            <button type="submit" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-6 py-2.5 rounded-xl transition shadow">
                                 <i class="fa-solid fa-floppy-disk"></i> Simpan Transaksi
                             </button>
                         </div>
+                    </form>
+                </div>
+
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="p-4 border-b flex justify-between items-center">
+                        <span class="text-xs font-extrabold text-slate-800">Daftar Jurnal Umum</span>
+                        <button onclick="resetData()" class="text-xs text-rose-600 hover:underline font-semibold">Reset Data Jurnal</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs text-left border-collapse min-w-[700px]">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-700 border-b font-bold">
+                                    <th class="p-2.5 border">Tgl</th>
+                                    <th class="p-2.5 border">Uraian</th>
+                                    <th class="p-2.5 border">Jurnal Finansial (LO/Neraca)</th>
+                                    <th class="p-2.5 border">Jurnal Anggaran (LRA)</th>
+                                    <th class="p-2.5 border text-right">Nominal (Rp)</th>
+                                    <th class="p-2.5 border text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="jurnalTbody"></tbody>
+                        </table>
                     </div>
 
-                </form>
-            </div>
-
-            <!-- Data Table Card -->
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-                    <h3 class="font-bold text-slate-800 text-sm">Daftar Jurnal Umum</h3>
-                    <button onclick="resetDataJurnal()" class="text-xs text-red-500 hover:text-red-700 font-medium">
-                        <i class="fa-solid fa-rotate-left mr-1"></i> Reset Data Jurnal
-                    </button>
+                    <!-- TOMBOL LIHAT JURNAL (MUNCULKAN POP-UP REKAP REAGEN JURNAL) -->
+                    <div class="p-4 bg-slate-50 border-t border-slate-200 flex justify-end">
+                        <button onclick="bukaModalLihatJurnal()" class="bg-indigo-950 hover:bg-indigo-900 text-amber-400 font-extrabold text-xs px-5 py-2.5 rounded-xl shadow-md flex items-center gap-2 transition transform hover:-translate-y-0.5">
+                            <i class="fa-solid fa-book-bookmark text-sm"></i> Lihat Jurnal
+                        </button>
+                    </div>
                 </div>
+            </section>
 
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse text-xs">
-                        <thead>
-                            <tr class="bg-slate-100/70 border-b border-slate-200 text-slate-600 uppercase tracking-wider font-semibold">
-                                <th class="p-3 w-28">Tgl</th>
-                                <th class="p-3">Uraian</th>
-                                <th class="p-3">Jurnal Finansial (LO/Neraca)</th>
-                                <th class="p-3">Jurnal Anggaran (LRA)</th>
-                                <th class="p-3 text-right">Nominal (Rp)</th>
-                                <th class="p-3 text-center w-16">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabel-jurnal-body" class="divide-y divide-slate-100">
-                            <!-- Populated dynamically via JS -->
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Footer Table with 'Lihat Jurnal' Button (Sesuai Lingkaran Merah Kedua) -->
-                <div class="p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between">
-                    <div class="text-xs text-slate-500">
-                        Total Transaksi: <span id="total-count" class="font-bold text-slate-700">0</span>
+            <!-- TAB 4: BUKU BESAR MANUAL -->
+            <section id="tab-bukubesar" class="tab-content hidden space-y-4">
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <h2 class="text-xs font-bold text-indigo-900 uppercase tracking-wider">Input Buku Besar (Posting Manual)</h2>
+                    
+                    <div class="flex flex-col sm:flex-row sm:items-center gap-3 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                        <label class="text-xs font-bold text-slate-700 whitespace-nowrap">Pilih Akun Buku Besar:</label>
+                        <select id="bbSelect" onchange="renderBukuBesar()" class="px-3 py-2 border rounded-xl text-xs select-coa w-full sm:w-80 font-bold text-indigo-950"></select>
                     </div>
 
-                    <!-- Tombol Lihat Jurnal -->
-                    <button onclick="bukaModalLihatJurnal()" class="bg-indigo-900 hover:bg-indigo-950 text-white font-semibold text-xs px-5 py-2.5 rounded-xl shadow-md transition flex items-center gap-2 cursor-pointer">
-                        <i class="fa-solid fa-book-bookmark text-amber-400"></i> Lihat Jurnal
+                    <form onsubmit="tambahBukuBesarManual(event)" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3 items-end">
+                        <input type="hidden" id="editBbIndex" value="-1">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Tanggal</label>
+                            <input type="date" id="bbTgl" required class="w-full px-3 py-2 border rounded-xl text-xs">
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Keterangan Posting</label>
+                            <input type="text" id="bbKet" placeholder="Contoh: Saldo Awal / Posting Jurnal" required class="w-full px-3 py-2 border rounded-xl text-xs">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Debet (Rp)</label>
+                            <input type="text" id="bbDebet" placeholder="Rp 0" oninput="formatInputCurrency(this)" class="w-full px-3 py-2 border rounded-xl text-xs font-mono">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Kredit (Rp)</label>
+                            <input type="text" id="bbKredit" placeholder="Rp 0" oninput="formatInputCurrency(this)" class="w-full px-3 py-2 border rounded-xl text-xs font-mono">
+                        </div>
+                        <div class="sm:col-span-2 md:col-span-5 flex justify-end gap-2 pt-2">
+                            <button type="button" id="btnBatalBb" onclick="batalEditBb()" class="hidden bg-slate-400 hover:bg-slate-500 text-white font-bold text-xs px-4 py-2 rounded-xl transition">Batal</button>
+                            <button type="submit" id="btnSubmitBb" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl transition shadow">
+                                <i class="fa-solid fa-paper-plane"></i> Submit Buku Besar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="p-3.5 bg-slate-50 border-b flex justify-between items-center">
+                        <span class="text-xs font-extrabold text-slate-800" id="bbJudulTabel">Buku Besar: Belum Memilih Akun</span>
+                        <button onclick="resetBukuBesarAkunIni()" class="text-xs text-rose-600 hover:underline font-semibold">Kosongkan Akun Ini</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs text-left border-collapse min-w-[600px]">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-700 border-b font-bold">
+                                    <th class="p-2.5 border">Tanggal</th>
+                                    <th class="p-2.5 border">Keterangan</th>
+                                    <th class="p-2.5 border text-right">Debet (Rp)</th>
+                                    <th class="p-2.5 border text-right">Kredit (Rp)</th>
+                                    <th class="p-2.5 border text-right">Saldo (Rp)</th>
+                                    <th class="p-2.5 border text-center w-20">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bbTbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="flex justify-end pt-1">
+                    <button onclick="bukaModalSemuaBb()" class="bg-indigo-950 hover:bg-indigo-900 text-amber-400 font-bold text-xs px-5 py-3 rounded-xl shadow-md flex items-center gap-2 transition transform hover:-translate-y-0.5">
+                        <i class="fa-solid fa-layer-group text-sm"></i> Lihat Semua Buku Besar
                     </button>
                 </div>
-            </div>
+            </section>
+
+            <!-- TAB 5: NERACA SALDO -->
+            <section id="tab-neracasaldo" class="tab-content hidden space-y-6">
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="p-6 bg-slate-50 border-b border-slate-200 relative">
+                        <div class="text-center space-y-1.5 max-w-2xl mx-auto">
+                            <h2 id="displayNsSKPD" class="text-sm md:text-base font-black text-indigo-950 uppercase tracking-wide">SKPD DINAS KELAUTAN DAN PERIKANAN</h2>
+                            <p id="displayNsKab" class="text-xs font-bold text-slate-700">Kabupaten / Kota: Kepulauan Meranti</p>
+                            <div class="pt-2">
+                                <h3 class="text-xs md:text-sm font-black text-slate-900 uppercase tracking-widest bg-amber-300 text-slate-950 inline-block px-4 py-1 rounded-lg border border-amber-400 shadow-sm">
+                                    NERACA SALDO (SETELAH BUKU BESAR)
+                                </h3>
+                            </div>
+                            <p id="displayNsTgl" class="text-xs font-semibold text-slate-600 pt-1">Per Tanggal: -</p>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs text-left border-collapse min-w-[650px]">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-700 border-b text-center font-bold">
+                                    <th class="p-2.5 border w-36">Nomor Akun</th>
+                                    <th class="p-2.5 border">Nama Akun</th>
+                                    <th class="p-2.5 border w-44">Debit (Rp)</th>
+                                    <th class="p-2.5 border w-44">Kredit (Rp)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="neracaSaldoTbody"></tbody>
+                            <tfoot>
+                                <tr class="bg-indigo-950 text-white font-bold text-xs">
+                                    <td colspan="2" class="p-3 border text-center uppercase tracking-wider font-extrabold text-sm">TOTAL NERACA SALDO</td>
+                                    <td class="p-3 border text-right font-mono text-amber-300 font-extrabold text-sm" id="totalNsDebit">Rp 0</td>
+                                    <td class="p-3 border text-right font-mono text-amber-300 font-extrabold text-sm" id="totalNsKredit">Rp 0</td>
+                                </tr>
+                                <tr class="bg-indigo-900 border-t border-indigo-800">
+                                    <td colspan="4" class="py-2.5 px-4 text-center">
+                                        <div class="inline-flex items-center justify-center">
+                                            <span id="statusNsBadge" class="px-4 py-1 rounded-full text-xs font-black uppercase tracking-widest bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shadow-sm">
+                                                BALANCE
+                                            </span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 6: LAPORAN KEUANGAN -->
+            <section id="tab-laporan" class="tab-content hidden space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+                        <h3 class="text-xs font-bold text-amber-800 border-b pb-2 mb-3">Laporan Realisasi Anggaran (LRA)</h3>
+                        <div class="space-y-2 text-xs">
+                            <div class="flex justify-between"><span>Pendapatan LRA</span><span id="lraPend" class="font-semibold text-emerald-600">Rp 0</span></div>
+                            <div class="flex justify-between"><span>Belanja LRA</span><span id="lraBelanja" class="font-semibold text-rose-600">Rp 0</span></div>
+                            <div class="border-t pt-2 flex justify-between font-extrabold text-sm"><span>SiLPA / (SiKPA)</span><span id="lraSilpa" class="text-indigo-700">Rp 0</span></div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+                        <h3 class="text-xs font-bold text-indigo-800 border-b pb-2 mb-3">Laporan Operasional (LO)</h3>
+                        <div class="space-y-2 text-xs">
+                            <div class="flex justify-between"><span>Pendapatan LO</span><span id="loPend" class="font-semibold text-emerald-600">Rp 0</span></div>
+                            <div class="flex justify-between"><span>Beban LO</span><span id="loBeban" class="font-semibold text-rose-600">Rp 0</span></div>
+                            <div class="border-t pt-2 flex justify-between font-extrabold text-sm"><span>Surplus / (Defisit) LO</span><span id="loSurplus" class="text-indigo-700">Rp 0</span></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
         </div>
     </main>
 
-    <!-- MODAL POP-UP LIHAT JURNAL (REKAPITULASI JURNAL) -->
-    <div id="modal-lihat-jurnal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
-        <div class="bg-white w-full max-w-5xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden border border-slate-100">
-            
-            <!-- Modal Header / Bar -->
-            <div class="px-6 py-4 bg-slate-900 text-white flex items-center justify-between shrink-0">
-                <div class="flex items-center gap-3">
-                    <div class="p-2 bg-amber-500 text-slate-900 rounded-lg">
-                        <i class="fa-solid fa-file-lines text-base"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-base">Rekapitulasi Jurnal Umum</h3>
-                        <p class="text-xs text-slate-400">Tampilan Lengkap Jurnal Finansial & Jurnal Anggaran LRA</p>
-                    </div>
-                </div>
-                <button onclick="tutupModalLihatJurnal()" class="text-slate-400 hover:text-white text-lg w-8 h-8 rounded-lg hover:bg-slate-800 flex items-center justify-center transition">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
+    <!-- BOTTOM MOBILE NAVIGATION -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-indigo-950 text-slate-300 border-t border-indigo-900 z-30 flex justify-around items-center py-2 px-1 shadow-lg" style="padding-bottom: max(0.5rem, env(safe-area-inset-bottom));">
+        <button type="button" onclick="switchTab('dashboard')" id="mobile-nav-dashboard" class="flex flex-col items-center gap-1 text-[10px] text-amber-400 font-bold p-1">
+            <i class="fa-solid fa-chart-pie text-base"></i>
+            <span>Dashboard</span>
+        </button>
+        <button type="button" onclick="switchTab('coa')" id="mobile-nav-coa" class="flex flex-col items-center gap-1 text-[10px] text-slate-400 font-medium p-1">
+            <i class="fa-solid fa-list-ol text-base"></i>
+            <span>COA</span>
+        </button>
+        <button type="button" onclick="switchTab('jurnal')" id="mobile-nav-jurnal" class="flex flex-col items-center gap-1 text-[10px] text-slate-400 font-medium p-1">
+            <i class="fa-solid fa-book-open text-base"></i>
+            <span>Jurnal</span>
+        </button>
+        <button type="button" onclick="switchTab('bukubesar')" id="mobile-nav-bukubesar" class="flex flex-col items-center gap-1 text-[10px] text-slate-400 font-medium p-1">
+            <i class="fa-solid fa-book text-base"></i>
+            <span>Buku Besar</span>
+        </button>
+        <button type="button" onclick="switchTab('neracasaldo')" id="mobile-nav-neracasaldo" class="flex flex-col items-center gap-1 text-[10px] text-slate-400 font-medium p-1">
+            <i class="fa-solid fa-scale-balanced text-base"></i>
+            <span>Neraca Saldo</span>
+        </button>
+        <button type="button" onclick="switchTab('laporan')" id="mobile-nav-laporan" class="flex flex-col items-center gap-1 text-[10px] text-slate-400 font-medium p-1">
+            <i class="fa-solid fa-file-invoice-dollar text-base"></i>
+            <span>Laporan</span>
+        </button>
+    </nav>
+
+    <!-- MODAL POP UP: CEKLIS DATA IDENTITAS TERSIMPAN -->
+    <div id="modalSavedAlert" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center z-50 p-4 transition-all">
+        <div class="bg-white w-full max-w-sm rounded-3xl p-6 shadow-2xl text-center space-y-4 border border-slate-100 transform scale-95 transition-transform duration-200">
+            <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-inner">
+                <i class="fa-solid fa-circle-check text-4xl"></i>
             </div>
-
-            <!-- Modal Content (Scrollable) -->
-            <div class="p-6 overflow-y-auto custom-scrollbar flex-1 space-y-6">
-                
-                <!-- Kop Dokumen -->
-                <div class="text-center border-b-2 border-slate-800 pb-4">
-                    <h2 class="text-lg font-bold text-slate-900 uppercase tracking-wide" id="kop-instansi">PEMERINTAH KABUPATEN BANYUMAS</h2>
-                    <h3 class="text-md font-semibold text-slate-800 uppercase" id="kop-skpd">SKPD DINAS PENDIDIKAN DAN KEBUDAYAAN</h3>
-                    <h4 class="text-sm font-bold text-indigo-900 uppercase mt-1">JURNAL UMUM</h4>
-                    <p class="text-xs text-slate-600 mt-0.5" id="kop-periode">Periode: 01 Januari 2026 s/d 31 Desember 2026</p>
-                </div>
-
-                <!-- Section 1: Jurnal Finansial (LO & Neraca) -->
-                <div>
-                    <div class="flex items-center gap-2 mb-2">
-                        <span class="w-3 h-3 rounded-full bg-indigo-600"></span>
-                        <h4 class="font-bold text-slate-800 text-xs uppercase tracking-wider">1. Jurnal Finansial (LO & Neraca)</h4>
-                    </div>
-                    <div class="border border-slate-200 rounded-xl overflow-hidden shadow-sm">
-                        <table class="w-full text-left border-collapse text-xs">
-                            <thead>
-                                <tr class="bg-indigo-900 text-white font-semibold">
-                                    <th class="p-2.5 border-r border-indigo-800 w-24 text-center">Tanggal</th>
-                                    <th class="p-2.5 border-r border-indigo-800">Uraian / Transaksi</th>
-                                    <th class="p-2.5 border-r border-indigo-800">Nama Akun</th>
-                                    <th class="p-2.5 border-r border-indigo-800 text-right w-32">Debit (Rp)</th>
-                                    <th class="p-2.5 text-right w-32">Kredit (Rp)</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tbody-modal-lo" class="divide-y divide-slate-200 bg-white">
-                                <!-- Populated dynamically -->
-                            </tbody>
-                            <tfoot>
-                                <tr class="bg-indigo-50 font-bold text-indigo-950 border-t-2 border-slate-300">
-                                    <td colspan="3" class="p-2.5 text-right uppercase border-r border-slate-200">Total Jurnal Finansial:</td>
-                                    <td class="p-2.5 text-right border-r border-slate-200" id="modal-lo-total-debit">Rp 0</td>
-                                    <td class="p-2.5 text-right" id="modal-lo-total-kredit">Rp 0</td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Section 2: Jurnal Pelaksanaan Anggaran (LRA) -->
-                <div>
-                    <div class="flex items-center gap-2 mb-2">
-                        <span class="w-3 h-3 rounded-full bg-amber-500"></span>
-                        <h4 class="font-bold text-slate-800 text-xs uppercase tracking-wider">2. Jurnal Pelaksanaan Anggaran (LRA)</h4>
-                    </div>
-                    <div class="border border-slate-200 rounded-xl overflow-hidden shadow-sm">
-                        <table class="w-full text-left border-collapse text-xs">
-                            <thead>
-                                <tr class="bg-amber-600 text-white font-semibold">
-                                    <th class="p-2.5 border-r border-amber-500 w-24 text-center">Tanggal</th>
-                                    <th class="p-2.5 border-r border-amber-500">Uraian / Transaksi</th>
-                                    <th class="p-2.5 border-r border-amber-500">Nama Akun</th>
-                                    <th class="p-2.5 border-r border-amber-500 text-right w-32">Debit (Rp)</th>
-                                    <th class="p-2.5 text-right w-32">Kredit (Rp)</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tbody-modal-lra" class="divide-y divide-slate-200 bg-white">
-                                <!-- Populated dynamically -->
-                            </tbody>
-                            <tfoot>
-                                <tr class="bg-amber-50 font-bold text-amber-950 border-t-2 border-slate-300">
-                                    <td colspan="3" class="p-2.5 text-right uppercase border-r border-slate-200">Total Jurnal LRA:</td>
-                                    <td class="p-2.5 text-right border-r border-slate-200" id="modal-lra-total-debit">Rp 0</td>
-                                    <td class="p-2.5 text-right" id="modal-lra-total-kredit">Rp 0</td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
-
+            <div>
+                <h3 class="text-base font-extrabold text-slate-900">Data Tersimpan!</h3>
+                <p class="text-xs text-slate-500 mt-1">Identitas Instansi telah diperbarui dan dikirimkan otomatis ke seluruh dokumen laporan.</p>
             </div>
-
-            <!-- Modal Footer -->
-            <div class="px-6 py-4 bg-slate-50 border-t border-slate-200 flex justify-end gap-3 shrink-0">
-                <button onclick="tutupModalLihatJurnal()" class="bg-slate-600 hover:bg-slate-700 text-white text-xs font-semibold px-5 py-2.5 rounded-xl transition">
-                    <i class="fa-solid fa-xmark mr-1"></i> Tutup
-                </button>
-            </div>
-
+            <button onclick="tutupModalSavedAlert()" class="w-full bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-extrabold text-xs py-3 rounded-xl shadow-md transition">
+                Selesai / Lanjutkan
+            </button>
         </div>
     </div>
 
+    <!-- MODAL POP-UP LIHAT JURNAL UMUM LENGKAP -->
+    <div id="modalLihatJurnal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="bg-white w-full max-w-5xl rounded-3xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden border border-slate-200">
+            <div class="px-6 py-4 bg-indigo-950 text-white flex justify-between items-center shrink-0 border-b border-indigo-900">
+                <div class="flex items-center gap-3">
+                    <div class="bg-amber-400 text-indigo-950 p-2 rounded-xl font-bold">
+                        <i class="fa-solid fa-book-open text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xs md:text-sm font-bold">Rekapitulasi Jurnal Umum</h3>
+                        <p class="text-[10px] text-indigo-300">Format Resmi Jurnal Finansial & Jurnal LRA</p>
+                    </div>
+                </div>
+                <button onclick="tutupModalLihatJurnal()" class="text-slate-300 hover:text-white bg-indigo-900 hover:bg-indigo-800 rounded-lg w-8 h-8 flex items-center justify-center transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- SCROLLABLE BODY POP UP LIHAT JURNAL -->
+            <div class="p-6 overflow-y-auto space-y-6 flex-1 bg-slate-50">
+                <!-- KOP REKAP JURNAL -->
+                <div class="bg-white p-4 rounded-xl border text-center space-y-1 shadow-sm">
+                    <h2 id="displayModalJurnalSKPD" class="text-sm font-black text-indigo-950 uppercase">SKPD DINAS KELAUTAN DAN PERIKANAN</h2>
+                    <p id="displayModalJurnalKab" class="text-xs font-bold text-slate-700">Kabupaten / Kota: Kepulauan Meranti</p>
+                    <p id="displayModalJurnalTgl" class="text-xs font-semibold text-slate-600">Per Tanggal: -</p>
+                </div>
+
+                <!-- 1. TABEL JURNAL FINANSIAL (LO & NERACA) -->
+                <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="p-3 bg-indigo-900 text-white font-bold text-xs uppercase tracking-wider flex items-center gap-2">
+                        <i class="fa-solid fa-coins text-amber-400"></i> 1. Jurnal Finansial (LO & Neraca)
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-700 border-b font-bold text-center">
+                                    <th class="p-2.5 border w-24">Tanggal</th>
+                                    <th class="p-2.5 border">Keterangan / Uraian</th>
+                                    <th class="p-2.5 border">Nama Akun</th>
+                                    <th class="p-2.5 border w-36">Debit (Rp)</th>
+                                    <th class="p-2.5 border w-36">Kredit (Rp)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="modalJurnalFinTbody"></tbody>
+                            <tfoot>
+                                <tr class="bg-slate-100 text-slate-900 font-extrabold text-xs">
+                                    <td colspan="3" class="p-2.5 border text-right uppercase">Total Jurnal Finansial</td>
+                                    <td class="p-2.5 border text-right font-mono text-indigo-900" id="totalModalFinD">Rp 0</td>
+                                    <td class="p-2.5 border text-right font-mono text-indigo-900" id="totalModalFinK">Rp 0</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 2. TABEL JURNAL ANGGARAN (LRA) -->
+                <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="p-3 bg-amber-600 text-white font-bold text-xs uppercase tracking-wider flex items-center gap-2">
+                        <i class="fa-solid fa-file-invoice-dollar text-amber-200"></i> 2. Jurnal Pelaksanaan Anggaran (LRA)
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-700 border-b font-bold text-center">
+                                    <th class="p-2.5 border w-24">Tanggal</th>
+                                    <th class="p-2.5 border">Keterangan / Uraian</th>
+                                    <th class="p-2.5 border">Nama Akun</th>
+                                    <th class="p-2.5 border w-36">Debit (Rp)</th>
+                                    <th class="p-2.5 border w-36">Kredit (Rp)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="modalJurnalLraTbody"></tbody>
+                            <tfoot>
+                                <tr class="bg-slate-100 text-slate-900 font-extrabold text-xs">
+                                    <td colspan="3" class="p-2.5 border text-right uppercase">Total Jurnal LRA</td>
+                                    <td class="p-2.5 border text-right font-mono text-amber-900" id="totalModalLraD">Rp 0</td>
+                                    <td class="p-2.5 border text-right font-mono text-amber-900" id="totalModalLraK">Rp 0</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="px-6 py-3 bg-white border-t border-slate-200 flex justify-end shrink-0">
+                <button onclick="tutupModalLihatJurnal()" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-extrabold px-5 py-2.5 rounded-xl transition shadow">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL POP-UP LIHAT SEMUA BUKU BESAR -->
+    <div id="modalSemuaBb" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="bg-white w-full max-w-5xl rounded-3xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden border border-slate-200">
+            <div class="px-6 py-4 bg-indigo-950 text-white flex justify-between items-center shrink-0 border-b border-indigo-900">
+                <div class="flex items-center gap-3">
+                    <div class="bg-amber-400 text-indigo-950 p-2 rounded-xl font-bold">
+                        <i class="fa-solid fa-book-open text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xs md:text-sm font-bold">Rekapitulasi Seluruh Buku Besar</h3>
+                        <p class="text-[10px] text-indigo-300">Detail rincian transaksi posting akun</p>
+                    </div>
+                </div>
+                <button onclick="tutupModalSemuaBb()" class="text-slate-300 hover:text-white bg-indigo-900 hover:bg-indigo-800 rounded-lg w-8 h-8 flex items-center justify-center transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <div id="modalSemuaBbBody" class="p-6 overflow-y-auto space-y-6 flex-1 bg-slate-50"></div>
+
+            <div class="px-6 py-3 bg-white border-t border-slate-200 flex justify-end shrink-0">
+                <button onclick="tutupModalSemuaBb()" class="bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold px-4 py-2 rounded-xl transition">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- LOGIC SCRIPT AKUNTANSI & INTERAKSI AMAN -->
     <script>
-        // Sample Initial Data (Sesuai dengan screenshot)
-        let dataTransaksi = [
-            {
-                id: 1,
-                tanggal: '2026-01-01',
-                uraian: 'Pendapatan Pajak Daerah',
-                loDebit: '1.1.1.01 Kas di Kas Daerah',
-                loKredit: '8.1.1.01 Pendapatan Pajak Daerah - LO',
-                lraDebit: '0.0.0.00 Perubahan SAL',
-                lraKredit: '4.1.1.01 Pendapatan Pajak Daerah - LRA',
-                isLraNoJournal: false,
-                nominal: 2000000
-            },
-            {
-                id: 2,
-                tanggal: '2026-01-01',
-                uraian: 'Piutang Pajak Daerah',
-                loDebit: '1.1.3.01 Piutang Pajak Daerah',
-                loKredit: '8.1.1.01 Pendapatan Pajak Daerah - LO',
-                lraDebit: '',
-                lraKredit: '',
-                isLraNoJournal: true, // Tidak Di-jurnal
-                nominal: 1500000
-            }
+        const defaultCoaData = [
+            { kode: '1.1.1.01', nama: 'Kas di Kas Daerah', kat: 'Aset', debetAwal: 0, kreditAwal: 0 },
+            { kode: '1.1.3.01', nama: 'Piutang Pajak Daerah', kat: 'Aset', debetAwal: 0, kreditAwal: 0 },
+            { kode: '2.1.1.01', nama: 'Utang Perhitungan Pihak Ketiga (PFK)', kat: 'Kewajiban', debetAwal: 0, kreditAwal: 0 },
+            { kode: '3.1.1.01', nama: 'Ekuitas', kat: 'Ekuitas', debetAwal: 0, kreditAwal: 0 },
+            { kode: '4.1.1.01', nama: 'Pendapatan Pajak Daerah - LRA', kat: 'Pendapatan LRA', debetAwal: 0, kreditAwal: 0 },
+            { kode: '4.2.1.01', nama: 'Pendapatan Retribusi Daerah - LRA', kat: 'Pendapatan LRA', debetAwal: 0, kreditAwal: 0 },
+            { kode: '5.1.1.01', nama: 'Belanja Pegawai', kat: 'Belanja LRA', debetAwal: 0, kreditAwal: 0 },
+            { kode: '5.1.2.01', nama: 'Belanja Barang dan Jasa', kat: 'Belanja LRA', debetAwal: 0, kreditAwal: 0 },
+            { kode: '7.1.1.01', nama: 'Pendapatan Pajak Daerah - LO', kat: 'Pendapatan LO', debetAwal: 0, kreditAwal: 0 },
+            { kode: '7.2.1.01', nama: 'Pendapatan Retribusi Daerah - LO', kat: 'Pendapatan LO', debetAwal: 0, kreditAwal: 0 },
+            { kode: '8.1.1.01', nama: 'Beban Pegawai', kat: 'Beban LO', debetAwal: 0, kreditAwal: 0 },
+            { kode: '8.1.2.01', nama: 'Beban Barang dan Jasa', kat: 'Beban LO', debetAwal: 0, kreditAwal: 0 },
+            { kode: '0.0.0.00', nama: 'Perubahan SAL', kat: 'Anggaran', debetAwal: 0, kreditAwal: 0 }
         ];
 
-        // Format angka ke Rupiah
-        function formatRupiah(angka) {
-            return new Intl.NumberFormat('id-ID', {
-                style: 'currency',
-                currency: 'IDR',
-                maximumFractionDigits: 0
-            }).format(angka).replace('Rp', 'Rp ');
+        let coaData = [];
+        let transaksi = [];
+        let bukuBesarManual = {};
+        let identitas = { nama: '', kelas: '', instansi: '', kab: '', tgl: '' };
+
+        function formatInputCurrency(inputEl) {
+            if(!inputEl) return;
+            let val = inputEl.value.replace(/\D/g, '');
+            if (!val || val === '0') {
+                inputEl.value = '';
+                return;
+            }
+            let numberVal = parseInt(val, 10);
+            inputEl.value = 'Rp ' + numberVal.toLocaleString('id-ID');
         }
 
-        // Toggle disable/enable input LRA saat checkbox "Tidak Di-jurnal" dicentang
-        function toggleLraInputs(isNoJournal) {
-            const lraDebitSelect = document.getElementById('lra-debit');
-            const lraKreditSelect = document.getElementById('lra-kredit');
+        function parseCurrencyValue(str) {
+            if (!str) return 0;
+            if (typeof str === 'number') return str;
+            let clean = str.toString().replace(/\D/g, '');
+            return parseFloat(clean) || 0;
+        }
 
-            if (isNoJournal) {
-                lraDebitSelect.value = '';
-                lraKreditSelect.value = '';
-                lraDebitSelect.disabled = true;
-                lraKreditSelect.disabled = true;
-                lraDebitSelect.removeAttribute('required');
-                lraKreditSelect.removeAttribute('required');
+        window.onload = function() {
+            const saveCoa = localStorage.getItem('siswa_coa');
+            if(saveCoa) {
+                try { coaData = JSON.parse(saveCoa); } catch(e) { coaData = [...defaultCoaData]; }
             } else {
-                lraDebitSelect.disabled = false;
-                lraKreditSelect.disabled = false;
-                lraDebitSelect.setAttribute('required', 'required');
-                lraKreditSelect.setAttribute('required', 'required');
+                coaData = [...defaultCoaData];
+                localStorage.setItem('siswa_coa', JSON.stringify(coaData));
+            }
+
+            const saveId = localStorage.getItem('siswa_id');
+            if(saveId) {
+                try {
+                    identitas = JSON.parse(saveId);
+                    if(document.getElementById('siswaNama')) document.getElementById('siswaNama').value = identitas.nama || '';
+                    if(document.getElementById('siswaKelas')) document.getElementById('siswaKelas').value = identitas.kelas || '';
+                    if(document.getElementById('instansiNama')) document.getElementById('instansiNama').value = identitas.instansi || '';
+                    if(document.getElementById('instansiKab')) document.getElementById('instansiKab').value = identitas.kab || '';
+                    if(document.getElementById('instansiTgl')) document.getElementById('instansiTgl').value = identitas.tgl || '';
+                } catch(e) {}
+            }
+
+            const saveBb = localStorage.getItem('siswa_bb_manual');
+            if(saveBb) { try { bukuBesarManual = JSON.parse(saveBb); } catch(e) {} }
+
+            const saveTx = localStorage.getItem('siswa_tx');
+            if(saveTx) { try { transaksi = JSON.parse(saveTx); } catch(e) {} }
+
+            initCOA();
+            updateTampilanLampiran2();
+            renderTampilan();
+        };
+
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('mainSidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            if(sidebar && overlay) {
+                sidebar.classList.toggle('-translate-x-full');
+                overlay.classList.toggle('hidden');
             }
         }
 
-        // Render tabel transaksi utama
-        function renderTabelUtama() {
-            const tbody = document.getElementById('tabel-jurnal-body');
-            tbody.innerHTML = '';
-
-            dataTransaksi.forEach((item, index) => {
-                const tr = document.createElement('tr');
-                tr.className = index % 2 === 0 ? 'bg-white' : 'bg-slate-50/50';
-
-                // Tampilan text LRA
-                let textLra = '-';
-                if (!item.isLraNoJournal && item.lraDebit && item.lraKredit) {
-                    textLra = `
-                        <div><strong class="text-amber-700">(D) ${item.lraDebit}</strong></div>
-                        <div class="text-slate-500 pl-2">(K) ${item.lraKredit}</div>
-                    `;
-                }
-
-                tr.innerHTML = `
-                    <td class="p-3 text-slate-600 font-medium whitespace-nowrap">${item.tanggal}</td>
-                    <td class="p-3 font-medium text-slate-800">${item.uraian}</td>
-                    <td class="p-3">
-                        <div class="text-indigo-700 font-semibold">(D) ${item.loDebit}</div>
-                        <div class="text-slate-500 pl-2">(K) ${item.loKredit}</div>
-                    </td>
-                    <td class="p-3">${textLra}</td>
-                    <td class="p-3 text-right font-bold text-slate-800">${formatRupiah(item.nominal)}</td>
-                    <td class="p-3 text-center">
-                        <button onclick="hapusTransaksi(${item.id})" class="text-red-500 hover:text-red-700 p-1 rounded transition" title="Hapus">
-                            <i class="fa-solid fa-trash-can"></i>
-                        </button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
+        function switchTab(tab) {
+            // Sembunyikan semua tab content
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            
+            // Unselect Nav Desktop
+            document.querySelectorAll('.nav-btn').forEach(el => {
+                el.classList.remove('bg-indigo-800', 'text-white', 'shadow-md');
+                el.classList.add('hover:bg-indigo-900', 'hover:text-white');
             });
 
-            document.getElementById('total-count').innerText = dataTransaksi.length;
+            // Unselect Nav Mobile
+            document.querySelectorAll('nav button[id^="mobile-nav-"]').forEach(btn => {
+                btn.classList.remove('text-amber-400', 'font-bold');
+                btn.classList.add('text-slate-400', 'font-medium');
+            });
+
+            // Tampilkan Tab Target
+            const targetTab = document.getElementById(`tab-${tab}`);
+            if(targetTab) targetTab.classList.remove('hidden');
+            
+            const activeNav = document.getElementById(`nav-${tab}`);
+            if(activeNav) {
+                activeNav.classList.add('bg-indigo-800', 'text-white', 'shadow-md');
+                activeNav.classList.remove('hover:bg-indigo-900');
+            }
+
+            const activeMobileNav = document.getElementById(`mobile-nav-${tab}`);
+            if(activeMobileNav) {
+                activeMobileNav.classList.add('text-amber-400', 'font-bold');
+                activeMobileNav.classList.remove('text-slate-400', 'font-medium');
+            }
+
+            const titleMap = {
+                'dashboard': 'Dashboard Utama',
+                'coa': 'Bagan Akun (COA) & Saldo Awal',
+                'jurnal': 'Daftar Jurnal Umum Transaksi',
+                'bukubesar': 'Buku Besar Manual',
+                'neracasaldo': 'Neraca Saldo (Hasil Buku Besar)',
+                'laporan': 'Laporan Keuangan (LRA & LO)'
+            };
+            if(document.getElementById('headerTitle')) {
+                document.getElementById('headerTitle').innerText = titleMap[tab] || 'Dashboard';
+            }
+
+            if(tab === 'neracasaldo') {
+                renderNeracaSaldo();
+            }
+
+            const sidebar = document.getElementById('mainSidebar');
+            if(sidebar && !sidebar.classList.contains('-translate-x-full') && window.innerWidth < 768) {
+                toggleMobileMenu();
+            }
         }
 
-        // Simpan Transaksi Baru
-        function tambahTransaksi(e) {
+        function toggleTidakDijurnalLra(chk) {
+            const selectD = document.getElementById('txLraD');
+            const selectK = document.getElementById('txLraK');
+            if(chk.checked) {
+                selectD.value = '';
+                selectK.value = '';
+                selectD.disabled = true;
+                selectK.disabled = true;
+                selectD.classList.add('bg-slate-200', 'cursor-not-allowed');
+                selectK.classList.add('bg-slate-200', 'cursor-not-allowed');
+            } else {
+                selectD.disabled = false;
+                selectK.disabled = false;
+                selectD.classList.remove('bg-slate-200', 'cursor-not-allowed');
+                selectK.classList.remove('bg-slate-200', 'cursor-not-allowed');
+            }
+        }
+
+        function simpanIdentitasSiswa() {
+            identitas.nama = document.getElementById('siswaNama').value;
+            identitas.kelas = document.getElementById('siswaKelas').value;
+            localStorage.setItem('siswa_id', JSON.stringify(identitas));
+        }
+
+        function simpanIdentitasInstansi() {
+            identitas.nama = document.getElementById('siswaNama').value;
+            identitas.kelas = document.getElementById('siswaKelas').value;
+            identitas.instansi = document.getElementById('instansiNama').value;
+            identitas.kab = document.getElementById('instansiKab').value;
+            identitas.tgl = document.getElementById('instansiTgl').value;
+
+            localStorage.setItem('siswa_id', JSON.stringify(identitas));
+            updateTampilanLampiran2();
+
+            const modal = document.getElementById('modalSavedAlert');
+            if(modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+        }
+
+        function tutupModalSavedAlert() {
+            const modal = document.getElementById('modalSavedAlert');
+            if(modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        function formatTanggalIndo(dateStr) {
+            if(!dateStr) return 'Per Tanggal: -';
+            const d = new Date(dateStr);
+            if(isNaN(d.getTime())) return `Per Tanggal: ${dateStr}`;
+            const bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            return `Per Tanggal: ${d.getDate()} ${bulan[d.getMonth()]} ${d.getFullYear()}`;
+        }
+
+        function updateTampilanLampiran2() {
+            const skpdText = identitas.instansi ? (identitas.instansi.toUpperCase().startsWith('SKPD') ? identitas.instansi.toUpperCase() : `SKPD ${identitas.instansi.toUpperCase()}`) : 'SKPD DINAS KELAUTAN DAN PERIKANAN';
+            const kabText = identitas.kab ? `Kabupaten / Kota: ${identitas.kab}` : 'Kabupaten / Kota: Kepulauan Meranti';
+            const tglText = formatTanggalIndo(identitas.tgl);
+
+            if(document.getElementById('displayLamp2SKPD')) document.getElementById('displayLamp2SKPD').innerText = skpdText;
+            if(document.getElementById('displayLamp2Kab')) document.getElementById('displayLamp2Kab').innerText = kabText;
+            if(document.getElementById('displayLamp2Tgl')) document.getElementById('displayLamp2Tgl').innerText = tglText;
+
+            if(document.getElementById('displayNsSKPD')) document.getElementById('displayNsSKPD').innerText = skpdText;
+            if(document.getElementById('displayNsKab')) document.getElementById('displayNsKab').innerText = kabText;
+            if(document.getElementById('displayNsTgl')) document.getElementById('displayNsTgl').innerText = tglText;
+
+            if(document.getElementById('displayModalJurnalSKPD')) document.getElementById('displayModalJurnalSKPD').innerText = skpdText;
+            if(document.getElementById('displayModalJurnalKab')) document.getElementById('displayModalJurnalKab').innerText = kabText;
+            if(document.getElementById('displayModalJurnalTgl')) document.getElementById('displayModalJurnalTgl').innerText = tglText;
+        }
+
+        function initCOA() {
+            const coaTbody = document.getElementById('coaTbody');
+            const selects = document.querySelectorAll('.select-coa');
+            if(coaTbody) coaTbody.innerHTML = '';
+            
+            selects.forEach(s => {
+                if(s) s.innerHTML = '<option value="">-- Pilih Akun --</option>';
+            });
+
+            let totalDebet = 0;
+            let totalKredit = 0;
+
+            coaData.forEach((item, idx) => {
+                item.debetAwal = item.debetAwal || 0;
+                item.kreditAwal = item.kreditAwal || 0;
+
+                totalDebet += parseFloat(item.debetAwal);
+                totalKredit += parseFloat(item.kreditAwal);
+
+                const formattedDebet = item.debetAwal > 0 ? 'Rp ' + parseInt(item.debetAwal, 10).toLocaleString('id-ID') : '';
+                const formattedKredit = item.kreditAwal > 0 ? 'Rp ' + parseInt(item.kreditAwal, 10).toLocaleString('id-ID') : '';
+
+                if(coaTbody) {
+                    const tr = document.createElement('tr');
+                    tr.className = 'border-b hover:bg-slate-50 transition';
+                    tr.innerHTML = `
+                        <td class="p-2.5 border font-mono font-bold text-indigo-950">${item.kode}</td>
+                        <td class="p-2.5 border font-medium text-slate-800">${item.nama}</td>
+                        <td class="p-2.5 border text-slate-600 font-semibold">${item.kat}</td>
+                        <td class="p-1 border text-right">
+                            <input type="text" value="${formattedDebet}" placeholder="Rp 0" 
+                                oninput="formatInputCurrency(this); updateSaldoAwal(${idx}, 'debet', this.value)" 
+                                class="w-full px-2 py-1 border rounded-lg text-right font-mono text-xs focus:ring-1 focus:ring-indigo-500 font-bold">
+                        </td>
+                        <td class="p-1 border text-right">
+                            <input type="text" value="${formattedKredit}" placeholder="Rp 0" 
+                                oninput="formatInputCurrency(this); updateSaldoAwal(${idx}, 'kredit', this.value)" 
+                                class="w-full px-2 py-1 border rounded-lg text-right font-mono text-xs focus:ring-1 focus:ring-indigo-500 font-bold">
+                        </td>
+                        <td class="p-2 border text-center space-x-1.5">
+                            <button onclick="editCoa(${idx})" class="text-indigo-600 hover:text-indigo-800 p-1" title="Edit Akun"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button onclick="hapusCoa(${idx})" class="text-rose-500 hover:text-rose-700 p-1" title="Hapus Akun"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    `;
+                    coaTbody.appendChild(tr);
+                }
+
+                selects.forEach(s => {
+                    if(s) {
+                        const opt = document.createElement('option');
+                        opt.value = `${item.kode} ${item.nama}`;
+                        opt.innerText = `${item.kode} - ${item.nama}`;
+                        s.appendChild(opt);
+                    }
+                });
+            });
+
+            if(document.getElementById('totalDebetSaldoAwal')) document.getElementById('totalDebetSaldoAwal').innerText = formatRp(totalDebet);
+            if(document.getElementById('totalKreditSaldoAwal')) document.getElementById('totalKreditSaldoAwal').innerText = formatRp(totalKredit);
+
+            const statusEl = document.getElementById('statusBalance');
+            if(statusEl) {
+                if(totalDebet === totalKredit) {
+                    statusEl.innerText = "BALANCE";
+                    statusEl.className = "px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500 text-white";
+                } else {
+                    statusEl.innerText = "UNBALANCE";
+                    statusEl.className = "px-2 py-0.5 rounded-full text-[10px] font-black bg-rose-600 text-white";
+                }
+            }
+        }
+
+        function updateSaldoAwal(idx, tipe, val) {
+            const nominal = parseCurrencyValue(val);
+            if(tipe === 'debet') {
+                coaData[idx].debetAwal = nominal;
+            } else {
+                coaData[idx].kreditAwal = nominal;
+            }
+            localStorage.setItem('siswa_coa', JSON.stringify(coaData));
+            
+            let totalDebet = 0;
+            let totalKredit = 0;
+            coaData.forEach(item => {
+                totalDebet += parseFloat(item.debetAwal || 0);
+                totalKredit += parseFloat(item.kreditAwal || 0);
+            });
+
+            if(document.getElementById('totalDebetSaldoAwal')) document.getElementById('totalDebetSaldoAwal').innerText = formatRp(totalDebet);
+            if(document.getElementById('totalKreditSaldoAwal')) document.getElementById('totalKreditSaldoAwal').innerText = formatRp(totalKredit);
+
+            const statusEl = document.getElementById('statusBalance');
+            if(statusEl) {
+                if(totalDebet === totalKredit) {
+                    statusEl.innerText = "BALANCE";
+                    statusEl.className = "px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500 text-white";
+                } else {
+                    statusEl.innerText = "UNBALANCE";
+                    statusEl.className = "px-2 py-0.5 rounded-full text-[10px] font-black bg-rose-600 text-white";
+                }
+            }
+        }
+
+        function resetNominalSaldoAwal() {
+            if(confirm("Apakah Anda yakin ingin mengosongkan seluruh angka nominal Saldo Awal? (Daftar akun COA tidak akan terhapus)")) {
+                coaData.forEach(item => {
+                    item.debetAwal = 0;
+                    item.kreditAwal = 0;
+                });
+                localStorage.setItem('siswa_coa', JSON.stringify(coaData));
+                initCOA();
+            }
+        }
+
+        function simpanAkun(e) {
             e.preventDefault();
+            const index = parseInt(document.getElementById('editCoaIndex').value);
+            const kode = document.getElementById('inputKodeAkun').value.trim();
+            const nama = document.getElementById('inputNamaAkun').value.trim();
+            const kat = document.getElementById('inputKatAkun').value;
 
-            const tanggal = document.getElementById('input-tanggal').value;
-            const uraian = document.getElementById('input-uraian').value;
-            const loDebit = document.getElementById('lo-debit').value;
-            const loKredit = document.getElementById('lo-kredit').value;
-            const isLraNoJournal = document.getElementById('check-no-lra').checked;
-            const lraDebit = isLraNoJournal ? '' : document.getElementById('lra-debit').value;
-            const lraKredit = isLraNoJournal ? '' : document.getElementById('lra-kredit').value;
-            const nominal = parseFloat(document.getElementById('input-nominal').value) || 0;
+            if(index === -1) {
+                coaData.push({ kode, nama, kat, debetAwal: 0, kreditAwal: 0 });
+            } else {
+                coaData[index].kode = kode;
+                coaData[index].nama = nama;
+                coaData[index].kat = kat;
+            }
 
-            const newTransaksi = {
+            localStorage.setItem('siswa_coa', JSON.stringify(coaData));
+            initCOA();
+            batalEditCoa();
+            renderBukuBesar();
+        }
+
+        function editCoa(idx) {
+            const item = coaData[idx];
+            document.getElementById('editCoaIndex').value = idx;
+            document.getElementById('inputKodeAkun').value = item.kode;
+            document.getElementById('inputNamaAkun').value = item.nama;
+            document.getElementById('inputKatAkun').value = item.kat;
+
+            document.getElementById('coaFormTitle').innerText = 'Edit Akun';
+            document.getElementById('btnSimpanCoa').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Simpan Edit';
+            document.getElementById('btnBatalCoa').classList.remove('hidden');
+        }
+
+        function batalEditCoa() {
+            document.getElementById('editCoaIndex').value = -1;
+            document.getElementById('inputKodeAkun').value = '';
+            document.getElementById('inputNamaAkun').value = '';
+            document.getElementById('inputKatAkun').value = 'Aset';
+
+            document.getElementById('coaFormTitle').innerText = 'Tambah Akun Baru';
+            document.getElementById('btnSimpanCoa').innerHTML = '<i class="fa-solid fa-plus"></i> Tambah Akun';
+            document.getElementById('btnBatalCoa').classList.add('hidden');
+        }
+
+        function hapusCoa(idx) {
+            if(confirm(`Hapus akun ${coaData[idx].kode} - ${coaData[idx].nama}?`)) {
+                coaData.splice(idx, 1);
+                localStorage.setItem('siswa_coa', JSON.stringify(coaData));
+                initCOA();
+                renderBukuBesar();
+            }
+        }
+
+        function resetCOAKeDefault() {
+            if(confirm("Kembalikan daftar akun (COA) ke pengaturan awal/default?")) {
+                coaData = [...defaultCoaData];
+                localStorage.setItem('siswa_coa', JSON.stringify(coaData));
+                initCOA();
+                batalEditCoa();
+                renderBukuBesar();
+            }
+        }
+
+        function tambahJurnal(e) {
+            e.preventDefault();
+            const chkTidakLra = document.getElementById('chkTidakDijurnalLra').checked;
+
+            let lraDVal = '-';
+            let lraKVal = '-';
+
+            if(!chkTidakLra) {
+                lraDVal = document.getElementById('txLraD').value || '-';
+                lraKVal = document.getElementById('txLraK').value || '-';
+            }
+
+            const newTx = {
                 id: Date.now(),
-                tanggal,
-                uraian,
-                loDebit,
-                loKredit,
-                lraDebit,
-                lraKredit,
-                isLraNoJournal,
-                nominal
+                tgl: document.getElementById('txTgl').value,
+                uraian: document.getElementById('txUraian').value,
+                finD: document.getElementById('txFinD').value,
+                finK: document.getElementById('txFinK').value,
+                lraD: lraDVal,
+                lraK: lraKVal,
+                nominal: parseCurrencyValue(document.getElementById('txNominal').value)
+            };
+            transaksi.push(newTx);
+            localStorage.setItem('siswa_tx', JSON.stringify(transaksi));
+            
+            document.getElementById('txUraian').value = '';
+            document.getElementById('txNominal').value = '';
+            
+            // Reset Checkbox LRA
+            document.getElementById('chkTidakDijurnalLra').checked = false;
+            toggleTidakDijurnalLra(document.getElementById('chkTidakDijurnalLra'));
+
+            renderTampilan();
+        }
+
+        function hapusTx(id) {
+            transaksi = transaksi.filter(t => t.id !== id);
+            localStorage.setItem('siswa_tx', JSON.stringify(transaksi));
+            renderTampilan();
+        }
+
+        function resetData() {
+            if(confirm("Hapus seluruh data transaksi?")) {
+                transaksi = [];
+                localStorage.removeItem('siswa_tx');
+                renderTampilan();
+            }
+        }
+
+        function formatRp(num) {
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(num);
+        }
+
+        function isSaldoNormalKredit(akunKey) {
+            if(!akunKey) return false;
+            const cleanKey = akunKey.trim();
+
+            const foundCoa = coaData.find(c => `${c.kode} ${c.nama}` === cleanKey || cleanKey.includes(c.kode));
+            if(foundCoa) {
+                const kat = foundCoa.kat.toLowerCase();
+                if(kat.includes('kewajiban') || kat.includes('ekuitas') || kat.includes('pendapatan')) return true;
+                if(kat.includes('aset') || kat.includes('belanja') || kat.includes('beban')) return false;
+            }
+
+            const kodeAwal = cleanKey.charAt(0);
+            if(['2', '3', '4', '7'].includes(kodeAwal)) return true;
+
+            return false;
+        }
+
+        function renderTampilan() {
+            const jBody = document.getElementById('jurnalTbody');
+            if(jBody) {
+                jBody.innerHTML = '';
+                if(transaksi.length === 0) {
+                    jBody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-slate-400">Belum ada transaksi.</td></tr>';
+                } else {
+                    transaksi.forEach(t => {
+                        const tr = document.createElement('tr');
+                        tr.className = 'border-b hover:bg-slate-50 font-medium';
+                        tr.innerHTML = `
+                            <td class="p-2 border">${t.tgl}</td>
+                            <td class="p-2 border">${t.uraian}</td>
+                            <td class="p-2 border"><div class="font-bold text-indigo-900">(D) ${t.finD}</div><div class="text-slate-500 pl-2">(K) ${t.finK}</div></td>
+                            <td class="p-2 border">${t.lraD !== '-' ? `<div class="font-bold text-amber-800">(D) ${t.lraD}</div><div class="text-amber-600 pl-2">(K) ${t.lraK}</div>` : '<span class="text-slate-400 italic font-normal">Tidak Di-jurnal</span>'}</td>
+                            <td class="p-2 border text-right font-bold font-mono text-slate-800">${formatRp(t.nominal)}</td>
+                            <td class="p-2 border text-center"><button onclick="hapusTx(${t.id})" class="text-rose-500 hover:text-rose-700 p-1"><i class="fa-solid fa-trash"></i></button></td>
+                        `;
+                        jBody.appendChild(tr);
+                    });
+                }
+            }
+
+            let pendLRA = 0, belLRA = 0, pendLO = 0, bebanLO = 0;
+            transaksi.forEach(t => {
+                if(t.lraK && t.lraK.includes('Pendapatan')) pendLRA += t.nominal;
+                if(t.lraD && t.lraD.includes('Belanja')) belLRA += t.nominal;
+                if(t.finK && t.finK.includes('Pendapatan')) pendLO += t.nominal;
+                if(t.finD && t.finD.includes('Beban')) bebanLO += t.nominal;
+            });
+
+            if(document.getElementById('dashTotalTx')) document.getElementById('dashTotalTx').innerText = transaksi.length;
+            if(document.getElementById('dashPendLRA')) document.getElementById('dashPendLRA').innerText = formatRp(pendLRA);
+            if(document.getElementById('dashBelanjaLRA')) document.getElementById('dashBelanjaLRA').innerText = formatRp(belLRA);
+            if(document.getElementById('dashSilpa')) document.getElementById('dashSilpa').innerText = formatRp(pendLRA - belLRA);
+
+            if(document.getElementById('lraPend')) document.getElementById('lraPend').innerText = formatRp(pendLRA);
+            if(document.getElementById('lraBelanja')) document.getElementById('lraBelanja').innerText = formatRp(belLRA);
+            if(document.getElementById('lraSilpa')) document.getElementById('lraSilpa').innerText = formatRp(pendLRA - belLRA);
+
+            if(document.getElementById('loPend')) document.getElementById('loPend').innerText = formatRp(pendLO);
+            if(document.getElementById('loBeban')) document.getElementById('loBeban').innerText = formatRp(bebanLO);
+            if(document.getElementById('loSurplus')) document.getElementById('loSurplus').innerText = formatRp(pendLO - bebanLO);
+
+            renderBukuBesar();
+        }
+
+        // FUNGSI MEMBUKA MODAL REKAP POP UP LIHAT JURNAL DENGAN URUTAN TANGGAL TERTATA
+        function bukaModalLihatJurnal() {
+            const modal = document.getElementById('modalLihatJurnal');
+            const finBody = document.getElementById('modalJurnalFinTbody');
+            const lraBody = document.getElementById('modalJurnalLraTbody');
+
+            finBody.innerHTML = '';
+            lraBody.innerHTML = '';
+
+            updateTampilanLampiran2();
+
+            if(transaksi.length === 0) {
+                finBody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-slate-400">Belum ada entri jurnal finansial.</td></tr>';
+                lraBody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-slate-400">Belum ada entri jurnal LRA.</td></tr>';
+                document.getElementById('totalModalFinD').innerText = 'Rp 0';
+                document.getElementById('totalModalFinK').innerText = 'Rp 0';
+                document.getElementById('totalModalLraD').innerText = 'Rp 0';
+                document.getElementById('totalModalLraK').innerText = 'Rp 0';
+            } else {
+                // Urutkan transaksi berdasarkan tanggal terawal ke terbaru
+                const sortedTx = [...transaksi].sort((a, b) => new Date(a.tgl) - new Date(b.tgl));
+
+                let totalFin = 0;
+                let totalLra = 0;
+
+                sortedTx.forEach(t => {
+                    totalFin += t.nominal;
+
+                    // Baris Finansial Debit
+                    const trFinD = document.createElement('tr');
+                    trFinD.className = "border-b border-slate-100 hover:bg-slate-50 font-medium text-xs";
+                    trFinD.innerHTML = `
+                        <td class="p-2 border text-center font-mono">${t.tgl}</td>
+                        <td class="p-2 border">${t.uraian}</td>
+                        <td class="p-2 border font-bold text-indigo-950">${t.finD}</td>
+                        <td class="p-2 border text-right font-mono font-bold">${formatRp(t.nominal)}</td>
+                        <td class="p-2 border text-right font-mono text-slate-300">Rp 0</td>
+                    `;
+                    finBody.appendChild(trFinD);
+
+                    // Baris Finansial Kredit
+                    const trFinK = document.createElement('tr');
+                    trFinK.className = "border-b border-slate-200 hover:bg-slate-50 font-medium text-xs";
+                    trFinK.innerHTML = `
+                        <td class="p-2 border"></td>
+                        <td class="p-2 border"></td>
+                        <td class="p-2 border pl-6 text-slate-700">${t.finK}</td>
+                        <td class="p-2 border text-right font-mono text-slate-300">Rp 0</td>
+                        <td class="p-2 border text-right font-mono font-bold">${formatRp(t.nominal)}</td>
+                    `;
+                    finBody.appendChild(trFinK);
+
+                    // Jurnal LRA (Jika Tidak "Tidak Di-jurnal")
+                    if(t.lraD !== '-' && t.lraK !== '-') {
+                        totalLra += t.nominal;
+
+                        const trLraD = document.createElement('tr');
+                        trLraD.className = "border-b border-slate-100 hover:bg-slate-50 font-medium text-xs";
+                        trLraD.innerHTML = `
+                            <td class="p-2 border text-center font-mono">${t.tgl}</td>
+                            <td class="p-2 border">${t.uraian}</td>
+                            <td class="p-2 border font-bold text-amber-900">${t.lraD}</td>
+                            <td class="p-2 border text-right font-mono font-bold">${formatRp(t.nominal)}</td>
+                            <td class="p-2 border text-right font-mono text-slate-300">Rp 0</td>
+                        `;
+                        lraBody.appendChild(trLraD);
+
+                        const trLraK = document.createElement('tr');
+                        trLraK.className = "border-b border-slate-200 hover:bg-slate-50 font-medium text-xs";
+                        trLraK.innerHTML = `
+                            <td class="p-2 border"></td>
+                            <td class="p-2 border"></td>
+                            <td class="p-2 border pl-6 text-slate-700">${t.lraK}</td>
+                            <td class="p-2 border text-right font-mono text-slate-300">Rp 0</td>
+                            <td class="p-2 border text-right font-mono font-bold">${formatRp(t.nominal)}</td>
+                        `;
+                        lraBody.appendChild(trLraK);
+                    }
+                });
+
+                if(lraBody.children.length === 0) {
+                    lraBody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-slate-400 italic">Seluruh transaksi bertipe "Tidak Di-jurnal" pada LRA.</td></tr>';
+                }
+
+                document.getElementById('totalModalFinD').innerText = formatRp(totalFin);
+                document.getElementById('totalModalFinK').innerText = formatRp(totalFin);
+                document.getElementById('totalModalLraD').innerText = formatRp(totalLra);
+                document.getElementById('totalModalLraK').innerText = formatRp(totalLra);
+            }
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function tutupModalLihatJurnal() {
+            const modal = document.getElementById('modalLihatJurnal');
+            if(modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        function tambahBukuBesarManual(e) {
+            e.preventDefault();
+            const akunKey = document.getElementById('bbSelect').value;
+            if(!akunKey) {
+                alert("Silakan pilih Akun Buku Besar terlebih dahulu!");
+                return;
+            }
+
+            const editId = parseInt(document.getElementById('editBbIndex').value);
+            const rowData = {
+                id: editId === -1 ? Date.now() : editId,
+                tgl: document.getElementById('bbTgl').value,
+                ket: document.getElementById('bbKet').value,
+                debet: parseCurrencyValue(document.getElementById('bbDebet').value),
+                kredit: parseCurrencyValue(document.getElementById('bbKredit').value)
             };
 
-            dataTransaksi.push(newTransaksi);
-            renderTabelUtama();
+            if(!bukuBesarManual[akunKey]) bukuBesarManual[akunKey] = [];
 
-            // Reset form
-            document.getElementById('form-transaksi').reset();
-            toggleLraInputs(false);
-        }
-
-        // Hapus Transaksi
-        function hapusTransaksi(id) {
-            dataTransaksi = dataTransaksi.filter(item => item.id !== id);
-            renderTabelUtama();
-        }
-
-        // Reset Data ke Awal
-        function resetDataJurnal() {
-            dataTransaksi = [];
-            renderTabelUtama();
-        }
-
-        // BUKA MODAL POP-UP "LIHAT JURNAL"
-        function bukaModalLihatJurnal() {
-            // Urutkan transaksi berdasarkan tanggal terlama ke terbaru
-            const sortedData = [...dataTransaksi].sort((a, b) => new Date(a.tanggal) - new Date(b.tanggal));
-
-            // Set Periode Tanggal di Kop Dokumen
-            if (sortedData.length > 0) {
-                const tglAwal = sortedData[0].tanggal;
-                const tglAkhir = sortedData[sortedData.length - 1].tanggal;
-                document.getElementById('kop-periode').innerText = `Periode Tanggal: ${tglAwal} s/d ${tglAkhir}`;
+            if(editId === -1) {
+                bukuBesarManual[akunKey].push(rowData);
             } else {
-                document.getElementById('kop-periode').innerText = `Periode: Belum Ada Transaksi`;
+                const targetIdx = bukuBesarManual[akunKey].findIndex(item => item.id === editId);
+                if(targetIdx !== -1) bukuBesarManual[akunKey][targetIdx] = rowData;
             }
 
-            // Render Tabel Jurnal Finansial (LO)
-            const tbodyLo = document.getElementById('tbody-modal-lo');
-            tbodyLo.innerHTML = '';
-            let totalLoDebit = 0;
-            let totalLoKredit = 0;
+            localStorage.setItem('siswa_bb_manual', JSON.stringify(bukuBesarManual));
+            batalEditBb();
+            renderBukuBesar();
+        }
 
-            if (sortedData.length === 0) {
-                tbodyLo.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-400 italic">Belum ada data transaksi.</td></tr>`;
+        function editBarisBb(akunKey, idRow) {
+            const list = bukuBesarManual[akunKey] || [];
+            const target = list.find(item => item.id === idRow);
+            if(!target) return;
+
+            document.getElementById('editBbIndex').value = target.id;
+            document.getElementById('bbTgl').value = target.tgl;
+            document.getElementById('bbKet').value = target.ket;
+            document.getElementById('bbDebet').value = target.debet ? 'Rp ' + parseInt(target.debet, 10).toLocaleString('id-ID') : '';
+            document.getElementById('bbKredit').value = target.kredit ? 'Rp ' + parseInt(target.kredit, 10).toLocaleString('id-ID') : '';
+
+            document.getElementById('btnSubmitBb').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan';
+            document.getElementById('btnBatalBb').classList.remove('hidden');
+        }
+
+        function batalEditBb() {
+            document.getElementById('editBbIndex').value = -1;
+            document.getElementById('bbTgl').value = '';
+            document.getElementById('bbKet').value = '';
+            document.getElementById('bbDebet').value = '';
+            document.getElementById('bbKredit').value = '';
+
+            document.getElementById('btnSubmitBb').innerHTML = '<i class="fa-solid fa-paper-plane"></i> Submit Buku Besar';
+            document.getElementById('btnBatalBb').classList.add('hidden');
+        }
+
+        function renderBukuBesar() {
+            const akunKey = document.getElementById('bbSelect').value;
+            const bbBody = document.getElementById('bbTbody');
+            const bbJudul = document.getElementById('bbJudulTabel');
+            if(!bbBody) return;
+            bbBody.innerHTML = '';
+
+            if(!akunKey) {
+                if(bbJudul) bbJudul.innerText = 'Buku Besar: Belum Memilih Akun';
+                bbBody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-slate-400">Pilih akun terlebih dahulu untuk melihat / memasukkan data Buku Besar.</td></tr>';
+                return;
+            }
+
+            if(bbJudul) bbJudul.innerText = `Buku Besar: ${akunKey}`;
+
+            const rows = bukuBesarManual[akunKey] || [];
+
+            if(rows.length === 0) {
+                bbBody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-slate-400">Belum ada baris entri di akun ini. Gunakan form di atas untuk menambah baris posting.</td></tr>';
+                return;
+            }
+
+            const isKreditNormal = isSaldoNormalKredit(akunKey);
+            let saldo = 0;
+
+            rows.forEach((r) => {
+                if(isKreditNormal) {
+                    saldo += (r.kredit - r.debet);
+                } else {
+                    saldo += (r.debet - r.kredit);
+                }
+
+                const tr = document.createElement('tr');
+                tr.className = 'border-b hover:bg-slate-50';
+                tr.innerHTML = `
+                    <td class="p-2 border">${r.tgl}</td>
+                    <td class="p-2 border">${r.ket}</td>
+                    <td class="p-2 border text-right font-mono">${formatRp(r.debet)}</td>
+                    <td class="p-2 border text-right font-mono">${formatRp(r.kredit)}</td>
+                    <td class="p-2 border text-right font-bold font-mono text-indigo-950">${formatRp(saldo)}</td>
+                    <td class="p-2 border text-center space-x-1.5">
+                        <button onclick="editBarisBb('${akunKey}', ${r.id})" class="text-indigo-600 hover:text-indigo-800 p-1" title="Edit Baris"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button onclick="hapusBarisBb('${akunKey}', ${r.id})" class="text-rose-500 hover:text-rose-700 p-1" title="Hapus Baris"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                `;
+                bbBody.appendChild(tr);
+            });
+        }
+
+        function renderNeracaSaldo() {
+            const nsBody = document.getElementById('neracaSaldoTbody');
+            if(!nsBody) return;
+            nsBody.innerHTML = '';
+
+            const activeKeys = Object.keys(bukuBesarManual).filter(key => bukuBesarManual[key] && bukuBesarManual[key].length > 0);
+
+            if (activeKeys.length === 0) {
+                nsBody.innerHTML = '<tr><td colspan="4" class="p-6 text-center text-slate-400 font-medium">Belum ada posting pada Buku Besar. Silakan lakukan posting pada menu Buku Besar terlebih dahulu.</td></tr>';
+                if(document.getElementById('totalNsDebit')) document.getElementById('totalNsDebit').innerText = 'Rp 0';
+                if(document.getElementById('totalNsKredit')) document.getElementById('totalNsKredit').innerText = 'Rp 0';
+                
+                const statusBadge = document.getElementById('statusNsBadge');
+                if(statusBadge) {
+                    statusBadge.innerText = 'BALANCE';
+                    statusBadge.className = 'px-4 py-1 rounded-full text-xs font-black uppercase tracking-widest bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shadow-sm';
+                }
+                return;
+            }
+
+            let totalDebit = 0;
+            let totalKredit = 0;
+
+            activeKeys.forEach(akunKey => {
+                const rows = bukuBesarManual[akunKey];
+                const isKreditNormal = isSaldoNormalKredit(akunKey);
+                let saldoAkhir = 0;
+
+                rows.forEach(r => {
+                    if (isKreditNormal) {
+                        saldoAkhir += (r.kredit - r.debet);
+                    } else {
+                        saldoAkhir += (r.debet - r.kredit);
+                    }
+                });
+
+                let parts = akunKey.split(' ');
+                let kode = parts[0] || '-';
+                let nama = parts.slice(1).join(' ') || akunKey;
+
+                let debetVal = 0;
+                let kreditVal = 0;
+
+                if (isKreditNormal) {
+                    if (saldoAkhir >= 0) {
+                        kreditVal = saldoAkhir;
+                    } else {
+                        debetVal = Math.abs(saldoAkhir);
+                    }
+                } else {
+                    if (saldoAkhir >= 0) {
+                        debetVal = saldoAkhir;
+                    } else {
+                        kreditVal = Math.abs(saldoAkhir);
+                    }
+                }
+
+                totalDebit += debetVal;
+                totalKredit += kreditVal;
+
+                const tr = document.createElement('tr');
+                tr.className = 'border-b hover:bg-slate-50 transition';
+                tr.innerHTML = `
+                    <td class="p-2.5 border font-mono font-bold text-indigo-950 text-center">${kode}</td>
+                    <td class="p-2.5 border font-semibold text-slate-800">${nama}</td>
+                    <td class="p-2.5 border text-right font-mono font-bold ${debetVal > 0 ? 'text-slate-900' : 'text-slate-300'}">${debetVal > 0 ? formatRp(debetVal) : 'Rp 0'}</td>
+                    <td class="p-2.5 border text-right font-mono font-bold ${kreditVal > 0 ? 'text-slate-900' : 'text-slate-300'}">${kreditVal > 0 ? formatRp(kreditVal) : 'Rp 0'}</td>
+                `;
+                nsBody.appendChild(tr);
+            });
+
+            if(document.getElementById('totalNsDebit')) document.getElementById('totalNsDebit').innerText = formatRp(totalDebit);
+            if(document.getElementById('totalNsKredit')) document.getElementById('totalNsKredit').innerText = formatRp(totalKredit);
+
+            const statusBadge = document.getElementById('statusNsBadge');
+            if(statusBadge) {
+                if (totalDebit === totalKredit) {
+                    statusBadge.innerText = 'BALANCE';
+                    statusBadge.className = 'px-4 py-1 rounded-full text-xs font-black uppercase tracking-widest bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shadow-sm';
+                } else {
+                    statusBadge.innerText = 'UNBALANCE';
+                    statusBadge.className = 'px-4 py-1 rounded-full text-xs font-black uppercase tracking-widest bg-rose-500/20 text-rose-400 border border-rose-500/30 shadow-sm';
+                }
+            }
+        }
+
+        function hapusBarisBb(akunKey, idRow) {
+            if(bukuBesarManual[akunKey]) {
+                bukuBesarManual[akunKey] = bukuBesarManual[akunKey].filter(item => item.id !== idRow);
+                localStorage.setItem('siswa_bb_manual', JSON.stringify(bukuBesarManual));
+                renderBukuBesar();
+            }
+        }
+
+        function resetBukuBesarAkunIni() {
+            const akunKey = document.getElementById('bbSelect').value;
+            if(!akunKey) return;
+            if(confirm(`Hapus seluruh baris posting manual di akun ${akunKey}?`)) {
+                delete bukuBesarManual[akunKey];
+                localStorage.setItem('siswa_bb_manual', JSON.stringify(bukuBesarManual));
+                renderBukuBesar();
+            }
+        }
+
+        function bukaModalSemuaBb() {
+            const modal = document.getElementById('modalSemuaBb');
+            const modalBody = document.getElementById('modalSemuaBbBody');
+            if(!modalBody) return;
+            modalBody.innerHTML = '';
+
+            const activeKeys = Object.keys(bukuBesarManual).filter(key => bukuBesarManual[key] && bukuBesarManual[key].length > 0);
+
+            if(activeKeys.length === 0) {
+                modalBody.innerHTML = `
+                    <div class="text-center py-12 text-slate-400 space-y-2">
+                        <i class="fa-solid fa-folder-open text-4xl mb-2 text-slate-300"></i>
+                        <p class="font-bold text-slate-600">Belum Ada Data Buku Besar yang Di-input</p>
+                        <p class="text-xs">Silakan pilih akun dan lakukan posting data pada tab Buku Besar terlebih dahulu.</p>
+                    </div>
+                `;
             } else {
-                sortedData.forEach(item => {
-                    totalLoDebit += item.nominal;
-                    totalLoKredit += item.nominal;
+                activeKeys.forEach(akunKey => {
+                    const rows = bukuBesarManual[akunKey];
+                    const isKreditNormal = isSaldoNormalKredit(akunKey);
+                    let saldo = 0;
 
-                    // Baris Debit
-                    const trDebit = document.createElement('tr');
-                    trDebit.className = "hover:bg-slate-50";
-                    trDebit.innerHTML = `
-                        <td class="p-2 border-r border-slate-200 text-center font-medium text-slate-600">${item.tanggal}</td>
-                        <td class="p-2 border-r border-slate-200 font-medium text-slate-800">${item.uraian}</td>
-                        <td class="p-2 border-r border-slate-200 font-semibold text-slate-800">${item.loDebit}</td>
-                        <td class="p-2 border-r border-slate-200 text-right font-medium text-slate-800">${formatRupiah(item.nominal)}</td>
-                        <td class="p-2 text-right font-medium text-slate-400">-</td>
-                    `;
-                    tbodyLo.appendChild(trDebit);
+                    let rowsHtml = '';
+                    rows.forEach(r => {
+                        if(isKreditNormal) {
+                            saldo += (r.kredit - r.debet);
+                        } else {
+                            saldo += (r.debet - r.kredit);
+                        }
 
-                    // Baris Kredit (Akun terindentasi)
-                    const trKredit = document.createElement('tr');
-                    trKredit.className = "hover:bg-slate-50 border-b border-slate-200";
-                    trKredit.innerHTML = `
-                        <td class="p-2 border-r border-slate-200"></td>
-                        <td class="p-2 border-r border-slate-200"></td>
-                        <td class="p-2 border-r border-slate-200 pl-6 text-slate-600 font-medium">${item.loKredit}</td>
-                        <td class="p-2 border-r border-slate-200 text-right font-medium text-slate-400">-</td>
-                        <td class="p-2 text-right font-medium text-slate-800">${formatRupiah(item.nominal)}</td>
+                        rowsHtml += `
+                            <tr class="border-b hover:bg-slate-50 text-xs">
+                                <td class="p-2 border">${r.tgl}</td>
+                                <td class="p-2 border">${r.ket}</td>
+                                <td class="p-2 border text-right font-mono">${formatRp(r.debet)}</td>
+                                <td class="p-2 border text-right font-mono">${formatRp(r.kredit)}</td>
+                                <td class="p-2 border text-right font-bold font-mono">${formatRp(saldo)}</td>
+                            </tr>
+                        `;
+                    });
+
+                    const card = document.createElement('div');
+                    card.className = "bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden";
+                    card.innerHTML = `
+                        <div class="p-3 bg-indigo-50 border-b border-indigo-100 flex justify-between items-center">
+                            <span class="text-xs font-bold text-indigo-950 flex items-center gap-2">
+                                <i class="fa-solid fa-book text-indigo-600"></i> Akun: ${akunKey}
+                            </span>
+                            <span class="text-xs font-bold bg-indigo-200 text-indigo-900 px-2.5 py-0.5 rounded-full">
+                                Saldo Akhir: ${formatRp(saldo)}
+                            </span>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-xs text-left border-collapse">
+                                <thead>
+                                    <tr class="bg-slate-100 text-slate-700 border-b font-bold">
+                                        <th class="p-2 border">Tanggal</th>
+                                        <th class="p-2 border">Keterangan</th>
+                                        <th class="p-2 border text-right">Debet (Rp)</th>
+                                        <th class="p-2 border text-right">Kredit (Rp)</th>
+                                        <th class="p-2 border text-right">Saldo (Rp)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${rowsHtml}
+                                </tbody>
+                            </table>
+                        </div>
                     `;
-                    tbodyLo.appendChild(trKredit);
+                    modalBody.appendChild(card);
                 });
             }
 
-            document.getElementById('modal-lo-total-debit').innerText = formatRupiah(totalLoDebit);
-            document.getElementById('modal-lo-total-kredit').innerText = formatRupiah(totalLoKredit);
-
-            // Render Tabel Jurnal Pelaksanaan Anggaran (LRA)
-            const tbodyLra = document.getElementById('tbody-modal-lra');
-            tbodyLra.innerHTML = '';
-            let totalLraDebit = 0;
-            let totalLraKredit = 0;
-
-            const lraFiltered = sortedData.filter(item => !item.isLraNoJournal && item.lraDebit && item.lraKredit);
-
-            if (lraFiltered.length === 0) {
-                tbodyLra.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-400 italic">Tidak ada transaksi anggaran LRA (Semua opsi Tidak Di-jurnal / kosong).</td></tr>`;
-            } else {
-                lraFiltered.forEach(item => {
-                    totalLraDebit += item.nominal;
-                    totalLraKredit += item.nominal;
-
-                    // Baris Debit
-                    const trDebit = document.createElement('tr');
-                    trDebit.className = "hover:bg-slate-50";
-                    trDebit.innerHTML = `
-                        <td class="p-2 border-r border-slate-200 text-center font-medium text-slate-600">${item.tanggal}</td>
-                        <td class="p-2 border-r border-slate-200 font-medium text-slate-800">${item.uraian}</td>
-                        <td class="p-2 border-r border-slate-200 font-semibold text-slate-800">${item.lraDebit}</td>
-                        <td class="p-2 border-r border-slate-200 text-right font-medium text-slate-800">${formatRupiah(item.nominal)}</td>
-                        <td class="p-2 text-right font-medium text-slate-400">-</td>
-                    `;
-                    tbodyLra.appendChild(trDebit);
-
-                    // Baris Kredit
-                    const trKredit = document.createElement('tr');
-                    trKredit.className = "hover:bg-slate-50 border-b border-slate-200";
-                    trKredit.innerHTML = `
-                        <td class="p-2 border-r border-slate-200"></td>
-                        <td class="p-2 border-r border-slate-200"></td>
-                        <td class="p-2 border-r border-slate-200 pl-6 text-slate-600 font-medium">${item.lraKredit}</td>
-                        <td class="p-2 border-r border-slate-200 text-right font-medium text-slate-400">-</td>
-                        <td class="p-2 text-right font-medium text-slate-800">${formatRupiah(item.nominal)}</td>
-                    `;
-                    tbodyLra.appendChild(trKredit);
-                });
+            if(modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
             }
-
-            document.getElementById('modal-lra-total-debit').innerText = formatRupiah(totalLraDebit);
-            document.getElementById('modal-lra-total-kredit').innerText = formatRupiah(totalLraKredit);
-
-            // Tampilkan Modal Pop-up
-            document.getElementById('modal-lihat-jurnal').classList.remove('hidden');
         }
 
-        // TUTUP MODAL POP-UP
-        function tutupModalLihatJurnal() {
-            document.getElementById('modal-lihat-jurnal').classList.add('hidden');
+        function tutupModalSemuaBb() {
+            const modal = document.getElementById('modalSemuaBb');
+            if(modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
         }
 
-        // Init Load
-        window.onload = function() {
-            renderTabelUtama();
-        };
+        // INTEGRASI EXCEL (.XLSX)
+        function exportToExcel() {
+            const wb = XLSX.utils.book_new();
+
+            const summary = [
+                ["PRAKTIKUM AKUNTANSI LEMBAGA SMK"],
+                ["LAPORAN KEUANGAN HASIL PRAKTIKUM"],
+                [],
+                ["Nama Siswa", identitas.nama || '-'],
+                ["Kelas", identitas.kelas || '-'],
+                ["Nama Instansi / SKPD", identitas.instansi || '-'],
+                ["Kabupaten / Kota", identitas.kab || '-'],
+                ["Periode Tanggal", identitas.tgl || '-'],
+                [],
+                ["--- REALISASI ANGGARAN (LRA) ---"],
+                ["Pendapatan LRA", document.getElementById('lraPend') ? document.getElementById('lraPend').innerText : '0'],
+                ["Belanja LRA", document.getElementById('lraBelanja') ? document.getElementById('lraBelanja').innerText : '0'],
+                ["SiLPA", document.getElementById('lraSilpa') ? document.getElementById('lraSilpa').innerText : '0'],
+                [],
+                ["--- LAPORAN OPERASIONAL (LO) ---"],
+                ["Pendapatan LO", document.getElementById('loPend') ? document.getElementById('loPend').innerText : '0'],
+                ["Beban LO", document.getElementById('loBeban') ? document.getElementById('loBeban').innerText : '0'],
+                ["Surplus / (Defisit)", document.getElementById('loSurplus') ? document.getElementById('loSurplus').innerText : '0']
+            ];
+            
+            const wsSummary = XLSX.utils.aoa_to_sheet(summary);
+            wsSummary['!cols'] = [{ wch: 30 }, { wch: 30 }];
+            XLSX.utils.book_append_sheet(wb, wsSummary, "Identitas & Laporan");
+
+            const coaRows = [["Kode Akun", "Nama Akun", "Kelompok / Basis", "Saldo Awal Debet", "Saldo Awal Kredit"]];
+            coaData.forEach(c => {
+                coaRows.push([c.kode, c.nama, c.kat, c.debetAwal || 0, c.kreditAwal || 0]);
+            });
+            const wsCoa = XLSX.utils.aoa_to_sheet(coaRows);
+            wsCoa['!cols'] = [{ wch: 15 }, { wch: 35 }, { wch: 20 }, { wch: 18 }, { wch: 18 }];
+            XLSX.utils.book_append_sheet(wb, wsCoa, "Neraca Saldo Awal");
+
+            const jRows = [["No", "Tanggal", "Uraian", "Debet Finansial", "Kredit Finansial", "Debet LRA", "Kredit LRA", "Nominal"]];
+            transaksi.forEach((t, i) => {
+                jRows.push([i+1, t.tgl, t.uraian, t.finD, t.finK, t.lraD, t.lraK, t.nominal]);
+            });
+            
+            const wsJurnal = XLSX.utils.aoa_to_sheet(jRows);
+            wsJurnal['!cols'] = [
+                { wch: 5 }, { wch: 12 }, { wch: 30 }, { wch: 30 }, { wch: 30 }, { wch: 30 }, { wch: 30 }, { wch: 18 }
+            ];
+            XLSX.utils.book_append_sheet(wb, wsJurnal, "Jurnal Umum");
+
+            const bbExportRows = [["Akun Buku Besar", "Tanggal", "Keterangan", "Debet", "Kredit"]];
+            Object.keys(bukuBesarManual).forEach(aKey => {
+                bukuBesarManual[aKey].forEach(row => {
+                    bbExportRows.push([aKey, row.tgl, row.ket, row.debet, row.kredit]);
+                });
+            });
+            const wsBb = XLSX.utils.aoa_to_sheet(bbExportRows);
+            wsBb['!cols'] = [{ wch: 30 }, { wch: 12 }, { wch: 30 }, { wch: 15 }, { wch: 15 }];
+            XLSX.utils.book_append_sheet(wb, wsBb, "Buku Besar");
+
+            XLSX.writeFile(wb, `Praktikum_Akuntansi_${(identitas.nama || 'Siswa').replace(/\s+/g, '_')}.xlsx`);
+        }
+
+        function importFromExcel(e) {
+            const file = e.target.files[0];
+            if(!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                const data = new Uint8Array(evt.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+
+                if(workbook.SheetNames.includes("Neraca Saldo Awal")) {
+                    const cRows = XLSX.utils.sheet_to_json(workbook.Sheets["Neraca Saldo Awal"], { header: 1 });
+                    coaData = [];
+                    for(let i = 1; i < cRows.length; i++) {
+                        if(cRows[i].length >= 3) {
+                            coaData.push({
+                                kode: cRows[i][0],
+                                nama: cRows[i][1],
+                                kat: cRows[i][2],
+                                debetAwal: parseFloat(cRows[i][3]) || 0,
+                                kreditAwal: parseFloat(cRows[i][4]) || 0
+                            });
+                        }
+                    }
+                    localStorage.setItem('siswa_coa', JSON.stringify(coaData));
+                    initCOA();
+                }
+
+                if(workbook.SheetNames.includes("Jurnal Umum")) {
+                    const rows = XLSX.utils.sheet_to_json(workbook.Sheets["Jurnal Umum"], { header: 1 });
+                    transaksi = [];
+                    for(let i = 1; i < rows.length; i++) {
+                        if(rows[i].length >= 8) {
+                            transaksi.push({
+                                id: Date.now() + i,
+                                tgl: rows[i][1],
+                                uraian: rows[i][2],
+                                finD: rows[i][3],
+                                finK: rows[i][4],
+                                lraD: rows[i][5],
+                                lraK: rows[i][6],
+                                nominal: parseFloat(rows[i][7]) || 0
+                            });
+                        }
+                    }
+                    localStorage.setItem('siswa_tx', JSON.stringify(transaksi));
+                }
+
+                if(workbook.SheetNames.includes("Buku Besar")) {
+                    const bbRows = XLSX.utils.sheet_to_json(workbook.Sheets["Buku Besar"], { header: 1 });
+                    bukuBesarManual = {};
+                    for(let i = 1; i < bbRows.length; i++) {
+                        if(bbRows[i].length >= 5) {
+                            const aKey = bbRows[i][0];
+                            if(!bukuBesarManual[aKey]) bukuBesarManual[aKey] = [];
+                            bukuBesarManual[aKey].push({
+                                id: Date.now() + i,
+                                tgl: bbRows[i][1],
+                                ket: bbRows[i][2],
+                                debet: parseFloat(bbRows[i][3]) || 0,
+                                kredit: parseFloat(bbRows[i][4]) || 0
+                            });
+                        }
+                    }
+                    localStorage.setItem('siswa_bb_manual', JSON.stringify(bukuBesarManual));
+                }
+
+                if(workbook.SheetNames.includes("Identitas & Laporan")) {
+                    const idRows = XLSX.utils.sheet_to_json(workbook.Sheets["Identitas & Laporan"], { header: 1 });
+                    if(idRows[3]) identitas.nama = idRows[3][1];
+                    if(idRows[4]) identitas.kelas = idRows[4][1];
+                    if(idRows[5]) identitas.instansi = idRows[5][1];
+                    if(idRows[6]) identitas.kab = idRows[6][1];
+                    if(idRows[7]) identitas.tgl = idRows[7][1];
+
+                    if(document.getElementById('siswaNama')) document.getElementById('siswaNama').value = identitas.nama || '';
+                    if(document.getElementById('siswaKelas')) document.getElementById('siswaKelas').value = identitas.kelas || '';
+                    if(document.getElementById('instansiNama')) document.getElementById('instansiNama').value = identitas.instansi || '';
+                    if(document.getElementById('instansiKab')) document.getElementById('instansiKab').value = identitas.kab || '';
+                    if(document.getElementById('instansiTgl')) document.getElementById('instansiTgl').value = identitas.tgl || '';
+
+                    localStorage.setItem('siswa_id', JSON.stringify(identitas));
+                }
+
+                updateTampilanLampiran2();
+                renderTampilan();
+                alert("Data berhasil di-import dari Microsoft Excel!");
+            };
+            reader.readAsArrayBuffer(file);
+        }
     </script>
 </body>
 </html>
