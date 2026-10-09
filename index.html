@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aplikasi Praktikum Akuntansi Lembaga SMK - Pemerintah & Daerah</title>
-    <meta name="description" content="Aplikasi Simulasi Praktikum Akuntansi Lembaga dan Pemerintah Daerah untuk Siswa SMK AKL. Terintegrasi Dual Journaling (LO & LRA) dan Microsoft Excel.">
+    <meta name="description" content="Aplikasi Simulasi Praktikum Akuntansi Lembaga dan Pemerintah Daerah untuk Siswa SMK AKL. Terintegrasi Dual Journaling (LO & LRA) Multi-Baris dan Microsoft Excel.">
     <meta name="theme-color" content="#1e1b4b">
     
     <!-- Tailwind CSS CDN -->
@@ -271,10 +271,10 @@
                 </div>
             </section>
 
-            <!-- TAB 3: DAFTAR JURNAL -->
+            <!-- TAB 3: DAFTAR JURNAL (INPUT MULTI-BARIS) -->
             <section id="tab-jurnal" class="tab-content hidden space-y-6">
                 <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-                    <h2 class="text-xs font-bold text-indigo-900 uppercase tracking-wider mb-4">Input Jurnal Transaksi (Dual Journaling)</h2>
+                    <h2 class="text-xs font-bold text-indigo-900 uppercase tracking-wider mb-4">Input Jurnal Transaksi Multi-Baris (Dual Journaling)</h2>
                     <form onsubmit="tambahJurnal(event)" class="space-y-4">
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                             <div>
@@ -287,48 +287,62 @@
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <!-- JURNAL FINANSIAL -->
-                            <div class="bg-indigo-50/50 p-3.5 rounded-xl border border-indigo-100 space-y-2">
-                                <span class="text-xs font-bold text-indigo-800 block">1. JURNAL FINANSIAL (LO & NERACA)</span>
-                                <div>
-                                    <label class="block text-[10px] font-semibold text-slate-500 mb-0.5">Debit (D)</label>
-                                    <select id="txFinD" required class="w-full px-2.5 py-1.5 border rounded-lg text-xs select-coa"></select>
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                            <!-- 1. JURNAL FINANSIAL (MULTI-BARIS) -->
+                            <div class="bg-indigo-50/50 p-4 rounded-xl border border-indigo-100 space-y-3">
+                                <div class="flex justify-between items-center border-b border-indigo-100 pb-2">
+                                    <span class="text-xs font-extrabold text-indigo-900">1. JURNAL FINANSIAL (LO & NERACA)</span>
+                                    <span id="badgeFinBalance" class="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">BALANCE</span>
                                 </div>
-                                <div>
-                                    <label class="block text-[10px] font-semibold text-slate-500 mb-0.5">Kredit (K)</label>
-                                    <select id="txFinK" required class="w-full px-2.5 py-1.5 border rounded-lg text-xs select-coa"></select>
+                                
+                                <div id="containerFinRows" class="space-y-2.5">
+                                    <!-- Dynamic rows loaded here -->
+                                </div>
+
+                                <div class="flex justify-between items-center pt-2">
+                                    <button type="button" onclick="tambahBarisFin()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-3 py-1.5 rounded-lg transition shadow-sm flex items-center gap-1.5">
+                                        <i class="fa-solid fa-plus text-[10px]"></i> Tambah Baris Akun
+                                    </button>
+                                    <div class="text-[11px] font-mono text-indigo-950 text-right">
+                                        <span>D: <strong id="sumFinD">Rp 0</strong></span> | 
+                                        <span>K: <strong id="sumFinK">Rp 0</strong></span>
+                                    </div>
                                 </div>
                             </div>
 
-                            <!-- JURNAL LRA DENGAN OPSI TIDAK DI-JURNAL -->
-                            <div class="bg-amber-50/50 p-3.5 rounded-xl border border-amber-100 space-y-2">
-                                <span class="text-xs font-bold text-amber-900 block">2. JURNAL PELAKSANAAN ANGGARAN (LRA)</span>
-                                <div>
-                                    <label class="block text-[10px] font-semibold text-slate-500 mb-0.5">Debit (D)</label>
-                                    <select id="txLraD" class="w-full px-2.5 py-1.5 border rounded-lg text-xs select-coa"></select>
-                                </div>
-                                <div>
-                                    <label class="block text-[10px] font-semibold text-slate-500 mb-0.5">Kredit (K)</label>
-                                    <select id="txLraK" class="w-full px-2.5 py-1.5 border rounded-lg text-xs select-coa"></select>
+                            <!-- 2. JURNAL ANGGARAN LRA (MULTI-BARIS & OPTION TIDAK DIJURNAL) -->
+                            <div class="bg-amber-50/50 p-4 rounded-xl border border-amber-100 space-y-3">
+                                <div class="flex justify-between items-center border-b border-amber-100 pb-2">
+                                    <span class="text-xs font-extrabold text-amber-900">2. JURNAL PELAKSANAAN ANGGARAN (LRA)</span>
+                                    <span id="badgeLraBalance" class="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">BALANCE</span>
                                 </div>
 
-                                <!-- TOMBOL OPSI TIDAK DI-JURNAL -->
-                                <div class="pt-1.5 flex items-center gap-2">
-                                    <input type="checkbox" id="chkTidakDijurnalLra" onchange="toggleTidakDijurnalLra(this)" class="w-4 h-4 text-indigo-600 rounded cursor-pointer">
-                                    <label for="chkTidakDijurnalLra" class="text-xs font-bold text-slate-700 cursor-pointer select-none">
-                                        Tidak Di-jurnal <span class="text-[10px] text-slate-500 font-normal">(Centang jika tidak mempengaruhi anggaran LRA)</span>
-                                    </label>
+                                <div id="containerLraRows" class="space-y-2.5">
+                                    <!-- Dynamic rows loaded here -->
+                                </div>
+
+                                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-2 border-t border-amber-100">
+                                    <button type="button" id="btnTambahLraRow" onclick="tambahBarisLra()" class="bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs px-3 py-1.5 rounded-lg transition shadow-sm flex items-center gap-1.5 w-fit">
+                                        <i class="fa-solid fa-plus text-[10px]"></i> Tambah Baris Akun
+                                    </button>
+
+                                    <div class="flex items-center gap-2">
+                                        <input type="checkbox" id="chkTidakDijurnalLra" onchange="toggleTidakDijurnalLra(this)" class="w-4 h-4 text-indigo-600 rounded cursor-pointer">
+                                        <label for="chkTidakDijurnalLra" class="text-xs font-bold text-slate-700 cursor-pointer select-none">
+                                            Tidak Di-jurnal
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="text-[11px] font-mono text-amber-950 text-right pt-1">
+                                    <span>D: <strong id="sumLraD">Rp 0</strong></span> | 
+                                    <span>K: <strong id="sumLraK">Rp 0</strong></span>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="flex flex-col sm:flex-row justify-between items-end gap-3 pt-2">
-                            <div class="w-full sm:w-1/3">
-                                <label class="block text-xs font-semibold text-slate-600 mb-1">Nominal (Rp)</label>
-                                <input type="text" id="txNominal" required placeholder="Rp 0" oninput="formatInputCurrency(this)" class="w-full px-3 py-2 border rounded-xl text-xs font-bold font-mono">
-                            </div>
-                            <button type="submit" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-6 py-2.5 rounded-xl transition shadow">
+                        <div class="flex justify-end pt-2">
+                            <button type="submit" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-8 py-3 rounded-xl transition shadow-lg flex items-center justify-center gap-2">
                                 <i class="fa-solid fa-floppy-disk"></i> Simpan Transaksi
                             </button>
                         </div>
@@ -348,7 +362,7 @@
                                     <th class="p-2.5 border">Uraian</th>
                                     <th class="p-2.5 border">Jurnal Finansial (LO/Neraca)</th>
                                     <th class="p-2.5 border">Jurnal Anggaran (LRA)</th>
-                                    <th class="p-2.5 border text-right">Nominal (Rp)</th>
+                                    <th class="p-2.5 border text-right">Total (Rp)</th>
                                     <th class="p-2.5 border text-center">Aksi</th>
                                 </tr>
                             </thead>
@@ -356,7 +370,6 @@
                         </table>
                     </div>
 
-                    <!-- TOMBOL LIHAT JURNAL (MUNCULKAN POP-UP REKAP REAGEN JURNAL) -->
                     <div class="p-4 bg-slate-50 border-t border-slate-200 flex justify-end">
                         <button onclick="bukaModalLihatJurnal()" class="bg-indigo-950 hover:bg-indigo-900 text-amber-400 font-extrabold text-xs px-5 py-2.5 rounded-xl shadow-md flex items-center gap-2 transition transform hover:-translate-y-0.5">
                             <i class="fa-solid fa-book-bookmark text-sm"></i> Lihat Jurnal
@@ -533,7 +546,7 @@
         </button>
     </nav>
 
-    <!-- MODAL POP UP: CEKLIS DATA IDENTITAS TERSIMPAN -->
+    <!-- MODAL CEKLIS DATA IDENTITAS TERSIMPAN -->
     <div id="modalSavedAlert" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center z-50 p-4 transition-all">
         <div class="bg-white w-full max-w-sm rounded-3xl p-6 shadow-2xl text-center space-y-4 border border-slate-100 transform scale-95 transition-transform duration-200">
             <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-inner">
@@ -567,16 +580,14 @@
                 </button>
             </div>
 
-            <!-- SCROLLABLE BODY POP UP LIHAT JURNAL -->
             <div class="p-6 overflow-y-auto space-y-6 flex-1 bg-slate-50">
-                <!-- KOP REKAP JURNAL -->
                 <div class="bg-white p-4 rounded-xl border text-center space-y-1 shadow-sm">
                     <h2 id="displayModalJurnalSKPD" class="text-sm font-black text-indigo-950 uppercase">SKPD DINAS KELAUTAN DAN PERIKANAN</h2>
                     <p id="displayModalJurnalKab" class="text-xs font-bold text-slate-700">Kabupaten / Kota: Kepulauan Meranti</p>
                     <p id="displayModalJurnalTgl" class="text-xs font-semibold text-slate-600">Per Tanggal: -</p>
                 </div>
 
-                <!-- 1. TABEL JURNAL FINANSIAL (LO & NERACA) -->
+                <!-- 1. JURNAL FINANSIAL REKAP -->
                 <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
                     <div class="p-3 bg-indigo-900 text-white font-bold text-xs uppercase tracking-wider flex items-center gap-2">
                         <i class="fa-solid fa-coins text-amber-400"></i> 1. Jurnal Finansial (LO & Neraca)
@@ -604,7 +615,7 @@
                     </div>
                 </div>
 
-                <!-- 2. TABEL JURNAL ANGGARAN (LRA) -->
+                <!-- 2. JURNAL LRA REKAP -->
                 <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
                     <div class="p-3 bg-amber-600 text-white font-bold text-xs uppercase tracking-wider flex items-center gap-2">
                         <i class="fa-solid fa-file-invoice-dollar text-amber-200"></i> 2. Jurnal Pelaksanaan Anggaran (LRA)
@@ -667,19 +678,23 @@
         </div>
     </div>
 
-    <!-- LOGIC SCRIPT AKUNTANSI & INTERAKSI AMAN -->
+    <!-- LOGIC SCRIPT AKUNTANSI & MULTI-BARIS DINAMIS -->
     <script>
         const defaultCoaData = [
             { kode: '1.1.1.01', nama: 'Kas di Kas Daerah', kat: 'Aset', debetAwal: 0, kreditAwal: 0 },
+            { kode: '1.1.1.02', nama: 'Kas di Bendahara Penerimaan', kat: 'Aset', debetAwal: 0, kreditAwal: 0 },
+            { kode: '1.1.1.03', nama: 'Kas di Bendahara Pengeluaran', kat: 'Aset', debetAwal: 0, kreditAwal: 0 },
             { kode: '1.1.3.01', nama: 'Piutang Pajak Daerah', kat: 'Aset', debetAwal: 0, kreditAwal: 0 },
             { kode: '2.1.1.01', nama: 'Utang Perhitungan Pihak Ketiga (PFK)', kat: 'Kewajiban', debetAwal: 0, kreditAwal: 0 },
             { kode: '3.1.1.01', nama: 'Ekuitas', kat: 'Ekuitas', debetAwal: 0, kreditAwal: 0 },
             { kode: '4.1.1.01', nama: 'Pendapatan Pajak Daerah - LRA', kat: 'Pendapatan LRA', debetAwal: 0, kreditAwal: 0 },
             { kode: '4.2.1.01', nama: 'Pendapatan Retribusi Daerah - LRA', kat: 'Pendapatan LRA', debetAwal: 0, kreditAwal: 0 },
+            { kode: '4.2.1.02', nama: 'Pendapatan Retribusi Parkir - LRA', kat: 'Pendapatan LRA', debetAwal: 0, kreditAwal: 0 },
             { kode: '5.1.1.01', nama: 'Belanja Pegawai', kat: 'Belanja LRA', debetAwal: 0, kreditAwal: 0 },
             { kode: '5.1.2.01', nama: 'Belanja Barang dan Jasa', kat: 'Belanja LRA', debetAwal: 0, kreditAwal: 0 },
             { kode: '7.1.1.01', nama: 'Pendapatan Pajak Daerah - LO', kat: 'Pendapatan LO', debetAwal: 0, kreditAwal: 0 },
             { kode: '7.2.1.01', nama: 'Pendapatan Retribusi Daerah - LO', kat: 'Pendapatan LO', debetAwal: 0, kreditAwal: 0 },
+            { kode: '7.2.1.02', nama: 'Pendapatan Retribusi Parkir - LO', kat: 'Pendapatan LO', debetAwal: 0, kreditAwal: 0 },
             { kode: '8.1.1.01', nama: 'Beban Pegawai', kat: 'Beban LO', debetAwal: 0, kreditAwal: 0 },
             { kode: '8.1.2.01', nama: 'Beban Barang dan Jasa', kat: 'Beban LO', debetAwal: 0, kreditAwal: 0 },
             { kode: '0.0.0.00', nama: 'Perubahan SAL', kat: 'Anggaran', debetAwal: 0, kreditAwal: 0 }
@@ -736,6 +751,7 @@
             if(saveTx) { try { transaksi = JSON.parse(saveTx); } catch(e) {} }
 
             initCOA();
+            resetFormJurnalDinamis();
             updateTampilanLampiran2();
             renderTampilan();
         };
@@ -750,22 +766,18 @@
         }
 
         function switchTab(tab) {
-            // Sembunyikan semua tab content
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             
-            // Unselect Nav Desktop
             document.querySelectorAll('.nav-btn').forEach(el => {
                 el.classList.remove('bg-indigo-800', 'text-white', 'shadow-md');
                 el.classList.add('hover:bg-indigo-900', 'hover:text-white');
             });
 
-            // Unselect Nav Mobile
             document.querySelectorAll('nav button[id^="mobile-nav-"]').forEach(btn => {
                 btn.classList.remove('text-amber-400', 'font-bold');
                 btn.classList.add('text-slate-400', 'font-medium');
             });
 
-            // Tampilkan Tab Target
             const targetTab = document.getElementById(`tab-${tab}`);
             if(targetTab) targetTab.classList.remove('hidden');
             
@@ -803,22 +815,142 @@
             }
         }
 
-        function toggleTidakDijurnalLra(chk) {
-            const selectD = document.getElementById('txLraD');
-            const selectK = document.getElementById('txLraK');
-            if(chk.checked) {
-                selectD.value = '';
-                selectK.value = '';
-                selectD.disabled = true;
-                selectK.disabled = true;
-                selectD.classList.add('bg-slate-200', 'cursor-not-allowed');
-                selectK.classList.add('bg-slate-200', 'cursor-not-allowed');
-            } else {
-                selectD.disabled = false;
-                selectK.disabled = false;
-                selectD.classList.remove('bg-slate-200', 'cursor-not-allowed');
-                selectK.classList.remove('bg-slate-200', 'cursor-not-allowed');
+        // KODE MULTI-BARIS DINAMIS
+        function makeCoaOptionsHtml() {
+            let options = '<option value="">-- Pilih Akun --</option>';
+            coaData.forEach(item => {
+                options += `<option value="${item.kode} ${item.nama}">${item.kode} - ${item.nama}</option>`;
+            });
+            return options;
+        }
+
+        function createRowHtml(type, pos = 'D') {
+            const coaOptions = makeCoaOptionsHtml();
+            const id = Date.now() + Math.floor(Math.random() * 1000);
+            return `
+                <div class="row-entry flex items-center gap-1.5" id="row_${type}_${id}">
+                    <select class="pos-select text-xs py-1.5 px-2 border rounded-lg font-bold ${pos==='D'?'text-indigo-900 bg-indigo-50':'text-amber-900 bg-amber-50'}" onchange="recalcTotals()">
+                        <option value="D" ${pos==='D'?'selected':''}>Debit (D)</option>
+                        <option value="K" ${pos==='K'?'selected':''}>Kredit (K)</option>
+                    </select>
+                    <select class="akun-select flex-1 text-xs py-1.5 px-2 border rounded-lg">
+                        ${coaOptions}
+                    </select>
+                    <input type="text" placeholder="Rp 0" oninput="formatInputCurrency(this); recalcTotals();" class="nom-input w-28 text-xs py-1.5 px-2 border rounded-lg text-right font-mono font-bold">
+                    <button type="button" onclick="hapusBaris('${type}_${id}')" class="text-rose-500 hover:text-rose-700 p-1 text-xs" title="Hapus Baris"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            `;
+        }
+
+        function tambahBarisFin(pos = 'D') {
+            const container = document.getElementById('containerFinRows');
+            if(container) {
+                container.insertAdjacentHTML('beforeend', createRowHtml('fin', pos));
+                recalcTotals();
             }
+        }
+
+        function tambahBarisLra(pos = 'D') {
+            const container = document.getElementById('containerLraRows');
+            if(container) {
+                container.insertAdjacentHTML('beforeend', createRowHtml('lra', pos));
+                recalcTotals();
+            }
+        }
+
+        function hapusBaris(rowId) {
+            const el = document.getElementById(`row_${rowId}`);
+            if(el) {
+                el.remove();
+                recalcTotals();
+            }
+        }
+
+        function resetFormJurnalDinamis() {
+            const cFin = document.getElementById('containerFinRows');
+            const cLra = document.getElementById('containerLraRows');
+            if(cFin) {
+                cFin.innerHTML = '';
+                tambahBarisFin('D');
+                tambahBarisFin('K');
+            }
+            if(cLra) {
+                cLra.innerHTML = '';
+                tambahBarisLra('D');
+                tambahBarisLra('K');
+            }
+            const chk = document.getElementById('chkTidakDijurnalLra');
+            if(chk) {
+                chk.checked = false;
+                toggleTidakDijurnalLra(chk);
+            }
+            recalcTotals();
+        }
+
+        function recalcTotals() {
+            // Hitung Finansial
+            let finD = 0, finK = 0;
+            document.querySelectorAll('#containerFinRows .row-entry').forEach(r => {
+                const pos = r.querySelector('.pos-select').value;
+                const val = parseCurrencyValue(r.querySelector('.nom-input').value);
+                if(pos === 'D') finD += val;
+                else finK += val;
+            });
+
+            if(document.getElementById('sumFinD')) document.getElementById('sumFinD').innerText = formatRp(finD);
+            if(document.getElementById('sumFinK')) document.getElementById('sumFinK').innerText = formatRp(finK);
+
+            const badgeFin = document.getElementById('badgeFinBalance');
+            if(badgeFin) {
+                if(finD === finK && finD > 0) {
+                    badgeFin.innerText = 'BALANCE';
+                    badgeFin.className = 'text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700';
+                } else {
+                    badgeFin.innerText = 'UNBALANCE';
+                    badgeFin.className = 'text-[10px] font-black px-2 py-0.5 rounded-full bg-rose-100 text-rose-700';
+                }
+            }
+
+            // Hitung LRA
+            let lraD = 0, lraK = 0;
+            const chkTidak = document.getElementById('chkTidakDijurnalLra');
+            const isTidak = chkTidak && chkTidak.checked;
+
+            if(!isTidak) {
+                document.querySelectorAll('#containerLraRows .row-entry').forEach(r => {
+                    const pos = r.querySelector('.pos-select').value;
+                    const val = parseCurrencyValue(r.querySelector('.nom-input').value);
+                    if(pos === 'D') lraD += val;
+                    else lraK += val;
+                });
+            }
+
+            if(document.getElementById('sumLraD')) document.getElementById('sumLraD').innerText = formatRp(lraD);
+            if(document.getElementById('sumLraK')) document.getElementById('sumLraK').innerText = formatRp(lraK);
+
+            const badgeLra = document.getElementById('badgeLraBalance');
+            if(badgeLra) {
+                if(isTidak || (lraD === lraK && lraD >= 0)) {
+                    badgeLra.innerText = 'BALANCE';
+                    badgeLra.className = 'text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700';
+                } else {
+                    badgeLra.innerText = 'UNBALANCE';
+                    badgeLra.className = 'text-[10px] font-black px-2 py-0.5 rounded-full bg-rose-100 text-rose-700';
+                }
+            }
+        }
+
+        function toggleTidakDijurnalLra(chk) {
+            const container = document.getElementById('containerLraRows');
+            const btnTambah = document.getElementById('btnTambahLraRow');
+            if(chk.checked) {
+                if(container) container.classList.add('opacity-40', 'pointer-events-none');
+                if(btnTambah) btnTambah.disabled = true;
+            } else {
+                if(container) container.classList.remove('opacity-40', 'pointer-events-none');
+                if(btnTambah) btnTambah.disabled = false;
+            }
+            recalcTotals();
         }
 
         function simpanIdentitasSiswa() {
@@ -1011,6 +1143,7 @@
             initCOA();
             batalEditCoa();
             renderBukuBesar();
+            resetFormJurnalDinamis();
         }
 
         function editCoa(idx) {
@@ -1042,6 +1175,7 @@
                 localStorage.setItem('siswa_coa', JSON.stringify(coaData));
                 initCOA();
                 renderBukuBesar();
+                resetFormJurnalDinamis();
             }
         }
 
@@ -1052,41 +1186,81 @@
                 initCOA();
                 batalEditCoa();
                 renderBukuBesar();
+                resetFormJurnalDinamis();
             }
         }
 
         function tambahJurnal(e) {
             e.preventDefault();
-            const chkTidakLra = document.getElementById('chkTidakDijurnalLra').checked;
 
-            let lraDVal = '-';
-            let lraKVal = '-';
+            // Ambil data Finansial
+            const finEntries = [];
+            let finDebetTotal = 0;
+            let finKreditTotal = 0;
 
-            if(!chkTidakLra) {
-                lraDVal = document.getElementById('txLraD').value || '-';
-                lraKVal = document.getElementById('txLraK').value || '-';
+            document.querySelectorAll('#containerFinRows .row-entry').forEach(r => {
+                const pos = r.querySelector('.pos-select').value;
+                const akun = r.querySelector('.akun-select').value;
+                const nom = parseCurrencyValue(r.querySelector('.nom-input').value);
+
+                if(akun && nom > 0) {
+                    finEntries.push({ pos, akun, nom });
+                    if(pos === 'D') finDebetTotal += nom;
+                    else finKreditTotal += nom;
+                }
+            });
+
+            if(finEntries.length < 2) {
+                alert("Jurnal Finansial minimal harus memiliki 1 akun Debit dan 1 akun Kredit!");
+                return;
+            }
+
+            if(finDebetTotal !== finKreditTotal) {
+                alert(`Jurnal Finansial UNBALANCE! Total Debit (Rp ${finDebetTotal.toLocaleString('id-ID')}) harus sama dengan Kredit (Rp ${finKreditTotal.toLocaleString('id-ID')}).`);
+                return;
+            }
+
+            // Ambil data LRA
+            const lraEntries = [];
+            const isTidakLra = document.getElementById('chkTidakDijurnalLra').checked;
+
+            if(!isTidakLra) {
+                let lraDebetTotal = 0;
+                let lraKreditTotal = 0;
+
+                document.querySelectorAll('#containerLraRows .row-entry').forEach(r => {
+                    const pos = r.querySelector('.pos-select').value;
+                    const akun = r.querySelector('.akun-select').value;
+                    const nom = parseCurrencyValue(r.querySelector('.nom-input').value);
+
+                    if(akun && nom > 0) {
+                        lraEntries.push({ pos, akun, nom });
+                        if(pos === 'D') lraDebetTotal += nom;
+                        else lraKreditTotal += nom;
+                    }
+                });
+
+                if(lraEntries.length > 0 && lraDebetTotal !== lraKreditTotal) {
+                    alert(`Jurnal LRA UNBALANCE! Total Debit (Rp ${lraDebetTotal.toLocaleString('id-ID')}) harus sama dengan Kredit (Rp ${lraKreditTotal.toLocaleString('id-ID')}).`);
+                    return;
+                }
             }
 
             const newTx = {
                 id: Date.now(),
                 tgl: document.getElementById('txTgl').value,
                 uraian: document.getElementById('txUraian').value,
-                finD: document.getElementById('txFinD').value,
-                finK: document.getElementById('txFinK').value,
-                lraD: lraDVal,
-                lraK: lraKVal,
-                nominal: parseCurrencyValue(document.getElementById('txNominal').value)
+                finEntries: finEntries,
+                lraEntries: isTidakLra ? [] : lraEntries,
+                isTidakLra: isTidakLra,
+                nominal: finDebetTotal
             };
+
             transaksi.push(newTx);
             localStorage.setItem('siswa_tx', JSON.stringify(transaksi));
             
             document.getElementById('txUraian').value = '';
-            document.getElementById('txNominal').value = '';
-            
-            // Reset Checkbox LRA
-            document.getElementById('chkTidakDijurnalLra').checked = false;
-            toggleTidakDijurnalLra(document.getElementById('chkTidakDijurnalLra'));
-
+            resetFormJurnalDinamis();
             renderTampilan();
         }
 
@@ -1133,13 +1307,32 @@
                     jBody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-slate-400">Belum ada transaksi.</td></tr>';
                 } else {
                     transaksi.forEach(t => {
+                        let finText = '';
+                        if(t.finEntries) {
+                            t.finEntries.forEach(fe => {
+                                finText += `<div class="${fe.pos==='D'?'font-bold text-indigo-900':'text-slate-600 pl-2'}">(${fe.pos}) ${fe.akun} - ${formatRp(fe.nom)}</div>`;
+                            });
+                        } else {
+                            finText = `<div class="font-bold text-indigo-900">(D) ${t.finD}</div><div class="text-slate-500 pl-2">(K) ${t.finK}</div>`;
+                        }
+
+                        let lraText = '<span class="text-slate-400 italic font-normal">Tidak Di-jurnal</span>';
+                        if(!t.isTidakLra && t.lraEntries && t.lraEntries.length > 0) {
+                            lraText = '';
+                            t.lraEntries.forEach(le => {
+                                lraText += `<div class="${le.pos==='D'?'font-bold text-amber-800':'text-amber-600 pl-2'}">(${le.pos}) ${le.akun} - ${formatRp(le.nom)}</div>`;
+                            });
+                        } else if(t.lraD && t.lraD !== '-') {
+                            lraText = `<div class="font-bold text-amber-800">(D) ${t.lraD}</div><div class="text-amber-600 pl-2">(K) ${t.lraK}</div>`;
+                        }
+
                         const tr = document.createElement('tr');
-                        tr.className = 'border-b hover:bg-slate-50 font-medium';
+                        tr.className = 'border-b hover:bg-slate-50 font-medium text-xs';
                         tr.innerHTML = `
                             <td class="p-2 border">${t.tgl}</td>
                             <td class="p-2 border">${t.uraian}</td>
-                            <td class="p-2 border"><div class="font-bold text-indigo-900">(D) ${t.finD}</div><div class="text-slate-500 pl-2">(K) ${t.finK}</div></td>
-                            <td class="p-2 border">${t.lraD !== '-' ? `<div class="font-bold text-amber-800">(D) ${t.lraD}</div><div class="text-amber-600 pl-2">(K) ${t.lraK}</div>` : '<span class="text-slate-400 italic font-normal">Tidak Di-jurnal</span>'}</td>
+                            <td class="p-2 border">${finText}</td>
+                            <td class="p-2 border">${lraText}</td>
                             <td class="p-2 border text-right font-bold font-mono text-slate-800">${formatRp(t.nominal)}</td>
                             <td class="p-2 border text-center"><button onclick="hapusTx(${t.id})" class="text-rose-500 hover:text-rose-700 p-1"><i class="fa-solid fa-trash"></i></button></td>
                         `;
@@ -1150,10 +1343,25 @@
 
             let pendLRA = 0, belLRA = 0, pendLO = 0, bebanLO = 0;
             transaksi.forEach(t => {
-                if(t.lraK && t.lraK.includes('Pendapatan')) pendLRA += t.nominal;
-                if(t.lraD && t.lraD.includes('Belanja')) belLRA += t.nominal;
-                if(t.finK && t.finK.includes('Pendapatan')) pendLO += t.nominal;
-                if(t.finD && t.finD.includes('Beban')) bebanLO += t.nominal;
+                if(t.lraEntries) {
+                    t.lraEntries.forEach(le => {
+                        if(le.pos === 'K' && le.akun.includes('Pendapatan')) pendLRA += le.nom;
+                        if(le.pos === 'D' && le.akun.includes('Belanja')) belLRA += le.nom;
+                    });
+                } else if(t.lraD) {
+                    if(t.lraK.includes('Pendapatan')) pendLRA += t.nominal;
+                    if(t.lraD.includes('Belanja')) belLRA += t.nominal;
+                }
+
+                if(t.finEntries) {
+                    t.finEntries.forEach(fe => {
+                        if(fe.pos === 'K' && fe.akun.includes('Pendapatan')) pendLO += fe.nom;
+                        if(fe.pos === 'D' && fe.akun.includes('Beban')) bebanLO += fe.nom;
+                    });
+                } else if(t.finD) {
+                    if(t.finK.includes('Pendapatan')) pendLO += t.nominal;
+                    if(t.finD.includes('Beban')) bebanLO += t.nominal;
+                }
             });
 
             if(document.getElementById('dashTotalTx')) document.getElementById('dashTotalTx').innerText = transaksi.length;
@@ -1172,7 +1380,6 @@
             renderBukuBesar();
         }
 
-        // FUNGSI MEMBUKA MODAL REKAP POP UP LIHAT JURNAL DENGAN URUTAN TANGGAL TERTATA
         function bukaModalLihatJurnal() {
             const modal = document.getElementById('modalLihatJurnal');
             const finBody = document.getElementById('modalJurnalFinTbody');
@@ -1191,42 +1398,76 @@
                 document.getElementById('totalModalLraD').innerText = 'Rp 0';
                 document.getElementById('totalModalLraK').innerText = 'Rp 0';
             } else {
-                // Urutkan transaksi berdasarkan tanggal terawal ke terbaru
                 const sortedTx = [...transaksi].sort((a, b) => new Date(a.tgl) - new Date(b.tgl));
 
-                let totalFin = 0;
-                let totalLra = 0;
+                let totalFinD = 0, totalFinK = 0;
+                let totalLraD = 0, totalLraK = 0;
 
                 sortedTx.forEach(t => {
-                    totalFin += t.nominal;
+                    // JURNAL FINANSIAL
+                    if(t.finEntries && t.finEntries.length > 0) {
+                        t.finEntries.forEach((fe, idx) => {
+                            const isDeb = fe.pos === 'D';
+                            if(isDeb) totalFinD += fe.nom; else totalFinK += fe.nom;
 
-                    // Baris Finansial Debit
-                    const trFinD = document.createElement('tr');
-                    trFinD.className = "border-b border-slate-100 hover:bg-slate-50 font-medium text-xs";
-                    trFinD.innerHTML = `
-                        <td class="p-2 border text-center font-mono">${t.tgl}</td>
-                        <td class="p-2 border">${t.uraian}</td>
-                        <td class="p-2 border font-bold text-indigo-950">${t.finD}</td>
-                        <td class="p-2 border text-right font-mono font-bold">${formatRp(t.nominal)}</td>
-                        <td class="p-2 border text-right font-mono text-slate-300">Rp 0</td>
-                    `;
-                    finBody.appendChild(trFinD);
+                            const tr = document.createElement('tr');
+                            tr.className = "border-b border-slate-100 hover:bg-slate-50 font-medium text-xs";
+                            tr.innerHTML = `
+                                <td class="p-2 border text-center font-mono">${idx === 0 ? t.tgl : ''}</td>
+                                <td class="p-2 border">${idx === 0 ? t.uraian : ''}</td>
+                                <td class="p-2 border ${isDeb ? 'font-bold text-indigo-950' : 'pl-6 text-slate-700'}">${fe.akun}</td>
+                                <td class="p-2 border text-right font-mono font-bold">${isDeb ? formatRp(fe.nom) : 'Rp 0'}</td>
+                                <td class="p-2 border text-right font-mono font-bold">${!isDeb ? formatRp(fe.nom) : 'Rp 0'}</td>
+                            `;
+                            finBody.appendChild(tr);
+                        });
+                    } else if(t.finD) {
+                        totalFinD += t.nominal;
+                        totalFinK += t.nominal;
 
-                    // Baris Finansial Kredit
-                    const trFinK = document.createElement('tr');
-                    trFinK.className = "border-b border-slate-200 hover:bg-slate-50 font-medium text-xs";
-                    trFinK.innerHTML = `
-                        <td class="p-2 border"></td>
-                        <td class="p-2 border"></td>
-                        <td class="p-2 border pl-6 text-slate-700">${t.finK}</td>
-                        <td class="p-2 border text-right font-mono text-slate-300">Rp 0</td>
-                        <td class="p-2 border text-right font-mono font-bold">${formatRp(t.nominal)}</td>
-                    `;
-                    finBody.appendChild(trFinK);
+                        const trD = document.createElement('tr');
+                        trD.className = "border-b border-slate-100 hover:bg-slate-50 font-medium text-xs";
+                        trD.innerHTML = `
+                            <td class="p-2 border text-center font-mono">${t.tgl}</td>
+                            <td class="p-2 border">${t.uraian}</td>
+                            <td class="p-2 border font-bold text-indigo-950">${t.finD}</td>
+                            <td class="p-2 border text-right font-mono font-bold">${formatRp(t.nominal)}</td>
+                            <td class="p-2 border text-right font-mono text-slate-300">Rp 0</td>
+                        `;
+                        finBody.appendChild(trD);
 
-                    // Jurnal LRA (Jika Tidak "Tidak Di-jurnal")
-                    if(t.lraD !== '-' && t.lraK !== '-') {
-                        totalLra += t.nominal;
+                        const trK = document.createElement('tr');
+                        trK.className = "border-b border-slate-200 hover:bg-slate-50 font-medium text-xs";
+                        trK.innerHTML = `
+                            <td class="p-2 border"></td>
+                            <td class="p-2 border"></td>
+                            <td class="p-2 border pl-6 text-slate-700">${t.finK}</td>
+                            <td class="p-2 border text-right font-mono text-slate-300">Rp 0</td>
+                            <td class="p-2 border text-right font-mono font-bold">${formatRp(t.nominal)}</td>
+                        `;
+                        finBody.appendChild(trK);
+                    }
+
+                    // JURNAL LRA
+                    if(!t.isTidakLra && t.lraEntries && t.lraEntries.length > 0) {
+                        t.lraEntries.forEach((le, idx) => {
+                            const isDeb = le.pos === 'D';
+                            if(isDeb) totalLraD += le.nom; else totalLraK += le.nom;
+
+                            const tr = document.createElement('tr');
+                            tr.className = "border-b border-slate-100 hover:bg-slate-50 font-medium text-xs";
+                            tr.innerHTML = `
+                                <td class="p-2 border text-center font-mono">${idx === 0 ? t.tgl : ''}</td>
+                                <td class="p-2 border">${idx === 0 ? t.uraian : ''}</td>
+                                <td class="p-2 border ${isDeb ? 'font-bold text-amber-900' : 'pl-6 text-slate-700'}">${le.akun}</td>
+                                <td class="p-2 border text-right font-mono font-bold">${isDeb ? formatRp(le.nom) : 'Rp 0'}</td>
+                                <td class="p-2 border text-right font-mono font-bold">${!isDeb ? formatRp(le.nom) : 'Rp 0'}</td>
+                            `;
+                            lraBody.appendChild(tr);
+                        });
+                    } else if(t.lraD && t.lraD !== '-') {
+                        totalLraD += t.nominal;
+                        totalLraK += t.nominal;
 
                         const trLraD = document.createElement('tr');
                         trLraD.className = "border-b border-slate-100 hover:bg-slate-50 font-medium text-xs";
@@ -1256,10 +1497,10 @@
                     lraBody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-slate-400 italic">Seluruh transaksi bertipe "Tidak Di-jurnal" pada LRA.</td></tr>';
                 }
 
-                document.getElementById('totalModalFinD').innerText = formatRp(totalFin);
-                document.getElementById('totalModalFinK').innerText = formatRp(totalFin);
-                document.getElementById('totalModalLraD').innerText = formatRp(totalLra);
-                document.getElementById('totalModalLraK').innerText = formatRp(totalLra);
+                document.getElementById('totalModalFinD').innerText = formatRp(totalFinD);
+                document.getElementById('totalModalFinK').innerText = formatRp(totalFinK);
+                document.getElementById('totalModalLraD').innerText = formatRp(totalLraD);
+                document.getElementById('totalModalLraK').innerText = formatRp(totalLraK);
             }
 
             modal.classList.remove('hidden');
@@ -1608,14 +1849,16 @@
             wsCoa['!cols'] = [{ wch: 15 }, { wch: 35 }, { wch: 20 }, { wch: 18 }, { wch: 18 }];
             XLSX.utils.book_append_sheet(wb, wsCoa, "Neraca Saldo Awal");
 
-            const jRows = [["No", "Tanggal", "Uraian", "Debet Finansial", "Kredit Finansial", "Debet LRA", "Kredit LRA", "Nominal"]];
+            const jRows = [["No", "Tanggal", "Uraian", "Jurnal Finansial", "Jurnal LRA", "Total Nominal"]];
             transaksi.forEach((t, i) => {
-                jRows.push([i+1, t.tgl, t.uraian, t.finD, t.finK, t.lraD, t.lraK, t.nominal]);
+                let finR = t.finEntries ? t.finEntries.map(f => `(${f.pos}) ${f.akun}: ${f.nom}`).join(' | ') : `${t.finD} / ${t.finK}`;
+                let lraR = t.isTidakLra ? 'Tidak Di-jurnal' : (t.lraEntries ? t.lraEntries.map(l => `(${l.pos}) ${l.akun}: ${l.nom}`).join(' | ') : `${t.lraD} / ${t.lraK}`);
+                jRows.push([i+1, t.tgl, t.uraian, finR, lraR, t.nominal]);
             });
             
             const wsJurnal = XLSX.utils.aoa_to_sheet(jRows);
             wsJurnal['!cols'] = [
-                { wch: 5 }, { wch: 12 }, { wch: 30 }, { wch: 30 }, { wch: 30 }, { wch: 30 }, { wch: 30 }, { wch: 18 }
+                { wch: 5 }, { wch: 12 }, { wch: 30 }, { wch: 40 }, { wch: 40 }, { wch: 18 }
             ];
             XLSX.utils.book_append_sheet(wb, wsJurnal, "Jurnal Umum");
 
@@ -1657,26 +1900,7 @@
                     }
                     localStorage.setItem('siswa_coa', JSON.stringify(coaData));
                     initCOA();
-                }
-
-                if(workbook.SheetNames.includes("Jurnal Umum")) {
-                    const rows = XLSX.utils.sheet_to_json(workbook.Sheets["Jurnal Umum"], { header: 1 });
-                    transaksi = [];
-                    for(let i = 1; i < rows.length; i++) {
-                        if(rows[i].length >= 8) {
-                            transaksi.push({
-                                id: Date.now() + i,
-                                tgl: rows[i][1],
-                                uraian: rows[i][2],
-                                finD: rows[i][3],
-                                finK: rows[i][4],
-                                lraD: rows[i][5],
-                                lraK: rows[i][6],
-                                nominal: parseFloat(rows[i][7]) || 0
-                            });
-                        }
-                    }
-                    localStorage.setItem('siswa_tx', JSON.stringify(transaksi));
+                    resetFormJurnalDinamis();
                 }
 
                 if(workbook.SheetNames.includes("Buku Besar")) {
