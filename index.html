@@ -23,8 +23,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- SheetJS Excel Library CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <!-- html2pdf.js CDN untuk Export PDF Sempurna Tanpa Terpotong -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
@@ -832,9 +830,6 @@
                     <i class="fa-solid fa-book-open text-indigo-600"></i> Rekap Jurnal Umum Transaksi
                 </div>
                 <div class="flex items-center gap-2">
-                    <button onclick="exportPdfJurnal()" class="bg-rose-600 hover:bg-rose-700 active:scale-95 text-white font-bold text-xs px-3.5 py-1.5 rounded-lg flex items-center gap-1.5 shadow-sm transition">
-                        <i class="fa-solid fa-file-pdf"></i> Export PDF
-                    </button>
                     <button onclick="window.print()" class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold text-xs px-3 py-1.5 rounded-lg flex items-center gap-1.5 shadow-sm">
                         <i class="fa-solid fa-print"></i> Cetak Jurnal
                     </button>
@@ -844,7 +839,7 @@
                 </div>
             </div>
 
-            <div id="printAreaJurnal" class="p-5 md:p-8 overflow-y-auto space-y-8 custom-touch-scroll flex-1 bg-white">
+            <div class="p-5 md:p-8 overflow-y-auto space-y-8 custom-touch-scroll flex-1">
                 <div class="text-center space-y-1 pb-2 border-b border-slate-200">
                     <h2 id="modalDisplaySKPD" class="text-base md:text-lg font-black text-indigo-950 uppercase tracking-wide">SKPD DINAS KELAUTAN DAN PERIKANAN</h2>
                     <p id="modalDisplayKab" class="text-xs md:text-sm font-bold text-slate-700">Kabupaten / Kota: Kepulauan Meranti</p>
@@ -2277,22 +2272,6 @@
             }
         }
 
-        /* --- FUNGSI EXPORT PDF JURNAL UTUH TANPA TERPOTONG --- */
-        function exportPdfJurnal() {
-            const element = document.getElementById('printAreaJurnal');
-            if (!element) return;
-            
-            const opt = {
-                margin:       [10, 10, 10, 10],
-                filename:     'Rekapitulasi_Dual_Journaling.pdf',
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true, letterRendering: true },
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' }
-            };
-
-            html2pdf().set(opt).from(element).save();
-        }
-
         function renderModalJurnalTerpisah() {
             const finTbody = document.getElementById('modalFinJurnalTbody');
             const lraTbody = document.getElementById('modalLraJurnalTbody');
@@ -2453,6 +2432,205 @@
                 `;
                 container.appendChild(sec);
             });
+        }
+
+        function tambahBukuBesarManual(e) {
+            e.preventDefault();
+            const akunKey = document.getElementById('bbSelect').value;
+            if(!akunKey) {
+                alert("Silakan pilih Akun Buku Besar terlebih dahulu!");
+                return;
+            }
+
+            const editId = parseInt(document.getElementById('editBbIndex').value);
+            const rowData = {
+                id: editId === -1 ? Date.now() : editId,
+                tgl: document.getElementById('bbTgl').value,
+                ket: document.getElementById('bbKet').value,
+                debet: parseCurrencyValue(document.getElementById('bbDebet').value),
+                kredit: parseCurrencyValue(document.getElementById('bbKredit').value)
+            };
+
+            if(!bukuBesarManual[akunKey]) bukuBesarManual[akunKey] = [];
+
+            if(editId === -1) {
+                bukuBesarManual[akunKey].push(rowData);
+            } else {
+                const targetIdx = bukuBesarManual[akunKey].findIndex(item => item.id === editId);
+                if(targetIdx !== -1) bukuBesarManual[akunKey][targetIdx] = rowData;
+            }
+
+            localStorage.setItem('siswa_bb_manual', JSON.stringify(bukuBesarManual));
+            batalEditBb();
+            renderBukuBesar();
+        }
+
+        function editBarisBb(akunKey, idRow) {
+            const list = bukuBesarManual[akunKey] || [];
+            const target = list.find(item => item.id === idRow);
+            if(!target) return;
+
+            document.getElementById('editBbIndex').value = target.id;
+            document.getElementById('bbTgl').value = target.tgl;
+            document.getElementById('bbKet').value = target.ket;
+            document.getElementById('bbDebet').value = target.debet ? 'Rp ' + parseInt(target.debet, 10).toLocaleString('id-ID') : '';
+            document.getElementById('bbKredit').value = target.kredit ? 'Rp ' + parseInt(target.kredit, 10).toLocaleString('id-ID') : '';
+
+            document.getElementById('btnSubmitBb').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan';
+            document.getElementById('btnBatalBb').classList.remove('hidden');
+        }
+
+        function batalEditBb() {
+            document.getElementById('editBbIndex').value = -1;
+            document.getElementById('bbTgl').value = '';
+            document.getElementById('bbKet').value = '';
+            document.getElementById('bbDebet').value = '';
+            document.getElementById('bbKredit').value = '';
+
+            document.getElementById('btnSubmitBb').innerHTML = '<i class="fa-solid fa-paper-plane"></i> Submit Buku Besar';
+            document.getElementById('btnBatalBb').classList.add('hidden');
+        }
+
+        function renderBukuBesar() {
+            const akunKey = document.getElementById('bbSelect').value;
+            const bbBody = document.getElementById('bbTbody');
+            const bbJudul = document.getElementById('bbJudulTabel');
+            if(!bbBody) return;
+            bbBody.innerHTML = '';
+
+            if(!akunKey) {
+                if(bbJudul) bbJudul.innerText = 'Buku Besar: Belum Memilih Akun';
+                bbBody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-slate-400">Pilih akun terlebih dahulu untuk melihat data Buku Besar.</td></tr>';
+                return;
+            }
+
+            const saldoNormal = getSaldoNormal(akunKey);
+            if(bbJudul) bbJudul.innerText = `Buku Besar: ${akunKey} (Saldo Normal: ${saldoNormal})`;
+            const rows = bukuBesarManual[akunKey] || [];
+
+            if(rows.length === 0) {
+                bbBody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-slate-400">Belum ada baris posting di akun ini.</td></tr>';
+                return;
+            }
+
+            let saldo = 0;
+            rows.forEach((r) => {
+                if (saldoNormal === 'KREDIT') {
+                    saldo += (r.kredit - r.debet);
+                } else {
+                    saldo += (r.debet - r.kredit);
+                }
+
+                const tr = document.createElement('tr');
+                tr.className = 'border-b hover:bg-slate-50';
+                tr.innerHTML = `
+                    <td class="p-2 border text-center">${r.tgl}</td>
+                    <td class="p-2 border">${r.ket}</td>
+                    <td class="p-2 border text-right font-mono">${formatRp(r.debet)}</td>
+                    <td class="p-2 border text-right font-mono">${formatRp(r.kredit)}</td>
+                    <td class="p-2 border text-right font-bold font-mono text-indigo-950">${formatRp(saldo)}</td>
+                    <td class="p-2 border text-center space-x-1.5">
+                        <button onclick="editBarisBb('${akunKey}', ${r.id})" class="text-indigo-600 hover:text-indigo-800 p-1" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button onclick="hapusBarisBb('${akunKey}', ${r.id})" class="text-rose-500 hover:text-rose-700 p-1" title="Hapus"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                `;
+                bbBody.appendChild(tr);
+            });
+        }
+
+        function hapusBarisBb(akunKey, idRow) {
+            if(bukuBesarManual[akunKey]) {
+                bukuBesarManual[akunKey] = bukuBesarManual[akunKey].filter(item => item.id !== idRow);
+                localStorage.setItem('siswa_bb_manual', JSON.stringify(bukuBesarManual));
+                renderBukuBesar();
+            }
+        }
+
+        function resetBukuBesarAkunIni() {
+            const akunKey = document.getElementById('bbSelect').value;
+            if(!akunKey) return;
+            if(confirm(`Hapus seluruh baris posting di akun ${akunKey}?`)) {
+                delete bukuBesarManual[akunKey];
+                localStorage.setItem('siswa_bb_manual', JSON.stringify(bukuBesarManual));
+                renderBukuBesar();
+            }
+        }
+
+        function renderNeracaSaldo() {
+            const nsBody = document.getElementById('neracaSaldoTbody');
+            if(!nsBody) return;
+            nsBody.innerHTML = '';
+
+            const activeKeys = Object.keys(bukuBesarManual).filter(key => bukuBesarManual[key] && bukuBesarManual[key].length > 0);
+
+            if (activeKeys.length === 0) {
+                nsBody.innerHTML = '<tr><td colspan="4" class="p-6 text-center text-slate-400 font-medium">Belum ada posting pada Buku Besar.</td></tr>';
+                if(document.getElementById('totalNsDebit')) document.getElementById('totalNsDebit').innerText = 'Rp 0';
+                if(document.getElementById('totalNsKredit')) document.getElementById('totalNsKredit').innerText = 'Rp 0';
+                
+                const statusNs = document.getElementById('statusNsBalance');
+                if(statusNs) {
+                    statusNs.className = 'px-3 py-1.5 rounded-xl text-xs font-black tracking-wider bg-emerald-500 text-white shadow-sm flex items-center gap-1.5';
+                    statusNs.innerHTML = '<i class="fa-solid fa-circle-check"></i> BALANCE';
+                }
+                return;
+            }
+
+            let totalDebit = 0, totalKredit = 0;
+
+            activeKeys.forEach(akunKey => {
+                const rows = bukuBesarManual[akunKey];
+                const saldoNormal = getSaldoNormal(akunKey);
+                let saldoAkhir = 0;
+
+                rows.forEach(r => {
+                    if (saldoNormal === 'KREDIT') {
+                        saldoAkhir += (r.kredit - r.debet);
+                    } else {
+                        saldoAkhir += (r.debet - r.kredit);
+                    }
+                });
+
+                let parts = akunKey.split(' ');
+                let kode = parts[0] || '-';
+                let nama = parts.slice(1).join(' ') || akunKey;
+
+                let debetVal = 0, kreditVal = 0;
+                if (saldoNormal === 'KREDIT') {
+                    kreditVal = saldoAkhir >= 0 ? saldoAkhir : 0;
+                    debetVal = saldoAkhir < 0 ? Math.abs(saldoAkhir) : 0;
+                } else {
+                    debetVal = saldoAkhir >= 0 ? saldoAkhir : 0;
+                    kreditVal = saldoAkhir < 0 ? Math.abs(saldoAkhir) : 0;
+                }
+
+                totalDebit += debetVal;
+                totalKredit += kreditVal;
+
+                const tr = document.createElement('tr');
+                tr.className = 'border-b hover:bg-slate-50 transition';
+                tr.innerHTML = `
+                    <td class="p-2.5 border font-mono font-bold text-indigo-950 text-center">${kode}</td>
+                    <td class="p-2.5 border font-semibold text-slate-800">${nama}</td>
+                    <td class="p-2.5 border text-right font-mono font-bold">${debetVal > 0 ? formatRp(debetVal) : 'Rp 0'}</td>
+                    <td class="p-2.5 border text-right font-mono font-bold">${kreditVal > 0 ? formatRp(kreditVal) : 'Rp 0'}</td>
+                `;
+                nsBody.appendChild(tr);
+            });
+
+            if(document.getElementById('totalNsDebit')) document.getElementById('totalNsDebit').innerText = formatRp(totalDebit);
+            if(document.getElementById('totalNsKredit')) document.getElementById('totalNsKredit').innerText = formatRp(totalKredit);
+
+            const statusNs = document.getElementById('statusNsBalance');
+            if(statusNs) {
+                if (Math.abs(totalDebit - totalKredit) < 0.01) {
+                    statusNs.className = 'px-3 py-1.5 rounded-xl text-xs font-black tracking-wider bg-emerald-500 text-white shadow-sm flex items-center gap-1.5';
+                    statusNs.innerHTML = '<i class="fa-solid fa-circle-check"></i> BALANCE';
+                } else {
+                    statusNs.className = 'px-3 py-1.5 rounded-xl text-xs font-black tracking-wider bg-rose-600 text-white shadow-sm flex items-center gap-1.5';
+                    statusNs.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> UNBALANCE';
+                }
+            }
         }
 
         async function fetchIhsgData() {
