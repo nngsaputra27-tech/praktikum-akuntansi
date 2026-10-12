@@ -1142,14 +1142,32 @@
             }
         }
 
+        // Fungsi Helper untuk Sorting COA (Otomatis berurutan, kecuali awalan '0' ditaruh di bawah)
+        function sortCoaDataArray() {
+            if (!coaData || coaData.length === 0) return;
+            coaData.sort((a, b) => {
+                const kodeA = (a.kode || '').trim();
+                const kodeB = (b.kode || '').trim();
+
+                const isZeroA = kodeA.startsWith('0');
+                const isZeroB = kodeB.startsWith('0');
+
+                if (isZeroA && !isZeroB) return 1;
+                if (!isZeroA && isZeroB) return -1;
+
+                return kodeA.localeCompare(kodeB, undefined, { numeric: true, sensitivity: 'base' });
+            });
+        }
+
         window.onload = function() {
             const saveCoa = localStorage.getItem('siswa_coa');
             if(saveCoa) {
                 try { coaData = JSON.parse(saveCoa); } catch(e) { coaData = [...defaultCoaData]; }
             } else {
                 coaData = [...defaultCoaData];
-                localStorage.setItem('siswa_coa', JSON.stringify(coaData));
             }
+            sortCoaDataArray();
+            localStorage.setItem('siswa_coa', JSON.stringify(coaData));
 
             const saveId = localStorage.getItem('siswa_id');
             if(saveId) {
@@ -1179,7 +1197,6 @@
             renderTampilanAjp();
             updateTampilanIdentitasHeader();
 
-            // Panggil inisialisasi Widget Ringan
             fetchIhsgData();
             fetchFilteredGovernmentNews();
         };
@@ -1398,6 +1415,9 @@
                 coaData[index].kat = kat;
             }
 
+            // OTOMATIS URUTKAN BERDASARKAN KODE AKUN (Kecuali awalan '0' ditaruh di paling bawah)
+            sortCoaDataArray();
+
             localStorage.setItem('siswa_coa', JSON.stringify(coaData));
             initCOA();
             batalEditCoa();
@@ -1439,6 +1459,7 @@
         function resetCOAKeDefault() {
             if(confirm("Kembalikan COA ke default?")) {
                 coaData = [...defaultCoaData];
+                sortCoaDataArray();
                 localStorage.setItem('siswa_coa', JSON.stringify(coaData));
                 initCOA();
                 renderBukuBesar();
@@ -2015,7 +2036,6 @@
 
             updateTampilanIdentitasHeader();
 
-            // 1. Ambil data Saldo Akhir dari Buku Besar
             const bukuBesarBalances = {};
             Object.keys(bukuBesarManual).forEach(akunKey => {
                 const rows = bukuBesarManual[akunKey] || [];
@@ -2039,7 +2059,6 @@
                 bukuBesarBalances[akunKey] = { debet: debetVal, kredit: kreditVal };
             });
 
-            // 2. Akumulasi data Penyesuaian dari AJP
             const ajpBalances = {};
             ajpTransaksi.forEach(t => {
                 if (t.entries) {
@@ -2071,7 +2090,6 @@
                 }
             });
 
-            // 3. Susun Hirarki Akun: COA Utama terlebih dahulu
             const masterList = [];
             const coaKeySet = new Set();
 
@@ -2090,7 +2108,6 @@
                 });
             });
 
-            // 4. Tambahkan Akun AJP Mandiri di PALING BAWAH jika belum ada di COA
             Object.keys(ajpBalances).forEach(ajpKey => {
                 const item = ajpBalances[ajpKey];
                 const matchKode = item.kode && item.kode !== '-' && coaKeySet.has(item.kode);
@@ -2115,14 +2132,12 @@
             let sumNeracaD = 0, sumNeracaK = 0;
 
             masterList.forEach(m => {
-                // Neraca Saldo
                 let nsD = 0, nsK = 0;
                 if (bukuBesarBalances[m.fullKey]) {
                     nsD = bukuBesarBalances[m.fullKey].debet;
                     nsK = bukuBesarBalances[m.fullKey].kredit;
                 }
 
-                // AJP
                 let ajpD = 0, ajpK = 0;
                 let matchedAjpKey = Object.keys(ajpBalances).find(k => {
                     const ab = ajpBalances[k];
@@ -2134,13 +2149,11 @@
                     ajpK = ajpBalances[matchedAjpKey].kredit;
                 }
 
-                // NS Disesuaikan (NSD)
                 let nsdD = 0, nsdK = 0;
                 let netBalance = (nsD - nsK) + (ajpD - ajpK);
                 if (netBalance >= 0) nsdD = netBalance;
                 else nsdK = Math.abs(netBalance);
 
-                // LRA / LO vs Neraca
                 let lraD = 0, lraK = 0;
                 let neracaD = 0, neracaK = 0;
 
@@ -2180,7 +2193,6 @@
                 wsBody.appendChild(tr);
             });
 
-            // 1. TAMPILKAN TOTAL AWAL
             if (document.getElementById('wsTotalNsD')) document.getElementById('wsTotalNsD').innerText = formatRp(sumNsD);
             if (document.getElementById('wsTotalNsK')) document.getElementById('wsTotalNsK').innerText = formatRp(sumNsK);
             if (document.getElementById('wsTotalAjpD')) document.getElementById('wsTotalAjpD').innerText = formatRp(sumAjpD);
@@ -2192,11 +2204,10 @@
             if (document.getElementById('wsTotalNeracaD')) document.getElementById('wsTotalNeracaD').innerText = formatRp(sumNeracaD);
             if (document.getElementById('wsTotalNeracaK')) document.getElementById('wsTotalNeracaK').innerText = formatRp(sumNeracaK);
 
-            // 2. HITUNG SURPLUS / DEFISIT
             let surplusLraD = 0, surplusLraK = 0;
             let surplusNeracaD = 0, surplusNeracaK = 0;
 
-            let selisihLra = sumLraK - sumLraD; // Jika Kredit > Debet = SURPLUS
+            let selisihLra = sumLraK - sumLraD;
             if (selisihLra >= 0) {
                 surplusLraD = selisihLra;
                 surplusNeracaK = selisihLra;
@@ -2210,7 +2221,6 @@
             if (document.getElementById('wsSurplusNeracaD')) document.getElementById('wsSurplusNeracaD').innerText = surplusNeracaD > 0 ? formatRp(surplusNeracaD) : '-';
             if (document.getElementById('wsSurplusNeracaK')) document.getElementById('wsSurplusNeracaK').innerText = surplusNeracaK > 0 ? formatRp(surplusNeracaK) : '-';
 
-            // 3. TAMPILKAN TOTAL FINAL BALANCED
             if (document.getElementById('wsFinalNsD')) document.getElementById('wsFinalNsD').innerText = formatRp(sumNsD);
             if (document.getElementById('wsFinalNsK')) document.getElementById('wsFinalNsK').innerText = formatRp(sumNsK);
             if (document.getElementById('wsFinalAjpD')) document.getElementById('wsFinalAjpD').innerText = formatRp(sumAjpD);
@@ -2603,7 +2613,6 @@
             }
         }
 
-        /* --- LOGIKA WIDGET IHSG & BERITA PAJAK/GOVERNMENT --- */
         async function fetchIhsgData() {
             try {
                 const res = await fetch('https://query1.finance.yahoo.com/v8/finance/chart/^JKSE');
@@ -2626,7 +2635,6 @@
                 const now = new Date();
                 document.getElementById('ihsgLastUpdated').innerText = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB';
             } catch(err) {
-                // Fallback aman jika terdapat keterbatasan CORS/API eksternal
                 const now = new Date();
                 document.getElementById('ihsgLastUpdated').innerText = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB';
             }
@@ -2661,12 +2669,10 @@
             ];
 
             try {
-                // Memanggil feed berita dari sumber tepercaya via rss2json
                 const res = await fetch('https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.antaranews.com%2Frss%2Fekonomi-keuangan.xml');
                 if(!res.ok) throw new Error('API Error');
                 const data = await res.json();
                 
-                // Filter artikel spesifik pajak, skpd, APBD, dan pemerintahan
                 const filtered = data.items.filter(item => {
                     const text = (item.title + " " + item.description).toLowerCase();
                     return text.includes('pajak') || text.includes('skpd') || text.includes('pemerintah') || text.includes('apbd') || text.includes('keuangan');
@@ -2695,11 +2701,8 @@
                     });
                     return;
                 }
-            } catch(e) {
-                // Fallback static data jika koneksi API terhambat
-            }
+            } catch(e) {}
 
-            // Render fallback static articles jika API tidak mengembalikan hasil
             container.innerHTML = '';
             staticArticles.forEach(art => {
                 const el = document.createElement('article');
