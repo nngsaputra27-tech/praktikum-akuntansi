@@ -1020,21 +1020,43 @@
     <!-- SCRIPT UTAMA -->
     <script>
         const defaultCoaData = [
-            { kode: '1.1.1.01', nama: 'Kas di Kas Daerah', kat: 'Aset', debetAwal: 0, kreditAwal: 0 },
-            { kode: '1.1.1.02', nama: 'Kas di Bendahara Penerimaan', kat: 'Aset', debetAwal: 0, kreditAwal: 0 },
-            { kode: '1.1.1.03', nama: 'Kas di Bendahara Pengeluaran', kat: 'Aset', debetAwal: 0, kreditAwal: 0 },
-            { kode: '1.1.3.01', nama: 'Piutang Pajak Daerah', kat: 'Aset', debetAwal: 0, kreditAwal: 0 },
-            { kode: '2.1.1.01', nama: 'Utang Perhitungan Pihak Ketiga (PFK)', kat: 'Kewajiban', debetAwal: 0, kreditAwal: 0 },
-            { kode: '3.1.1.01', nama: 'Ekuitas', kat: 'Ekuitas', debetAwal: 0, kreditAwal: 0 },
-            { kode: '4.1.1.01', nama: 'Pendapatan Pajak Daerah - LRA', kat: 'Pendapatan LRA', debetAwal: 0, kreditAwal: 0 },
-            { kode: '4.2.1.01', nama: 'Pendapatan Retribusi Daerah - LRA', kat: 'Pendapatan LRA', debetAwal: 0, kreditAwal: 0 },
-            { kode: '5.1.1.01', nama: 'Belanja Pegawai', kat: 'Belanja LRA', debetAwal: 0, kreditAwal: 0 },
-            { kode: '5.1.2.01', nama: 'Belanja Barang dan Jasa', kat: 'Belanja LRA', debetAwal: 0, kreditAwal: 0 },
-            { kode: '7.1.1.01', nama: 'Pendapatan Pajak Daerah - LO', kat: 'Pendapatan LO', debetAwal: 0, kreditAwal: 0 },
-            { kode: '7.2.1.01', nama: 'Pendapatan Retribusi Daerah - LO', kat: 'Pendapatan LO', debetAwal: 0, kreditAwal: 0 },
-            { kode: '8.1.1.01', nama: 'Beban Pegawai', kat: 'Beban LO', debetAwal: 0, kreditAwal: 0 },
-            { kode: '8.1.2.01', nama: 'Beban Barang dan Jasa', kat: 'Beban LO', debetAwal: 0, kreditAwal: 0 },
-            { kode: '0.0.0.00', nama: 'Perubahan SAL', kat: 'Anggaran', debetAwal: 0, kreditAwal: 0 }
+            { kode: '1.1.01.02.01', nama: 'Kas Bendahara Penerimaan', kat: 'ASSET', debetAwal: 0, kreditAwal: 0 },
+            { kode: '1.1.01.02.02', nama: 'Kas Bendahara Pengeluaran', kat: 'ASSET', debetAwal: 0, kreditAwal: 0 },
+            { kode: '1.1.01.02.03', nama: 'Rekening BLUD', kat: 'ASSET', debetAwal: 0, kreditAwal: 0 },
+            { kode: '1.1.03.01.01', nama: 'Piutang Pajak Daerah', kat: 'ASSET', debetAwal: 0, kreditAwal: 0 },
+            { kode: '1.1.03.01.02', nama: 'Piutang Retribusi Pengendalian Lalu Lintas', kat: 'ASSET', debetAwal: 0, kreditAwal: 0 },
+            { kode: '1.1.07.01.01', nama: 'Persediaan Bahan Pakai Habis', kat: 'ASSET', debetAwal: 0, kreditAwal: 0 },
+            { kode: '1.3.03.01.01', nama: 'Tanah untuk Bangunan Tempat Kerja', kat: 'ASSET', debetAwal: 0, kreditAwal: 0 },
+            { kode: '1.3.03.01.02', nama: 'Bangunan Gedung Tempat Kerja', kat: 'ASSET', debetAwal: 0, kreditAwal: 0 },
+            { kode: '1.3.03.01.03', nama: 'Peralatan', kat: 'ASSET', debetAwal: 0, kreditAwal: 0 },
+            { kode: '1.3.08.02.01', nama: 'Akumulasi Penyusutan Peralatan', kat: 'ASSET', debetAwal: 0, kreditAwal: 0 },
+            { kode: '2.1.02.01.01', nama: 'Pendapatan Diterima di Muka', kat: 'PENDAPATAN', debetAwal: 0, kreditAwal: 0 },
+            { kode: '3.1.01.01.01', nama: 'Ekuitas', kat: 'Modal', debetAwal: 0, kreditAwal: 0 },
+            { kode: '3.1.02.01.01', nama: 'Perubahan SAL', kat: 'ASSET', debetAwal: 0, kreditAwal: 0 },
+            { kode: '3.1.03.01.01', nama: 'R/K PPKD', kat: 'ASSET', debetAwal: 0, kreditAwal: 0 },
+            { kode: '4.1.01.01.01', nama: 'Pendapatan Retribusi Parkir - LRA', kat: 'Pendapatan LRA', debetAwal: 0, kreditAwal: 0 },
+            { kode: '4.1.01.01.02', nama: 'Pendapatan Retribusi Pengujian Kendaraan - LRA', kat: 'Pendapatan LRA', debetAwal: 0, kreditAwal: 0 },
+            { kode: '4.1.01.01.03', nama: 'Pendapatan Retribusi Pemakaian Kekayaan Daerah - LRA', kat: 'Pendapatan LRA', debetAwal: 0, kreditAwal: 0 },
+            { kode: '4.1.01.01.04', nama: 'Pendapatan Retribusi Izin Trayek - LRA', kat: 'Pendapatan LRA', debetAwal: 0, kreditAwal: 0 },
+            { kode: '4.1.01.01.05', nama: 'Pendapatan Retribusi Pengendalian Lalu Lintas LRA', kat: 'Pendapatan LRA', debetAwal: 0, kreditAwal: 0 },
+            { kode: '5.1.01.01.01', nama: 'Belanja Gaji dan Tunjangan', kat: 'Belanja', debetAwal: 0, kreditAwal: 0 },
+            { kode: '5.1.01.01.02', nama: 'Belanja Tagihan Telepon, Listrik, dan Air', kat: 'Belanja', debetAwal: 0, kreditAwal: 0 },
+            { kode: '5.1.01.01.03', nama: 'Belanja Bahan Pakai Habis', kat: 'Belanja', debetAwal: 0, kreditAwal: 0 },
+            { kode: '5.1.01.01.04', nama: 'Belanja Perjalanan Dinas', kat: 'Belanja', debetAwal: 0, kreditAwal: 0 },
+            { kode: '5.1.01.01.05', nama: 'Belanja Makanan dan Minuman', kat: 'Belanja', debetAwal: 0, kreditAwal: 0 },
+            { kode: '5.2.01.01.01', nama: 'Belanja Modal Pengadaan Peralatan', kat: 'Belanja', debetAwal: 0, kreditAwal: 0 },
+            { kode: '8.1.01.01.01', nama: 'Pendapatan Retribusi Parkir - LO', kat: 'Pendapatan LO', debetAwal: 0, kreditAwal: 0 },
+            { kode: '8.1.01.01.02', nama: 'Pendapatan Retribusi Pengujian Kendaraan - LO', kat: 'Pendapatan LO', debetAwal: 0, kreditAwal: 0 },
+            { kode: '8.1.01.01.03', nama: 'Pendapatan Retribudi Pemakaian Kekayaan Daerah - LO', kat: 'Pendapatan LO', debetAwal: 0, kreditAwal: 0 },
+            { kode: '8.1.01.01.04', nama: 'Pendapatan Retribusi Izin Trayek - LO', kat: 'Pendapatan LO', debetAwal: 0, kreditAwal: 0 },
+            { kode: '8.1.01.01.05', nama: 'Pendapatan Retribusi Pengendalian Lalu Lintas - LO', kat: 'Pendapatan LO', debetAwal: 0, kreditAwal: 0 },
+            { kode: '9.1.01.01.01', nama: 'Beban Gaji dan Tunjangan', kat: 'Beban', debetAwal: 0, kreditAwal: 0 },
+            { kode: '9.1.01.01.02', nama: 'Beban Tagihan Telepon, Listrik, dan Air', kat: 'Beban', debetAwal: 0, kreditAwal: 0 },
+            { kode: '9.1.01.01.03', nama: 'Beban Bahan Pakai Habis', kat: 'Beban', debetAwal: 0, kreditAwal: 0 },
+            { kode: '9.1.01.01.04', nama: 'Beban Perjalanan Dinas', kat: 'Beban', debetAwal: 0, kreditAwal: 0 },
+            { kode: '9.1.01.01.05', nama: 'Beban Makanan dan Minuman', kat: 'Beban', debetAwal: 0, kreditAwal: 0 },
+            { kode: '9.1.01.01.06', nama: 'Beban Penyusutan Bangunan Gedung', kat: 'Beban', debetAwal: 0, kreditAwal: 0 },
+            { kode: '9.1.01.01.07', nama: 'Beban Penyusutan Peralatan', kat: 'Beban', debetAwal: 0, kreditAwal: 0 }
         ];
 
         let coaData = [];
@@ -1142,7 +1164,6 @@
             }
         }
 
-        // Fungsi Helper untuk Sorting COA (Otomatis berurutan, kecuali awalan '0' ditaruh di bawah)
         function sortCoaDataArray() {
             if (!coaData || coaData.length === 0) return;
             coaData.sort((a, b) => {
@@ -1415,7 +1436,6 @@
                 coaData[index].kat = kat;
             }
 
-            // OTOMATIS URUTKAN BERDASARKAN KODE AKUN (Kecuali awalan '0' ditaruh di paling bawah)
             sortCoaDataArray();
 
             localStorage.setItem('siswa_coa', JSON.stringify(coaData));
