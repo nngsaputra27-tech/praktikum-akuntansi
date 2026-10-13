@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- SheetJS Excel Library CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <!-- html2pdf.js CDN -->
+    <!-- html2pdf.js CDN untuk Export PDF Sempurna Tanpa Terpotong -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     
     <style>
@@ -116,7 +116,7 @@
         </nav>
 
         <div class="p-3 border-t border-indigo-900/80 bg-indigo-950/50 text-[10px] text-center text-indigo-300">
-            Terintegrasi Google Spreadsheet & MS Excel
+            Terintegrasi MS Excel (.xlsx)
         </div>
     </aside>
 
@@ -135,16 +135,13 @@
             </div>
 
             <div class="flex items-center gap-2">
-                <button onclick="kirimSemuaDataKeSpreadsheet()" class="bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white text-xs px-3.5 py-2 rounded-lg font-bold transition shadow-sm flex items-center gap-1.5">
-                    <i class="fa-solid fa-cloud-arrow-up"></i> <span class="hidden sm:inline">Kirim ke Spreadsheet</span>
-                </button>
-                <label for="excelImport" class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white text-xs px-3 py-2 rounded-lg cursor-pointer flex items-center gap-1.5 font-bold transition shadow-sm">
+                <label for="excelImport" class="bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white text-xs px-3 py-2 rounded-lg cursor-pointer flex items-center gap-1.5 font-bold transition shadow-sm">
                     <i class="fa-solid fa-file-import"></i> <span class="hidden sm:inline">Import Excel</span>
                 </label>
                 <input type="file" id="excelImport" accept=".xlsx, .xls" class="hidden" onchange="importFromExcel(event)">
 
                 <button onclick="exportToExcel()" class="bg-amber-500 hover:bg-amber-600 active:scale-95 text-slate-950 text-xs font-extrabold px-3 py-2 rounded-lg flex items-center gap-1.5 transition shadow-sm">
-                    <i class="fa-solid fa-file-excel"></i> <span class="hidden sm:inline">Export Excel</span>
+                    <i class="fa-solid fa-file-excel"></i> <span class="hidden sm:inline">Export Ke Excel</span>
                 </button>
             </div>
         </header>
@@ -154,22 +151,6 @@
             
             <!-- TAB 1: DASHBOARD -->
             <section id="tab-dashboard" class="tab-content block space-y-6">
-                <!-- BANNER SINKRONISASI SPREADSHEET -->
-                <div class="bg-indigo-900 p-4 rounded-2xl text-white flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg">
-                    <div class="flex items-center gap-3">
-                        <div class="bg-emerald-500 text-white p-3 rounded-xl">
-                            <i class="fa-solid fa-file-spreadsheet text-xl"></i>
-                        </div>
-                        <div>
-                            <h4 class="text-xs md:text-sm font-black uppercase tracking-wider">Sinkronisasi Google Spreadsheet</h4>
-                            <p class="text-[11px] text-indigo-200">Kirim seluruh rekap Jurnal, Neraca Saldo, AJP, dan Laporan Keuangan otomatis ke Spreadsheet.</p>
-                        </div>
-                    </div>
-                    <button onclick="kirimSemuaDataKeSpreadsheet()" class="w-full sm:w-auto bg-amber-400 hover:bg-amber-500 active:scale-95 text-indigo-950 font-black text-xs px-5 py-2.5 rounded-xl shadow-md transition flex items-center justify-center gap-2 whitespace-nowrap">
-                        <i class="fa-solid fa-cloud-arrow-up text-sm"></i> Kirim Semua Laporan
-                    </button>
-                </div>
-
                 <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
                     <div class="flex items-center gap-2 text-indigo-900 border-b pb-3">
                         <i class="fa-solid fa-id-card text-amber-500 text-lg"></i>
@@ -225,7 +206,7 @@
                     </div>
                 </div>
 
-                <!-- WIDGET 1: IHSG -->
+                <!-- WIDGET 1: INDEKS HARGA SAHAM GABUNGAN (IHSG) -->
                 <section aria-labelledby="heading-widget-ihsg" class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
                     <div class="flex items-center justify-between border-b border-slate-100 pb-3">
                         <div class="flex items-center gap-2">
@@ -256,7 +237,7 @@
                     </div>
                 </section>
 
-                <!-- WIDGET 2: BERITA TERKINI -->
+                <!-- WIDGET 2: BERITA TERPERCAYA - PAJAK, SKPD, DAN PEMERINTAHAN -->
                 <section aria-labelledby="heading-widget-berita" class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
                     <div class="flex items-center justify-between border-b border-slate-100 pb-3">
                         <div class="flex items-center gap-2">
@@ -271,6 +252,16 @@
                     </div>
 
                     <div id="beritaWidgetContainer" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 animate-pulse space-y-2">
+                            <div class="h-3 bg-slate-200 rounded w-1/3"></div>
+                            <div class="h-4 bg-slate-200 rounded w-3/4"></div>
+                            <div class="h-3 bg-slate-200 rounded w-full"></div>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 animate-pulse space-y-2">
+                            <div class="h-3 bg-slate-200 rounded w-1/3"></div>
+                            <div class="h-4 bg-slate-200 rounded w-3/4"></div>
+                            <div class="h-3 bg-slate-200 rounded w-full"></div>
+                        </div>
                         <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 animate-pulse space-y-2">
                             <div class="h-3 bg-slate-200 rounded w-1/3"></div>
                             <div class="h-4 bg-slate-200 rounded w-3/4"></div>
@@ -670,24 +661,8 @@
                 </div>
             </section>
 
-            <!-- TAB 7: LAPORAN KEUANGAN & WORKSHEET -->
+            <!-- TAB 7: LAPORAN KEUANGAN & WORKSHEET (KERTAS KERJA) -->
             <section id="tab-laporan" class="tab-content hidden space-y-6">
-                <!-- BANNER SINKRONISASI DI TAB LAPORAN -->
-                <div class="bg-emerald-800 p-4 rounded-2xl text-white flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg">
-                    <div class="flex items-center gap-3">
-                        <div class="bg-amber-400 text-indigo-950 p-3 rounded-xl">
-                            <i class="fa-solid fa-cloud-arrow-up text-xl"></i>
-                        </div>
-                        <div>
-                            <h4 class="text-xs md:text-sm font-black uppercase tracking-wider">Kirim Seluruh Laporan Akuntansi</h4>
-                            <p class="text-[11px] text-emerald-100">Semua entri Jurnal, Neraca Saldo, AJP, dan Laporan Keuangan akan dikirim otomatis ke Google Spreadsheet Anda.</p>
-                        </div>
-                    </div>
-                    <button onclick="kirimSemuaDataKeSpreadsheet()" class="w-full sm:w-auto bg-amber-400 hover:bg-amber-500 active:scale-95 text-indigo-950 font-black text-xs px-6 py-3 rounded-xl shadow-md transition flex items-center justify-center gap-2 whitespace-nowrap">
-                        <i class="fa-solid fa-file-excel text-base"></i> Sync ke Google Spreadsheet
-                    </button>
-                </div>
-
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
                         <h3 class="text-xs font-bold text-amber-800 border-b pb-2 mb-3">Laporan Realisasi Anggaran (LRA)</h3>
@@ -708,7 +683,7 @@
                     </div>
                 </div>
 
-                <!-- MODUL TABEL WORKSHEET -->
+                <!-- MODUL TABEL WORKSHEET (KERTAS KERJA 10 KOLOM) -->
                 <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                     <div class="p-6 bg-slate-50 border-b border-slate-200">
                         <div class="text-center space-y-1.5 max-w-2xl mx-auto">
@@ -750,6 +725,7 @@
                             </thead>
                             <tbody id="worksheetTbody"></tbody>
                             <tfoot>
+                                <!-- BARIS 1: JUMLAH / TOTAL AWAL -->
                                 <tr class="bg-indigo-950 text-white font-extrabold text-xs border-t-2 border-indigo-900">
                                     <td colspan="2" class="p-2 border border-indigo-900 text-center uppercase tracking-wider">JUMLAH / TOTAL</td>
                                     <td class="p-2 border border-indigo-900 text-right font-mono text-amber-300" id="wsTotalNsD">Rp 0</td>
@@ -763,6 +739,7 @@
                                     <td class="p-2 border border-indigo-900 text-right font-mono text-amber-300" id="wsTotalNeracaD">Rp 0</td>
                                     <td class="p-2 border border-indigo-900 text-right font-mono text-amber-300" id="wsTotalNeracaK">Rp 0</td>
                                 </tr>
+                                <!-- BARIS 2: SURPLUS / (DEFISIT) -->
                                 <tr class="bg-indigo-900 text-amber-300 font-extrabold text-xs">
                                     <td colspan="2" class="p-2 border border-indigo-800 text-center uppercase tracking-wider">SURPLUS / (DEFISIT)</td>
                                     <td class="p-2 border border-indigo-800 text-right font-mono">-</td>
@@ -776,6 +753,7 @@
                                     <td class="p-2 border border-indigo-800 text-right font-mono" id="wsSurplusNeracaD">Rp 0</td>
                                     <td class="p-2 border border-indigo-800 text-right font-mono" id="wsSurplusNeracaK">Rp 0</td>
                                 </tr>
+                                <!-- BARIS 3: TOTAL AKHIR (SEIMBANG) -->
                                 <tr class="bg-indigo-950 text-white font-black text-xs border-b-2 border-indigo-900">
                                     <td colspan="2" class="p-2.5 border border-indigo-900 text-center uppercase tracking-wider">TOTAL</td>
                                     <td class="p-2 border border-indigo-900 text-right font-mono text-amber-300" id="wsFinalNsD">Rp 0</td>
@@ -830,7 +808,7 @@
         </button>
     </nav>
 
-    <!-- POP-UP ANIMASI NOTIFIKASI -->
+    <!-- POP-UP ANIMASI CEKLIS -->
     <div id="modalSuccessTx" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center z-50 p-4 transition-opacity duration-300">
         <div class="bg-white rounded-3xl p-6 shadow-2xl flex flex-col items-center text-center space-y-3 max-w-xs w-full transform scale-95 transition-transform duration-200">
             <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center shadow-inner">
@@ -841,7 +819,7 @@
         </div>
     </div>
 
-    <!-- POP-UP MODAL LIHAT JURNAL -->
+    <!-- POP-UP MODAL LIHAT JURNAL FINANSIAL & PELAKSANAAN ANGGARAN -->
     <div id="modalLihatJurnal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm hidden items-center justify-center z-50 p-3 md:p-6 transition-opacity">
         <div class="bg-white rounded-3xl shadow-2xl w-full max-w-5xl max-h-[92vh] flex flex-col overflow-hidden border border-slate-200">
             <div class="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50 no-print">
@@ -862,6 +840,7 @@
             </div>
 
             <div id="printAreaJurnal" class="p-5 md:p-8 overflow-y-auto space-y-8 custom-touch-scroll flex-1 bg-white">
+                <!-- INFORMASI NAMA SISWA DAN KELAS DI KIRI ATAS UJUNG PDF -->
                 <div id="pdfHeaderSiswaInfo" class="text-xs font-bold text-slate-800 space-y-0.5 pb-2 border-b border-slate-100">
                     <div id="pdfSiswaNama">Nama Siswa: -</div>
                     <div id="pdfSiswaKelas">Kelas: -</div>
@@ -943,7 +922,7 @@
         </div>
     </div>
 
-    <!-- POP-UP MODAL BUKU BESAR -->
+    <!-- POP-UP MODAL LIHAT BUKU BESAR SEMUA AKUN -->
     <div id="modalLihatBukuBesar" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm hidden items-center justify-center z-50 p-3 md:p-6 transition-opacity">
         <div class="bg-white rounded-3xl shadow-2xl w-full max-w-5xl max-h-[92vh] flex flex-col overflow-hidden border border-slate-200">
             <div class="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50 no-print">
@@ -983,7 +962,7 @@
         </div>
     </div>
 
-    <!-- POP-UP MODAL AJP -->
+    <!-- POP-UP MODAL LIHAT JURNAL AJP -->
     <div id="modalLihatAjp" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm hidden items-center justify-center z-50 p-3 md:p-6 transition-opacity">
         <div class="bg-white rounded-3xl shadow-2xl w-full max-w-5xl max-h-[92vh] flex flex-col overflow-hidden border border-slate-200">
             <div class="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50 no-print">
@@ -1044,76 +1023,8 @@
         </div>
     </div>
 
-    <!-- SCRIPT UTAMA & GOOGLE SPREADSHEET INTEGRATION -->
+    <!-- SCRIPT UTAMA -->
     <script>
-	
-	// Ganti dengan URL Web App Apps Script Anda yang terbaru
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwQlAFSZ9zAbeS48RZxHzAu1E_LVkUFFu49TkxPyUwraonTKx9w_PKLgeNvZDG-gNOLcQ/exec";
-
-function kirimLaporanLengkapKeDriveDanSpreadsheet() {
-    if (!identitas.nama || !identitas.kelas) {
-        alert("Mohon isi Nama Lengkap Siswa dan Kelas terlebih dahulu di Dashboard Utama!");
-        switchTab('dashboard');
-        return;
-    }
-
-    showSuccessModal('Memproses PDF...', 'Sedang menggabungkan seluruh laporan keuangan menjadi satu file PDF...');
-
-    // Buat elemen penampung sementara untuk menggabungkan seluruh tabel laporan
-    const containerPdf = document.createElement('div');
-    containerPdf.style.padding = '20px';
-    containerPdf.style.background = '#ffffff';
-    containerPdf.style.color = '#000000';
-    containerPdf.innerHTML = `
-        <div style="text-align: center; margin-bottom: 20px;">
-            <h2 style="margin: 0; text-transform: uppercase;">Laporan Praktikum Akuntansi Lembaga / SKPD</h2>
-            <p style="margin: 5px 0;"><strong>Nama Siswa:</strong> ${identitas.nama} | <strong>Kelas:</strong> ${identitas.kelas}</p>
-            <p style="margin: 5px 0;"><strong>Instansi:</strong> ${identitas.instansi || '-'} (${identitas.kab || '-'})</p>
-            <hr style="margin-top: 10px;">
-        </div>
-        <h3>1. Ringkasan Laporan & Neraca Saldo</h3>
-        ` + document.querySelector('#tab-neracasaldo').innerHTML + `
-        <div style="page-break-before: always;"></div>
-        <h3>2. Worksheet / Kertas Kerja</h3>
-        ` + document.querySelector('#tab-laporan').innerHTML;
-
-    // Konfigurasi html2pdf untuk menghasilkan file base64 PDF
-    const opt = {
-        margin:       10,
-        filename:     'Laporan_' + identitas.nama.replace(/\s+/g, '_') + '.pdf',
-        image:        { type: 'jpeg', quality: 0.95 },
-        html2canvas:  { scale: 1.5, useCORS: true },
-        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' }
-    };
-
-    html2pdf().set(opt).from(containerPdf).outputPdf('datauristring').then(function(pdfBase64) {
-        const payload = {
-            identitas: identitas,
-            pdfData: pdfBase64
-        };
-
-        showSuccessModal('Mengirim ke Drive...', 'Mengunggah file PDF dan mencatat link ke Spreadsheet...');
-
-        fetch(GOOGLE_SCRIPT_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        })
-        .then(() => {
-            showSuccessModal('Berhasil!', 'Laporan PDF tersimpan di Drive dan link masuk ke Spreadsheet!');
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Gagal mengirim laporan. Periksa koneksi internet Anda.');
-        });
-    });
-}
-	
-	
-        // PASTE URL GOOGLE APPS SCRIPT ANDA DI BAWAH INI
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwQlAFSZ9zAbeS48RZxHzAu1E_LVkUFFu49TkxPyUwraonTKx9w_PKLgeNvZDG-gNOLcQ/exec";
-
         const defaultCoaData = [
             { kode: '1.1.01.02.01', nama: 'Kas Bendahara Penerimaan', kat: 'ASSET', debetAwal: 0, kreditAwal: 0 },
             { kode: '1.1.01.02.02', nama: 'Kas Bendahara Pengeluaran', kat: 'ASSET', debetAwal: 0, kreditAwal: 0 },
@@ -1400,7 +1311,7 @@ function kirimLaporanLengkapKeDriveDanSpreadsheet() {
                 setTimeout(() => {
                     modalSuccess.classList.add('hidden');
                     modalSuccess.classList.remove('flex');
-                }, 1500);
+                }, 1200);
             }
         }
 
@@ -1795,7 +1706,7 @@ function kirimLaporanLengkapKeDriveDanSpreadsheet() {
             });
 
             if(finD !== finK) {
-                alert("Jurnal Finansial dalam posisi UNBALANCE! Periksa kembali input nominal Anda.");
+                alert("Jurnal Finansial dalam posisi UNBALANCE (Debit & Kredit tidak sama)! Periksa kembali input nominal Anda.");
                 return;
             }
 
@@ -1810,7 +1721,7 @@ function kirimLaporanLengkapKeDriveDanSpreadsheet() {
                 });
 
                 if(lraD !== lraK) {
-                    alert("Jurnal Pelaksanaan Anggaran (LRA) dalam posisi UNBALANCE! Periksa kembali input nominal Anda.");
+                    alert("Jurnal Pelaksanaan Anggaran (LRA) dalam posisi UNBALANCE (Debit & Kredit tidak sama)! Periksa kembali input nominal Anda.");
                     return;
                 }
             }
@@ -2008,7 +1919,7 @@ function kirimLaporanLengkapKeDriveDanSpreadsheet() {
             });
 
             if(ajpD !== ajpK) {
-                alert("Jurnal Penyesuaian (AJP) dalam posisi UNBALANCE! Periksa kembali input nominal Anda.");
+                alert("Jurnal Penyesuaian (AJP) dalam posisi UNBALANCE (Debit & Kredit tidak sama)! Periksa kembali input nominal Anda.");
                 return;
             }
 
@@ -2375,6 +2286,7 @@ function kirimLaporanLengkapKeDriveDanSpreadsheet() {
             }
         }
 
+        /* --- FUNGSI EXPORT PDF JURNAL UTUH TANPA TERPOTONG DENGAN NAMA SISWA & KELAS --- */
         function exportPdfJurnal() {
             updateTampilanIdentitasHeader();
             const element = document.getElementById('printAreaJurnal');
@@ -2595,7 +2507,7 @@ function kirimLaporanLengkapKeDriveDanSpreadsheet() {
                 {
                     kategori: "SKPD & APBD",
                     judul: "Pedoman Penyusunan APBD dan Pengelolaan Keuangan SKPD Terkini",
-                    ringkasan: "Pemerintah Daerah memperkuat akuntabilitas laporan LRA dan LO untuk peningkatan kinerja pengawasan keuangan.",
+                    ringkasan: "Pemerintah Daerah memperkuat akuntabilitas laporan LRA dan LO untuk peningkatan peningkatan kinerja pengawasan keuangan.",
                     sumber: "Kemendagri",
                     url: "https://www.kemendagri.go.id"
                 },
@@ -2674,61 +2586,6 @@ function kirimLaporanLengkapKeDriveDanSpreadsheet() {
 
         function importFromExcel(e) {
             alert("Fitur import file siap digunakan!");
-        }
-
-        /* --- FUNGSI UTAMA SINKRONISASI KE GOOGLE SPREADSHEET --- */
-        function kirimSemuaDataKeSpreadsheet() {
-            if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("MASUKKAN_URL")) {
-                alert("URL Google Apps Script belum dipasang! Silakan ikuti petunjuk Langkah 3 terlebih dahulu.");
-                return;
-            }
-
-            if (!identitas.nama) {
-                alert("Mohon isi Nama Lengkap Siswa terlebih dahulu di Dashboard Utama!");
-                switchTab('dashboard');
-                return;
-            }
-
-            let neracaSaldoData = [];
-            document.querySelectorAll('#neracaSaldoTbody tr').forEach(tr => {
-                const cols = tr.querySelectorAll('td');
-                if(cols.length >= 4) {
-                    neracaSaldoData.push({
-                        kode: cols[0].innerText,
-                        nama: cols[1].innerText,
-                        debit: cols[2].innerText,
-                        kredit: cols[3].innerText
-                    });
-                }
-            });
-
-            const payloadKomprehensif = {
-                identitas: identitas,
-                ringkasan: {
-                    totalTx: transaksi.length,
-                    silpa: document.getElementById('dashSilpa') ? document.getElementById('dashSilpa').innerText : 'Rp 0'
-                },
-                finEntries: transaksi.map(t => ({ tgl: t.tgl, uraian: t.uraian, entries: t.finEntries })),
-                lraEntries: transaksi.map(t => ({ tgl: t.tgl, uraian: t.uraian, isTidakLra: t.isTidakLra, entries: t.lraEntries })),
-                neracaSaldo: neracaSaldoData,
-                ajpEntries: ajpTransaksi.map(a => ({ tgl: a.tgl, uraian: a.uraian, entries: a.entries }))
-            };
-
-            showSuccessModal('Mengirim Data...', 'Mohon tunggu, menyinkronkan seluruh laporan ke Spreadsheet.');
-
-            fetch(GOOGLE_SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payloadKomprehensif)
-            })
-            .then(() => {
-                showSuccessModal('Berhasil Tersimpan!', 'Seluruh Jurnal, Neraca Saldo, AJP, & Laporan terekam di Spreadsheet!');
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Gagal mengirim data. Periksa koneksi internet Anda.');
-            });
         }
     </script>
 </body>
