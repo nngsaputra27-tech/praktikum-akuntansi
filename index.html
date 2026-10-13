@@ -1046,8 +1046,73 @@
 
     <!-- SCRIPT UTAMA & GOOGLE SPREADSHEET INTEGRATION -->
     <script>
+	
+	// Ganti dengan URL Web App Apps Script Anda yang terbaru
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwQlAFSZ9zAbeS48RZxHzAu1E_LVkUFFu49TkxPyUwraonTKx9w_PKLgeNvZDG-gNOLcQ/exec";
+
+function kirimLaporanLengkapKeDriveDanSpreadsheet() {
+    if (!identitas.nama || !identitas.kelas) {
+        alert("Mohon isi Nama Lengkap Siswa dan Kelas terlebih dahulu di Dashboard Utama!");
+        switchTab('dashboard');
+        return;
+    }
+
+    showSuccessModal('Memproses PDF...', 'Sedang menggabungkan seluruh laporan keuangan menjadi satu file PDF...');
+
+    // Buat elemen penampung sementara untuk menggabungkan seluruh tabel laporan
+    const containerPdf = document.createElement('div');
+    containerPdf.style.padding = '20px';
+    containerPdf.style.background = '#ffffff';
+    containerPdf.style.color = '#000000';
+    containerPdf.innerHTML = `
+        <div style="text-align: center; margin-bottom: 20px;">
+            <h2 style="margin: 0; text-transform: uppercase;">Laporan Praktikum Akuntansi Lembaga / SKPD</h2>
+            <p style="margin: 5px 0;"><strong>Nama Siswa:</strong> ${identitas.nama} | <strong>Kelas:</strong> ${identitas.kelas}</p>
+            <p style="margin: 5px 0;"><strong>Instansi:</strong> ${identitas.instansi || '-'} (${identitas.kab || '-'})</p>
+            <hr style="margin-top: 10px;">
+        </div>
+        <h3>1. Ringkasan Laporan & Neraca Saldo</h3>
+        ` + document.querySelector('#tab-neracasaldo').innerHTML + `
+        <div style="page-break-before: always;"></div>
+        <h3>2. Worksheet / Kertas Kerja</h3>
+        ` + document.querySelector('#tab-laporan').innerHTML;
+
+    // Konfigurasi html2pdf untuk menghasilkan file base64 PDF
+    const opt = {
+        margin:       10,
+        filename:     'Laporan_' + identitas.nama.replace(/\s+/g, '_') + '.pdf',
+        image:        { type: 'jpeg', quality: 0.95 },
+        html2canvas:  { scale: 1.5, useCORS: true },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' }
+    };
+
+    html2pdf().set(opt).from(containerPdf).outputPdf('datauristring').then(function(pdfBase64) {
+        const payload = {
+            identitas: identitas,
+            pdfData: pdfBase64
+        };
+
+        showSuccessModal('Mengirim ke Drive...', 'Mengunggah file PDF dan mencatat link ke Spreadsheet...');
+
+        fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        })
+        .then(() => {
+            showSuccessModal('Berhasil!', 'Laporan PDF tersimpan di Drive dan link masuk ke Spreadsheet!');
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Gagal mengirim laporan. Periksa koneksi internet Anda.');
+        });
+    });
+}
+	
+	
         // PASTE URL GOOGLE APPS SCRIPT ANDA DI BAWAH INI
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw14CuQmJMiU7Hnx2E2jA7-9cULIxgaZutCCMKhlAjx14R18pYjWp48K45M4RrNcDPfbA/exec";
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwQlAFSZ9zAbeS48RZxHzAu1E_LVkUFFu49TkxPyUwraonTKx9w_PKLgeNvZDG-gNOLcQ/exec";
 
         const defaultCoaData = [
             { kode: '1.1.01.02.01', nama: 'Kas Bendahara Penerimaan', kat: 'ASSET', debetAwal: 0, kreditAwal: 0 },
