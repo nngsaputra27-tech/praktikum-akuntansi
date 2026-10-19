@@ -71,11 +71,11 @@
 </head>
 <body class="bg-slate-100 text-slate-800 flex flex-col md:flex-row min-h-screen md:h-screen md:overflow-hidden">
 
-    <!-- OVERLAY MOBILE DRAWER -->
-    <div id="sidebarOverlay" onclick="toggleMobileMenu()" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-40 hidden md:hidden transition-opacity"></div>
+    <!-- OVERLAY MOBILE DRAWER (Z-Index disesuaikan agar tidak menutup interaksi klik menu utama) -->
+    <div id="sidebarOverlay" onclick="toggleMobileMenu()" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-30 hidden md:hidden transition-opacity"></div>
 
     <!-- SIDEBAR NAVIGATION -->
-    <aside id="mainSidebar" class="fixed md:relative inset-y-0 left-0 z-50 w-64 bg-indigo-950 text-slate-300 flex flex-col shrink-0 shadow-2xl transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
+    <aside id="mainSidebar" class="fixed md:relative inset-y-0 left-0 z-40 w-64 bg-indigo-950 text-slate-300 flex flex-col shrink-0 shadow-2xl transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
         <div class="p-4 border-b border-indigo-900/80 flex items-center justify-between">
             <div class="flex items-center space-x-3">
                 <div class="bg-amber-400 text-indigo-950 p-2 rounded-xl font-bold shadow">
@@ -86,31 +86,31 @@
                     <p class="text-[10px] text-amber-300 font-medium">Lembaga / SKPD SMK</p>
                 </div>
             </div>
-            <button onclick="toggleMobileMenu()" class="md:hidden text-slate-400 hover:text-white p-1" aria-label="Tutup Menu">
+            <button type="button" onclick="toggleMobileMenu()" class="md:hidden text-slate-400 hover:text-white p-1 cursor-pointer" aria-label="Tutup Menu">
                 <i class="fa-solid fa-xmark text-xl"></i>
             </button>
         </div>
 
-        <nav class="flex-1 p-3 space-y-1.5 overflow-y-auto text-xs font-semibold">
-            <button type="button" onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl bg-indigo-800 text-white shadow-md transition">
+        <nav class="flex-1 p-3 space-y-1.5 overflow-y-auto text-xs font-semibold relative z-10">
+            <button type="button" onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl bg-indigo-800 text-white shadow-md transition cursor-pointer">
                 <i class="fa-solid fa-chart-pie text-base text-amber-400 w-5"></i> Dashboard Utama
             </button>
-            <button type="button" onclick="switchTab('coa')" id="nav-coa" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl hover:bg-indigo-900 hover:text-white transition">
+            <button type="button" onclick="switchTab('coa')" id="nav-coa" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl hover:bg-indigo-900 hover:text-white transition cursor-pointer">
                 <i class="fa-solid fa-list-ol text-base text-indigo-300 w-5"></i> Bagan Akun (COA)
             </button>
-            <button type="button" onclick="switchTab('jurnal')" id="nav-jurnal" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl hover:bg-indigo-900 hover:text-white transition">
+            <button type="button" onclick="switchTab('jurnal')" id="nav-jurnal" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl hover:bg-indigo-900 hover:text-white transition cursor-pointer">
                 <i class="fa-solid fa-book-open text-base text-indigo-300 w-5"></i> Daftar Jurnal Umum
             </button>
-            <button type="button" onclick="switchTab('bukubesar')" id="nav-bukubesar" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl hover:bg-indigo-900 hover:text-white transition">
+            <button type="button" onclick="switchTab('bukubesar')" id="nav-bukubesar" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl hover:bg-indigo-900 hover:text-white transition cursor-pointer">
                 <i class="fa-solid fa-book text-base text-indigo-300 w-5"></i> Buku Besar Manual
             </button>
-            <button type="button" onclick="switchTab('neracasaldo')" id="nav-neracasaldo" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl hover:bg-indigo-900 hover:text-white transition">
+            <button type="button" onclick="switchTab('neracasaldo')" id="nav-neracasaldo" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl hover:bg-indigo-900 hover:text-white transition cursor-pointer">
                 <i class="fa-solid fa-scale-balanced text-base text-indigo-300 w-5"></i> Neraca Saldo
             </button>
-            <button type="button" onclick="switchTab('ajp')" id="nav-ajp" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl hover:bg-indigo-900 hover:text-white transition">
+            <button type="button" onclick="switchTab('ajp')" id="nav-ajp" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl hover:bg-indigo-900 hover:text-white transition cursor-pointer">
                 <i class="fa-solid fa-sliders text-base text-indigo-300 w-5"></i> Jurnal Penyesuaian (AJP)
             </button>
-            <button type="button" onclick="switchTab('laporan')" id="nav-laporan" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl hover:bg-indigo-900 hover:text-white transition">
+            <button type="button" onclick="switchTab('laporan')" id="nav-laporan" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl hover:bg-indigo-900 hover:text-white transition cursor-pointer">
                 <i class="fa-solid fa-file-invoice-dollar text-base text-indigo-300 w-5"></i> Laporan Keuangan
             </button>
         </nav>
@@ -123,9 +123,9 @@
     <!-- CONTENT AREA -->
     <main class="flex-1 flex flex-col min-h-screen md:h-full md:overflow-hidden w-full">
         <!-- HEADER TOP BAR -->
-        <header class="bg-white border-b border-slate-200 px-4 py-3 md:px-6 flex items-center justify-between shadow-sm shrink-0 sticky top-0 z-30">
+        <header class="bg-white border-b border-slate-200 px-4 py-3 md:px-6 flex items-center justify-between shadow-sm shrink-0 sticky top-0 z-20">
             <div class="flex items-center gap-3">
-                <button onclick="toggleMobileMenu()" class="md:hidden p-2 text-slate-600 hover:bg-slate-100 rounded-lg" aria-label="Buka Menu">
+                <button type="button" onclick="toggleMobileMenu()" class="md:hidden p-2 text-slate-600 hover:bg-slate-100 rounded-lg cursor-pointer" aria-label="Buka Menu">
                     <i class="fa-solid fa-bars text-lg"></i>
                 </button>
                 <div>
@@ -140,7 +140,7 @@
                 </label>
                 <input type="file" id="excelImport" accept=".xlsx, .xls" class="hidden" onchange="importFromExcel(event)">
 
-                <button onclick="exportToExcel()" class="bg-amber-500 hover:bg-amber-600 active:scale-95 text-slate-950 text-xs font-extrabold px-3 py-2 rounded-lg flex items-center gap-1.5 transition shadow-sm">
+                <button type="button" onclick="exportToExcel()" class="bg-amber-500 hover:bg-amber-600 active:scale-95 text-slate-950 text-xs font-extrabold px-3 py-2 rounded-lg flex items-center gap-1.5 transition shadow-sm cursor-pointer">
                     <i class="fa-solid fa-file-excel"></i> <span class="hidden sm:inline">Export Ke Excel</span>
                 </button>
             </div>
@@ -181,7 +181,7 @@
                     </div>
 
                     <div class="flex justify-end pt-2 border-t">
-                        <button onclick="simpanIdentitasInstansi()" class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-extrabold text-xs px-5 py-2.5 rounded-xl flex items-center gap-2 shadow-md transition">
+                        <button type="button" onclick="simpanIdentitasInstansi()" class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-extrabold text-xs px-5 py-2.5 rounded-xl flex items-center gap-2 shadow-md transition cursor-pointer">
                             <i class="fa-solid fa-floppy-disk"></i> Simpan Identitas Instansi
                         </button>
                     </div>
@@ -301,10 +301,10 @@
                             </select>
                         </div>
                         <div class="flex gap-2">
-                            <button type="submit" id="btnSimpanCoa" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs py-2.5 rounded-xl transition shadow">
+                            <button type="submit" id="btnSimpanCoa" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs py-2.5 rounded-xl transition shadow cursor-pointer">
                                 <i class="fa-solid fa-plus"></i> Tambah Akun
                             </button>
-                            <button type="button" id="btnBatalCoa" onclick="batalEditCoa()" class="hidden bg-slate-400 hover:bg-slate-500 text-white font-bold text-xs px-3 py-2.5 rounded-xl transition">
+                            <button type="button" id="btnBatalCoa" onclick="batalEditCoa()" class="hidden bg-slate-400 hover:bg-slate-500 text-white font-bold text-xs px-3 py-2.5 rounded-xl transition cursor-pointer">
                                 Batal
                             </button>
                         </div>
@@ -325,7 +325,7 @@
                         </div>
 
                         <div class="mt-4 md:mt-0 md:absolute md:top-4 md:right-4 text-center md:text-right">
-                            <button onclick="resetCOAKeDefault()" class="text-[11px] text-rose-600 hover:text-rose-800 font-bold hover:underline">Reset COA Default</button>
+                            <button type="button" onclick="resetCOAKeDefault()" class="text-[11px] text-rose-600 hover:text-rose-800 font-bold hover:underline cursor-pointer">Reset COA Default</button>
                         </div>
                     </div>
 
@@ -359,7 +359,7 @@
                     </div>
 
                     <div class="p-4 bg-slate-50 border-t border-slate-200 flex justify-end items-center">
-                        <button onclick="resetNominalSaldoAwal()" class="bg-rose-600 hover:bg-rose-700 active:scale-95 text-white font-extrabold text-xs px-4 py-2 rounded-xl flex items-center gap-1.5 shadow transition">
+                        <button type="button" onclick="resetNominalSaldoAwal()" class="bg-rose-600 hover:bg-rose-700 active:scale-95 text-white font-extrabold text-xs px-4 py-2 rounded-xl flex items-center gap-1.5 shadow transition cursor-pointer">
                             <i class="fa-solid fa-rotate-left"></i> Reset Nominal Saldo Awal
                         </button>
                     </div>
@@ -396,7 +396,7 @@
                                 </div>
 
                                 <div class="pt-3 border-t border-indigo-100 flex flex-wrap justify-between items-center gap-2">
-                                    <button type="button" onclick="tambahBarisFin()" class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold text-xs px-3.5 py-2 rounded-xl transition shadow-sm flex items-center gap-1.5">
+                                    <button type="button" onclick="tambahBarisFin()" class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold text-xs px-3.5 py-2 rounded-xl transition shadow-sm flex items-center gap-1.5 cursor-pointer">
                                         <i class="fa-solid fa-plus text-[10px]"></i> Tambah Baris Akun
                                     </button>
                                     <div class="text-xs font-mono text-indigo-950">
@@ -419,7 +419,7 @@
 
                                 <div class="pt-3 border-t border-amber-100 space-y-2">
                                     <div class="flex flex-wrap justify-between items-center gap-2">
-                                        <button type="button" id="btnTambahLraRow" onclick="tambahBarisLra()" class="bg-amber-600 hover:bg-amber-700 active:scale-95 text-white font-bold text-xs px-3.5 py-2 rounded-xl transition shadow-sm flex items-center gap-1.5">
+                                        <button type="button" id="btnTambahLraRow" onclick="tambahBarisLra()" class="bg-amber-600 hover:bg-amber-700 active:scale-95 text-white font-bold text-xs px-3.5 py-2 rounded-xl transition shadow-sm flex items-center gap-1.5 cursor-pointer">
                                             <i class="fa-solid fa-plus text-[10px]"></i> Tambah Baris Akun
                                         </button>
 
@@ -441,7 +441,7 @@
                         </div>
 
                         <div class="flex justify-end pt-3">
-                            <button type="submit" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs px-8 py-3 rounded-xl transition shadow-lg flex items-center justify-center gap-2">
+                            <button type="submit" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs px-8 py-3 rounded-xl transition shadow-lg flex items-center justify-center gap-2 cursor-pointer">
                                 <i class="fa-solid fa-floppy-disk"></i> Simpan Transaksi
                             </button>
                         </div>
@@ -451,7 +451,7 @@
                 <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                     <div class="p-4 border-b flex justify-between items-center">
                         <span class="text-xs font-extrabold text-slate-800">Daftar Jurnal Umum</span>
-                        <button onclick="resetData()" class="text-xs text-rose-600 hover:underline font-semibold">Reset Data Jurnal</button>
+                        <button type="button" onclick="resetData()" class="text-xs text-rose-600 hover:underline font-semibold cursor-pointer">Reset Data Jurnal</button>
                     </div>
                     <div class="overflow-x-auto custom-touch-scroll">
                         <table class="w-full text-xs text-left border-collapse min-w-[700px]">
@@ -470,7 +470,7 @@
                     </div>
 
                     <div class="p-3 bg-slate-50 border-t border-slate-200 flex justify-end items-center">
-                        <button onclick="bukaModalLihatJurnal()" class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-extrabold text-xs px-4 py-2 rounded-xl flex items-center gap-2 shadow-md transition">
+                        <button type="button" onclick="bukaModalLihatJurnal()" class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-extrabold text-xs px-4 py-2 rounded-xl flex items-center gap-2 shadow-md transition cursor-pointer">
                             <i class="fa-solid fa-eye"></i> Lihat Jurnal
                         </button>
                     </div>
@@ -506,8 +506,8 @@
                             <input type="text" id="bbKredit" placeholder="Rp 0" oninput="formatInputCurrency(this)" class="w-full px-3 py-2 border rounded-xl text-xs font-mono">
                         </div>
                         <div class="sm:col-span-2 md:col-span-5 flex justify-end gap-2 pt-2">
-                            <button type="button" id="btnBatalBb" onclick="batalEditBb()" class="hidden bg-slate-400 hover:bg-slate-500 text-white font-bold text-xs px-4 py-2 rounded-xl transition">Batal</button>
-                            <button type="submit" id="btnSubmitBb" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl transition shadow">
+                            <button type="button" id="btnBatalBb" onclick="batalEditBb()" class="hidden bg-slate-400 hover:bg-slate-500 text-white font-bold text-xs px-4 py-2 rounded-xl transition cursor-pointer">Batal</button>
+                            <button type="submit" id="btnSubmitBb" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl transition shadow cursor-pointer">
                                 <i class="fa-solid fa-paper-plane"></i> Submit Buku Besar
                             </button>
                         </div>
@@ -517,7 +517,7 @@
                 <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                     <div class="p-3.5 bg-slate-50 border-b flex justify-between items-center">
                         <span class="text-xs font-extrabold text-slate-800" id="bbJudulTabel">Buku Besar: Belum Memilih Akun</span>
-                        <button onclick="resetBukuBesarAkunIni()" class="text-xs text-rose-600 hover:underline font-semibold">Kosongkan Akun Ini</button>
+                        <button type="button" onclick="resetBukuBesarAkunIni()" class="text-xs text-rose-600 hover:underline font-semibold cursor-pointer">Kosongkan Akun Ini</button>
                     </div>
                     <div class="overflow-x-auto custom-touch-scroll">
                         <table class="w-full text-xs text-left border-collapse min-w-[600px]">
@@ -536,10 +536,9 @@
                     </div>
 
                     <div class="p-3 bg-slate-50 border-t border-slate-200 flex justify-end items-center">
-<!-- Ubah dari tombol biasa menjadi seperti ini -->
-<button onclick="bukaModalLihatBukuBesar()" class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-extrabold text-xs px-4 py-2 rounded-xl flex items-center gap-2 shadow-md transition">
-    <i class="fa-solid fa-book-open-reader"></i> Lihat Buku Besar
-</button>
+                        <button type="button" onclick="bukaModalLihatBukuBesar()" class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-extrabold text-xs px-4 py-2 rounded-xl flex items-center gap-2 shadow-md transition cursor-pointer">
+                            <i class="fa-solid fa-book-open-reader"></i> Lihat Buku Besar
+                        </button>
                     </div>
                 </div>
             </section>
@@ -616,7 +615,7 @@
                             <div id="containerAjpRows" class="space-y-3"></div>
 
                             <div class="pt-3 border-t border-indigo-100 flex flex-wrap justify-between items-center gap-2">
-                                <button type="button" onclick="tambahBarisAjp()" class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold text-xs px-3.5 py-2 rounded-xl transition shadow-sm flex items-center gap-1.5">
+                                <button type="button" onclick="tambahBarisAjp()" class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold text-xs px-3.5 py-2 rounded-xl transition shadow-sm flex items-center gap-1.5 cursor-pointer">
                                     <i class="fa-solid fa-plus text-[10px]"></i> Tambah Baris Akun
                                 </button>
                                 <div class="text-xs font-mono text-indigo-950">
@@ -627,7 +626,7 @@
                         </div>
 
                         <div class="flex justify-end pt-3">
-                            <button type="submit" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs px-8 py-3 rounded-xl transition shadow-lg flex items-center justify-center gap-2">
+                            <button type="submit" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs px-8 py-3 rounded-xl transition shadow-lg flex items-center justify-center gap-2 cursor-pointer">
                                 <i class="fa-solid fa-floppy-disk"></i> Simpan Penyesuaian (AJP)
                             </button>
                         </div>
@@ -637,7 +636,7 @@
                 <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                     <div class="p-4 border-b flex justify-between items-center">
                         <span class="text-xs font-extrabold text-slate-800">Daftar Ayat Jurnal Penyesuaian (AJP)</span>
-                        <button onclick="resetAjpData()" class="text-xs text-rose-600 hover:underline font-semibold">Reset Data AJP</button>
+                        <button type="button" onclick="resetAjpData()" class="text-xs text-rose-600 hover:underline font-semibold cursor-pointer">Reset Data AJP</button>
                     </div>
                     <div class="overflow-x-auto custom-touch-scroll">
                         <table class="w-full text-xs text-left border-collapse min-w-[700px]">
@@ -655,7 +654,7 @@
                     </div>
 
                     <div class="p-3 bg-slate-50 border-t border-slate-200 flex justify-end items-center">
-                        <button onclick="bukaModalLihatAjp()" class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-extrabold text-xs px-4 py-2 rounded-xl flex items-center gap-2 shadow-md transition">
+                        <button type="button" onclick="bukaModalLihatAjp()" class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-extrabold text-xs px-4 py-2 rounded-xl flex items-center gap-2 shadow-md transition cursor-pointer">
                             <i class="fa-solid fa-eye"></i> Lihat Jurnal AJP
                         </button>
                     </div>
@@ -778,32 +777,32 @@
     </main>
 
     <!-- BOTTOM MOBILE NAVIGATION -->
-    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-indigo-950 text-slate-300 border-t border-indigo-900 z-30 flex justify-around items-center py-2 px-1 shadow-lg" style="padding-bottom: max(0.5rem, env(safe-area-inset-bottom));">
-        <button type="button" onclick="switchTab('dashboard')" id="mobile-nav-dashboard" class="flex flex-col items-center gap-1 text-[9px] text-amber-400 font-bold p-1">
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-indigo-950 text-slate-300 border-t border-indigo-900 z-35 flex justify-around items-center py-2 px-1 shadow-lg" style="padding-bottom: max(0.5rem, env(safe-area-inset-bottom));">
+        <button type="button" onclick="switchTab('dashboard')" id="mobile-nav-dashboard" class="flex flex-col items-center gap-1 text-[9px] text-amber-400 font-bold p-1 cursor-pointer">
             <i class="fa-solid fa-chart-pie text-sm"></i>
             <span>Dashboard</span>
         </button>
-        <button type="button" onclick="switchTab('coa')" id="mobile-nav-coa" class="flex flex-col items-center gap-1 text-[9px] text-slate-400 font-medium p-1">
+        <button type="button" onclick="switchTab('coa')" id="mobile-nav-coa" class="flex flex-col items-center gap-1 text-[9px] text-slate-400 font-medium p-1 cursor-pointer">
             <i class="fa-solid fa-list-ol text-sm"></i>
             <span>COA</span>
         </button>
-        <button type="button" onclick="switchTab('jurnal')" id="mobile-nav-jurnal" class="flex flex-col items-center gap-1 text-[9px] text-slate-400 font-medium p-1">
+        <button type="button" onclick="switchTab('jurnal')" id="mobile-nav-jurnal" class="flex flex-col items-center gap-1 text-[9px] text-slate-400 font-medium p-1 cursor-pointer">
             <i class="fa-solid fa-book-open text-sm"></i>
             <span>Jurnal</span>
         </button>
-        <button type="button" onclick="switchTab('bukubesar')" id="mobile-nav-bukubesar" class="flex flex-col items-center gap-1 text-[9px] text-slate-400 font-medium p-1">
+        <button type="button" onclick="switchTab('bukubesar')" id="mobile-nav-bukubesar" class="flex flex-col items-center gap-1 text-[9px] text-slate-400 font-medium p-1 cursor-pointer">
             <i class="fa-solid fa-book text-sm"></i>
             <span>Buku Besar</span>
         </button>
-        <button type="button" onclick="switchTab('neracasaldo')" id="mobile-nav-neracasaldo" class="flex flex-col items-center gap-1 text-[9px] text-slate-400 font-medium p-1">
+        <button type="button" onclick="switchTab('neracasaldo')" id="mobile-nav-neracasaldo" class="flex flex-col items-center gap-1 text-[9px] text-slate-400 font-medium p-1 cursor-pointer">
             <i class="fa-solid fa-scale-balanced text-sm"></i>
             <span>Neraca Saldo</span>
         </button>
-        <button type="button" onclick="switchTab('ajp')" id="mobile-nav-ajp" class="flex flex-col items-center gap-1 text-[9px] text-slate-400 font-medium p-1">
+        <button type="button" onclick="switchTab('ajp')" id="mobile-nav-ajp" class="flex flex-col items-center gap-1 text-[9px] text-slate-400 font-medium p-1 cursor-pointer">
             <i class="fa-solid fa-sliders text-sm"></i>
             <span>AJP</span>
         </button>
-        <button type="button" onclick="switchTab('laporan')" id="mobile-nav-laporan" class="flex flex-col items-center gap-1 text-[9px] text-slate-400 font-medium p-1">
+        <button type="button" onclick="switchTab('laporan')" id="mobile-nav-laporan" class="flex flex-col items-center gap-1 text-[9px] text-slate-400 font-medium p-1 cursor-pointer">
             <i class="fa-solid fa-file-invoice-dollar text-sm"></i>
             <span>Laporan</span>
         </button>
@@ -828,13 +827,13 @@
                     <i class="fa-solid fa-book-open text-indigo-600"></i> Rekap Jurnal Umum Transaksi
                 </div>
                 <div class="flex items-center gap-2">
-                    <button onclick="exportPdfJurnal()" class="bg-rose-600 hover:bg-rose-700 active:scale-95 text-white font-bold text-xs px-3.5 py-1.5 rounded-lg flex items-center gap-1.5 shadow-sm transition">
+                    <button type="button" onclick="exportPdfJurnal()" class="bg-rose-600 hover:bg-rose-700 active:scale-95 text-white font-bold text-xs px-3.5 py-1.5 rounded-lg flex items-center gap-1.5 shadow-sm transition cursor-pointer">
                         <i class="fa-solid fa-file-pdf"></i> Export PDF
                     </button>
-                    <button onclick="window.print()" class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold text-xs px-3 py-1.5 rounded-lg flex items-center gap-1.5 shadow-sm">
+                    <button type="button" onclick="window.print()" class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold text-xs px-3 py-1.5 rounded-lg flex items-center gap-1.5 shadow-sm cursor-pointer">
                         <i class="fa-solid fa-print"></i> Cetak Jurnal
                     </button>
-                    <button onclick="tutupModalLihatJurnal()" class="text-slate-400 hover:text-slate-700 p-1.5 rounded-lg">
+                    <button type="button" onclick="tutupModalLihatJurnal()" class="text-slate-400 hover:text-slate-700 p-1.5 rounded-lg cursor-pointer">
                         <i class="fa-solid fa-xmark text-lg"></i>
                     </button>
                 </div>
@@ -916,7 +915,7 @@
             </div>
 
             <div class="p-3 border-t border-slate-200 bg-slate-50 text-right no-print">
-                <button onclick="tutupModalLihatJurnal()" class="bg-slate-300 hover:bg-slate-400 text-slate-800 font-bold text-xs px-5 py-2 rounded-xl transition">
+                <button type="button" onclick="tutupModalLihatJurnal()" class="bg-slate-300 hover:bg-slate-400 text-slate-800 font-bold text-xs px-5 py-2 rounded-xl transition cursor-pointer">
                     Tutup
                 </button>
             </div>
@@ -931,10 +930,10 @@
                     <i class="fa-solid fa-book-open-reader text-indigo-600"></i> Rekapitulasi Buku Besar
                 </div>
                 <div class="flex items-center gap-2">
-                    <button onclick="window.print()" class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold text-xs px-3 py-1.5 rounded-lg flex items-center gap-1.5 shadow-sm">
+                    <button type="button" onclick="window.print()" class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold text-xs px-3 py-1.5 rounded-lg flex items-center gap-1.5 shadow-sm cursor-pointer">
                         <i class="fa-solid fa-print"></i> Cetak Buku Besar
                     </button>
-                    <button onclick="tutupModalLihatBukuBesar()" class="text-slate-400 hover:text-slate-700 p-1.5 rounded-lg">
+                    <button type="button" onclick="tutupModalLihatBukuBesar()" class="text-slate-400 hover:text-slate-700 p-1.5 rounded-lg cursor-pointer">
                         <i class="fa-solid fa-xmark text-lg"></i>
                     </button>
                 </div>
@@ -956,7 +955,7 @@
             </div>
 
             <div class="p-3 border-t border-slate-200 bg-slate-50 text-right no-print">
-                <button onclick="tutupModalLihatBukuBesar()" class="bg-slate-300 hover:bg-slate-400 text-slate-800 font-bold text-xs px-5 py-2 rounded-xl transition">
+                <button type="button" onclick="tutupModalLihatBukuBesar()" class="bg-slate-300 hover:bg-slate-400 text-slate-800 font-bold text-xs px-5 py-2 rounded-xl transition cursor-pointer">
                     Tutup
                 </button>
             </div>
@@ -971,10 +970,10 @@
                     <i class="fa-solid fa-sliders text-indigo-600"></i> Rekapitulasi Ayat Jurnal Penyesuaian (AJP)
                 </div>
                 <div class="flex items-center gap-2">
-                    <button onclick="window.print()" class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold text-xs px-3 py-1.5 rounded-lg flex items-center gap-1.5 shadow-sm">
+                    <button type="button" onclick="window.print()" class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold text-xs px-3 py-1.5 rounded-lg flex items-center gap-1.5 shadow-sm cursor-pointer">
                         <i class="fa-solid fa-print"></i> Cetak AJP
                     </button>
-                    <button onclick="tutupModalLihatAjp()" class="text-slate-400 hover:text-slate-700 p-1.5 rounded-lg">
+                    <button type="button" onclick="tutupModalLihatAjp()" class="text-slate-400 hover:text-slate-700 p-1.5 rounded-lg cursor-pointer">
                         <i class="fa-solid fa-xmark text-lg"></i>
                     </button>
                 </div>
@@ -1017,7 +1016,7 @@
             </div>
 
             <div class="p-3 border-t border-slate-200 bg-slate-50 text-right no-print">
-                <button onclick="tutupModalLihatAjp()" class="bg-slate-300 hover:bg-slate-400 text-slate-800 font-bold text-xs px-5 py-2 rounded-xl transition">
+                <button type="button" onclick="tutupModalLihatAjp()" class="bg-slate-300 hover:bg-slate-400 text-slate-800 font-bold text-xs px-5 py-2 rounded-xl transition cursor-pointer">
                     Tutup
                 </button>
             </div>
@@ -1070,24 +1069,6 @@
         let transaksi = [];
         let ajpTransaksi = [];
         let bukuBesarManual = {};
-
-// Membersihkan data dummy lama dari localStorage browser sekali jalan
-if (!localStorage.getItem('siswa_bb_manual_cleared_v2')) {
-    localStorage.removeItem('siswa_bb_manual');
-    localStorage.setItem('siswa_bb_manual_cleared_v2', 'true');
-    bukuBesarManual = {};
-} else {
-    let savedBb = localStorage.getItem('siswa_bb_manual');
-    if (savedBb) {
-        try {
-            bukuBesarManual = JSON.parse(savedBb);
-        } catch(e) {
-            bukuBesarManual = {};
-        }
-    }
-}
-
-        
         let identitas = { nama: '', kelas: '', instansi: '', kab: '', tgl: '' };
 
         function formatDateInput(input) {
@@ -1432,8 +1413,8 @@ if (!localStorage.getItem('siswa_bb_manual_cleared_v2')) {
                                 class="w-full px-2 py-1 border rounded-lg text-right font-mono text-xs font-bold">
                         </td>
                         <td class="p-2 border text-center space-x-1.5">
-                            <button onclick="editCoa(${idx})" class="text-indigo-600 hover:text-indigo-800 p-1" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
-                            <button onclick="hapusCoa(${idx})" class="text-rose-500 hover:text-rose-700 p-1" title="Hapus"><i class="fa-solid fa-trash"></i></button>
+                            <button type="button" onclick="editCoa(${idx})" class="text-indigo-600 hover:text-indigo-800 p-1 cursor-pointer" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button type="button" onclick="hapusCoa(${idx})" class="text-rose-500 hover:text-rose-700 p-1 cursor-pointer" title="Hapus"><i class="fa-solid fa-trash"></i></button>
                         </td>
                     `;
                     coaTbody.appendChild(tr);
@@ -1564,7 +1545,7 @@ if (!localStorage.getItem('siswa_bb_manual_cleared_v2')) {
                     <div class="flex items-center gap-2 pt-1 border-t border-slate-100">
                         <span class="text-[11px] font-semibold text-slate-500 whitespace-nowrap">Nominal:</span>
                         <input type="text" placeholder="Rp 0" oninput="formatInputCurrency(this)" class="nom-input flex-1 text-xs py-1.5 px-2 border rounded-lg text-right font-mono font-bold min-w-0">
-                        <button type="button" onclick="hapusBaris('${type}_${id}')" class="text-rose-500 bg-rose-50 p-1.5 rounded-lg text-xs" title="Hapus Baris">
+                        <button type="button" onclick="hapusBaris('${type}_${id}')" class="text-rose-500 bg-rose-50 p-1.5 rounded-lg text-xs cursor-pointer" title="Hapus Baris">
                             <i class="fa-solid fa-trash-can"></i>
                         </button>
                     </div>
@@ -1587,7 +1568,7 @@ if (!localStorage.getItem('siswa_bb_manual_cleared_v2')) {
                     <div class="flex items-center gap-2 pt-1 border-t border-slate-100">
                         <span class="text-[11px] font-semibold text-slate-500 whitespace-nowrap">Nominal:</span>
                         <input type="text" placeholder="Rp 0" oninput="formatInputCurrency(this)" class="nom-input flex-1 text-xs py-1.5 px-2 border rounded-lg text-right font-mono font-bold min-w-0">
-                        <button type="button" onclick="hapusAjpBaris('${id}')" class="text-rose-500 bg-rose-50 p-1.5 rounded-lg text-xs" title="Hapus Baris">
+                        <button type="button" onclick="hapusAjpBaris('${id}')" class="text-rose-500 bg-rose-50 p-1.5 rounded-lg text-xs cursor-pointer" title="Hapus Baris">
                             <i class="fa-solid fa-trash-can"></i>
                         </button>
                     </div>
@@ -1839,7 +1820,7 @@ if (!localStorage.getItem('siswa_bb_manual_cleared_v2')) {
                             <td class="p-2 border">${finText}</td>
                             <td class="p-2 border">${lraText}</td>
                             <td class="p-2 border text-right font-bold font-mono text-slate-800">${formatRp(t.nominal)}</td>
-                            <td class="p-2 border text-center"><button onclick="hapusTx(${t.id})" class="text-rose-500 hover:text-rose-700 p-1"><i class="fa-solid fa-trash"></i></button></td>
+                            <td class="p-2 border text-center"><button type="button" onclick="hapusTx(${t.id})" class="text-rose-500 hover:text-rose-700 p-1 cursor-pointer"><i class="fa-solid fa-trash"></i></button></td>
                         `;
                         jBody.appendChild(tr);
                     });
@@ -1963,8 +1944,8 @@ if (!localStorage.getItem('siswa_bb_manual_cleared_v2')) {
                     <td class="p-2.5 border text-right font-mono">${r.kredit > 0 ? formatRp(r.kredit) : '-'}</td>
                     <td class="p-2.5 border text-right font-bold font-mono text-indigo-950">${formatRp(saldo)}</td>
                     <td class="p-2.5 border text-center space-x-1">
-                        <button onclick="editBb(${idx})" class="text-indigo-600 hover:text-indigo-800 p-1" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
-                        <button onclick="hapusBb(${idx})" class="text-rose-500 hover:text-rose-700 p-1" title="Hapus"><i class="fa-solid fa-trash"></i></button>
+                        <button type="button" onclick="editBb(${idx})" class="text-indigo-600 hover:text-indigo-800 p-1 cursor-pointer" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button type="button" onclick="hapusBb(${idx})" class="text-rose-500 hover:text-rose-700 p-1 cursor-pointer" title="Hapus"><i class="fa-solid fa-trash"></i></button>
                     </td>
                 `;
                 bbTbody.appendChild(tr);
@@ -2024,27 +2005,7 @@ if (!localStorage.getItem('siswa_bb_manual_cleared_v2')) {
                 renderBukuBesar();
             }
         }
-/* --- FUNGSI LIHAT BUKU BESAR SEMUA --- */
-function bukaModalLihatBukuBesar() {
-    updateTampilanIdentitasHeader();
-    renderModalBukuBesarSemuaAkun();
-    const modal = document.getElementById('modalLihatBukuBesar');
-    if (modal) {
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-    }
-}
 
-function tutupModalLihatBukuBesar() {
-    const modal = document.getElementById('modalLihatBukuBesar');
-    if (modal) {
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-    }
-}
-
-
-        
         /* --- FUNGSI NERACA SALDO HASIL BUKU BESAR --- */
         function renderNeracaSaldo() {
             const nsTbody = document.getElementById('neracaSaldoTbody');
@@ -2249,7 +2210,7 @@ function tutupModalLihatBukuBesar() {
                             <td class="p-2 border">${t.uraian}</td>
                             <td class="p-2 border">${ajpText}</td>
                             <td class="p-2 border text-right font-bold font-mono text-slate-800">${formatRp(t.nominal)}</td>
-                            <td class="p-2 border text-center"><button onclick="hapusAjp(${t.id})" class="text-rose-500 hover:text-rose-700 p-1"><i class="fa-solid fa-trash"></i></button></td>
+                            <td class="p-2 border text-center"><button type="button" onclick="hapusAjp(${t.id})" class="text-rose-500 hover:text-rose-700 p-1 cursor-pointer"><i class="fa-solid fa-trash"></i></button></td>
                         `;
                         ajpBody.appendChild(tr);
                     });
@@ -2631,318 +2592,90 @@ function tutupModalLihatBukuBesar() {
             if (document.getElementById('modalLraTotalKredit')) document.getElementById('modalLraTotalKredit').innerText = formatRp(lraTotalKredit);
         }
 
+        function bukaModalLihatBukuBesar() {
+            updateTampilanIdentitasHeader();
+            renderModalBukuBesarSemuaAkun();
+            const modal = document.getElementById('modalLihatBukuBesar');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+        }
+
+        function tutupModalLihatBukuBesar() {
+            const modal = document.getElementById('modalLihatBukuBesar');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
         function renderModalBukuBesarSemuaAkun() {
-    try {
-        const container = document.getElementById('modalBbContainer');
-        if (!container) return;
-        container.innerHTML = '';
+            const container = document.getElementById('modalBbContainer');
+            if (!container) return;
+            container.innerHTML = '';
 
-        const safeFormatRp = (num) => {
-            if (typeof formatRp === 'function') return formatRp(num);
-            return 'Rp ' + Number(num || 0).toLocaleString('id-ID');
-        };
+            const activeKeys = Object.keys(bukuBesarManual).filter(key => bukuBesarManual[key] && bukuBesarManual[key].length > 0);
 
-        const safeGetSaldoNormal = (key) => {
-            if (typeof getSaldoNormal === 'function') return getSaldoNormal(key);
-            const lower = String(key).toLowerCase();
-            if (lower.includes('kredit') || lower.includes('kewajiban') || lower.includes('ekuitas') || lower.includes('pendapatan')) {
-                return 'KREDIT';
-            }
-            return 'DEBET';
-        };
-
-        let semuaAkunSet = new Set();
-
-        if (typeof coaData !== 'undefined' && Array.isArray(coaData)) {
-            coaData.forEach(item => {
-                const debetAw = parseFloat(item.debetAwal) || 0;
-                const kreditAw = parseFloat(item.kreditAwal) || 0;
-                if (debetAw > 0 || kreditAw > 0) {
-                    semuaAkunSet.add(item.kode + ' - ' + item.nama);
-                }
-            });
-        }
-
-        if (typeof bukuBesarManual !== 'undefined' && bukuBesarManual !== null) {
-            Object.keys(bukuBesarManual).forEach(key => {
-                const rows = bukuBesarManual[key];
-                if (Array.isArray(rows) && rows.length > 0) {
-                    semuaAkunSet.add(key);
-                }
-            });
-        }
-
-        const activeKeys = Array.from(semuaAkunSet);
-
-        if (activeKeys.length === 0) {
-            container.innerHTML = '<div class="p-8 text-center text-slate-400 font-medium bg-slate-50 rounded-2xl border border-slate-200">Belum ada Buku Besar atau Saldo Awal yang tersimpan.</div>';
-            return;
-        }
-
-        activeKeys.sort();
-
-        activeKeys.forEach(akunKey => {
-            const parts = akunKey.split(' - ');
-            const kodeAkunMatch = parts[0] ? parts[0].trim() : '';
-
-            let debetAwal = 0;
-            let kreditAwal = 0;
-            if (typeof coaData !== 'undefined' && Array.isArray(coaData)) {
-                const coaItem = coaData.find(c => c.kode === kodeAkunMatch);
-                if (coaItem) {
-                    debetAwal = parseFloat(coaItem.debetAwal) || 0;
-                    kreditAwal = parseFloat(coaItem.kreditAwal) || 0;
-                }
+            if (activeKeys.length === 0) {
+                container.innerHTML = '<div class="p-8 text-center text-slate-400 font-medium bg-slate-50 rounded-2xl border border-slate-200">Belum ada posting pada Buku Besar di akun manapun.</div>';
+                return;
             }
 
-            const saldoNormal = safeGetSaldoNormal(akunKey);
-            const rowsBukuBesar = (typeof bukuBesarManual !== 'undefined' && bukuBesarManual && bukuBesarManual[akunKey]) ? bukuBesarManual[akunKey] : [];
+            activeKeys.forEach(akunKey => {
+                const rows = bukuBesarManual[akunKey];
+                const saldoNormal = getSaldoNormal(akunKey);
 
-            let rowsHtml = '';
-            let saldo = 0;
+                const sec = document.createElement('div');
+                sec.className = 'space-y-2';
 
-            if (debetAwal > 0 || kreditAwal > 0) {
-                if (saldoNormal === 'KREDIT') {
-                    saldo += (kreditAwal - debetAwal);
-                } else {
-                    saldo += (debetAwal - kreditAwal);
-                }
+                let rowsHtml = '';
+                let saldo = 0;
 
-                rowsHtml += `
-                    <tr class="border-b hover:bg-slate-50 font-medium bg-slate-50/60">
-                        <td class="p-2 border text-center text-slate-500">01/01/2026</td>
-                        <td class="p-2 border italic text-slate-600">Saldo Awal (Neraca Saldo)</td>
-                        <td class="p-2 border text-right font-mono">${debetAwal > 0 ? safeFormatRp(debetAwal) : '-'}</td>
-                        <td class="p-2 border text-right font-mono">${kreditAwal > 0 ? safeFormatRp(kreditAwal) : '-'}</td>
-                        <td class="p-2 border text-right font-bold font-mono text-indigo-950">${safeFormatRp(saldo)}</td>
-                    </tr>
-                `;
-            }
+                rows.forEach(r => {
+                    if (saldoNormal === 'KREDIT') {
+                        saldo += (r.kredit - r.debet);
+                    } else {
+                        saldo += (r.debet - r.kredit);
+                    }
 
-            rowsBukuBesar.forEach(r => {
-                const d = parseFloat(r.debet) || 0;
-                const k = parseFloat(r.kredit) || 0;
-
-                if (saldoNormal === 'KREDIT') {
-                    saldo += (k - d);
-                } else {
-                    saldo += (d - k);
-                }
-
-                rowsHtml += `
-                    <tr class="border-b hover:bg-slate-50 font-medium">
-                        <td class="p-2 border text-center">${r.tgl || '-'}</td>
-                        <td class="p-2 border">${r.ket || '-'}</td>
-                        <td class="p-2 border text-right font-mono">${d > 0 ? safeFormatRp(d) : '-'}</td>
-                        <td class="p-2 border text-right font-mono">${k > 0 ? safeFormatRp(k) : '-'}</td>
-                        <td class="p-2 border text-right font-bold font-mono text-indigo-950">${safeFormatRp(saldo)}</td>
-                    </tr>
-                `;
-            });
-
-            if (!rowsHtml) return;
-
-            const sec = document.createElement('div');
-            sec.className = 'space-y-2 mb-6';
-            sec.innerHTML = `
-                <div class="flex items-center gap-2 border-b-2 border-indigo-600 pb-1.5 mt-4">
-                    <i class="fa-solid fa-book text-indigo-600"></i>
-                    <h4 class="text-xs font-extrabold text-indigo-950 uppercase tracking-wide">Buku Besar: ${akunKey} (Saldo Normal: ${saldoNormal})</h4>
-                </div>
-                <div class="overflow-x-auto custom-touch-scroll">
-                    <table class="w-full text-xs text-left border-collapse border border-slate-300 min-w-[650px]">
-                        <thead>
-                            <tr class="bg-indigo-950 text-white border-b font-bold text-center">
-                                <th class="p-2 border border-indigo-900 w-28">Tanggal</th>
-                                <th class="p-2 border border-indigo-900">Keterangan</th>
-                                <th class="p-2 border border-indigo-900 w-36 text-right">Debet (Rp)</th>
-                                <th class="p-2 border border-indigo-900 w-36 text-right">Kredit (Rp)</th>
-                                <th class="p-2 border border-indigo-900 w-40 text-right">Saldo (Rp)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${rowsHtml}
-                        </tbody>
-                    </table>
-                </div>
-            `;
-            container.appendChild(sec);
-        });
-    } catch (err) {
-        console.error("Error pada renderModalBukuBesarSemuaAkun:", err);
-    }
-}
-
-    // Jika belum ada saldo awal maupun postingan buku besar sama sekali
-    if (activeKeys.length === 0) {
-        container.innerHTML = '<div class="p-8 text-center text-slate-400 font-medium bg-slate-50 rounded-2xl border border-slate-200">Belum ada Buku Besar atau Saldo Awal yang tersimpan.</div>';
-        return;
-    }
-
-    // Urutkan akun berdasarkan kode akun agar rapi
-    activeKeys.sort();
-
-    activeKeys.forEach(akunKey => {
-        // Ekstrak kode akun dari string (misal: "1.1.01.02.01 - Kas Bendahara Penerimaan" -> "1.1.01.02.01")
-        const kodeAkunMatch = akunKey.split(' - ')[0].trim();
-        
-        // Cari data COA terkait untuk mengambil saldo awal
-        let debetAwal = 0;
-        let kreditAwal = 0;
-        if (typeof coaData !== 'undefined' && Array.isArray(coaData)) {
-            const coaItem = coaData.find(c => c.kode === kodeAkunMatch || (akunKey.includes(c.kode) && akunKey.includes(c.nama)));
-            if (coaItem) {
-                debetAwal = parseFloat(coaItem.debetAwal) || 0;
-                kreditAwal = parseFloat(coaItem.kreditAwal) || 0;
-            }
-        }
-
-        const saldoNormal = getSaldoNormal ? getSaldoNormal(akunKey) : 'DEBET';
-        const rowsBukuBesar = (typeof bukuBesarManual !== 'undefined' && bukuBesarManual[akunKey]) ? bukuBesarManual[akunKey] : [];
-
-        const sec = document.createElement('div');
-        sec.className = 'space-y-2';
-
-        let rowsHtml = '';
-        let saldo = 0;
-
-        // Masukkan baris Saldo Awal terlebih dahulu jika ada
-        if (debetAwal > 0 || kreditAwal > 0) {
-            if (saldoNormal === 'KREDIT') {
-                saldo += (kreditAwal - debetAwal);
-            } else {
-                saldo += (debetAwal - kreditAwal);
-            }
-
-            rowsHtml += `
-                <tr class="border-b hover:bg-slate-50 font-medium bg-slate-50/60">
-                    <td class="p-2 border text-center text-slate-500">01/01/2026</td>
-                    <td class="p-2 border italic text-slate-600">Saldo Awal (Neraca Saldo)</td>
-                    <td class="p-2 border text-right font-mono">${debetAwal > 0 ? formatRp(debetAwal) : '-'}</td>
-                    <td class="p-2 border text-right font-mono">${kreditAwal > 0 ? formatRp(kreditAwal) : '-'}</td>
-                    <td class="p-2 border text-right font-bold font-mono text-indigo-950">${formatRp(saldo)}</td>
-                </tr>
-            `;
-        }
-
-        // Masukkan baris transaksi postingan buku besar berikutnya
-        rowsBukuBesar.forEach(r => {
-            const d = parseFloat(r.debet) || 0;
-            const k = parseFloat(r.kredit) || 0;
-
-            if (saldoNormal === 'KREDIT') {
-                saldo += (k - d);
-            } else {
-                saldo += (d - k);
-            }
-
-            rowsHtml += `
-                <tr class="border-b hover:bg-slate-50 font-medium">
-                    <td class="p-2 border text-center">${r.tgl || '-'}</td>
-                    <td class="p-2 border">${r.ket || '-'}</td>
-                    <td class="p-2 border text-right font-mono">${d > 0 ? formatRp(d) : '-'}</td>
-                    <td class="p-2 border text-right font-mono">${k > 0 ? formatRp(k) : '-'}</td>
-                    <td class="p-2 border text-right font-bold font-mono text-indigo-950">${formatRp(saldo)}</td>
-                </tr>
-            `;
-        });
-
-        // Jika tidak ada baris sama sekali (meskipun masuk set), lewati
-        if (rowsHtml === '') return;
-
-        sec.innerHTML = `
-            <div class="flex items-center gap-2 border-b-2 border-indigo-600 pb-1.5">
-                <i class="fa-solid fa-book text-indigo-600"></i>
-                <h4 class="text-xs font-extrabold text-indigo-950 uppercase tracking-wide">Buku Besar: ${akunKey} (Saldo Normal: ${saldoNormal})</h4>
-            </div>
-
-            <div class="overflow-x-auto custom-touch-scroll">
-                <table class="w-full text-xs text-left border-collapse border border-slate-300 min-w-[650px]">
-                    <thead>
-                        <tr class="bg-indigo-950 text-white border-b font-bold text-center">
-                            <th class="p-2 border border-indigo-900 w-28">Tanggal</th>
-                            <th class="p-2 border border-indigo-900">Keterangan</th>
-                            <th class="p-2 border border-indigo-900 w-36 text-right">Debet (Rp)</th>
-                            <th class="p-2 border border-indigo-900 w-36 text-right">Kredit (Rp)</th>
-                            <th class="p-2 border border-indigo-900 w-40 text-right">Saldo (Rp)</th>
+                    rowsHtml += `
+                        <tr class="border-b hover:bg-slate-50 font-medium">
+                            <td class="p-2 border text-center">${r.tgl}</td>
+                            <td class="p-2 border">${r.ket}</td>
+                            <td class="p-2 border text-right font-mono">${r.debet > 0 ? formatRp(r.debet) : '-'}</td>
+                            <td class="p-2 border text-right font-mono">${r.kredit > 0 ? formatRp(r.kredit) : '-'}</td>
+                            <td class="p-2 border text-right font-bold font-mono text-indigo-950">${formatRp(saldo)}</td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        ${rowsHtml}
-                    </tbody>
-                </table>
-            </div>
-        `;
-        container.appendChild(sec);
-    });
-}
+                    `;
+                });
 
-    // Hanya ambil akun yang benar-benar memiliki baris data postingan (panjang array > 0)
-    const activeKeys = Object.keys(bukuBesarManual).filter(key => {
-        const rows = bukuBesarManual[key];
-        return Array.isArray(rows) && rows.length > 0;
-    });
+                sec.innerHTML = `
+                    <div class="flex items-center gap-2 border-b-2 border-indigo-600 pb-1.5">
+                        <i class="fa-solid fa-book text-indigo-600"></i>
+                        <h4 class="text-xs font-extrabold text-indigo-950 uppercase tracking-wide">Buku Besar: ${akunKey} (Saldo Normal: ${saldoNormal})</h4>
+                    </div>
 
-    // Jika belum ada postingan buku besar sama sekali, tampilkan pesan kosong secara default tanpa merubah layout kolom
-    if (activeKeys.length === 0) {
-        container.innerHTML = '<div class="p-8 text-center text-slate-400 font-medium bg-slate-50 rounded-2xl border border-slate-200">Belum ada Buku Besar yang tersimpan. Silakan lakukan posting atau submit buku besar terlebih dahulu.</div>';
-        return;
-    }
-
-    activeKeys.forEach(akunKey => {
-        const rows = bukuBesarManual[akunKey];
-        const saldoNormal = getSaldoNormal(akunKey);
-
-        const sec = document.createElement('div');
-        sec.className = 'space-y-2';
-
-        let rowsHtml = '';
-        let saldo = 0;
-
-        rows.forEach(r => {
-            if (saldoNormal === 'KREDIT') {
-                saldo += (r.kredit - r.debet);
-            } else {
-                saldo += (r.debet - r.kredit);
-            }
-
-            rowsHtml += `
-                <tr class="border-b hover:bg-slate-50 font-medium">
-                    <td class="p-2 border text-center">${r.tgl || '-'}</td>
-                    <td class="p-2 border">${r.ket || '-'}</td>
-                    <td class="p-2 border text-right font-mono">${r.debet > 0 ? formatRp(r.debet) : '-'}</td>
-                    <td class="p-2 border text-right font-mono">${r.kredit > 0 ? formatRp(r.kredit) : '-'}</td>
-                    <td class="p-2 border text-right font-bold font-mono text-indigo-950">${formatRp(saldo)}</td>
-                </tr>
-            `;
-        });
-
-        sec.innerHTML = `
-            <div class="flex items-center gap-2 border-b-2 border-indigo-600 pb-1.5">
-                <i class="fa-solid fa-book text-indigo-600"></i>
-                <h4 class="text-xs font-extrabold text-indigo-950 uppercase tracking-wide">Buku Besar: ${akunKey} (Saldo Normal: ${saldoNormal})</h4>
-            </div>
-
-            <div class="overflow-x-auto custom-touch-scroll">
-                <table class="w-full text-xs text-left border-collapse border border-slate-300 min-w-[650px]">
-                    <thead>
-                        <tr class="bg-indigo-950 text-white border-b font-bold text-center">
-                            <th class="p-2 border border-indigo-900 w-28">Tanggal</th>
-                            <th class="p-2 border border-indigo-900">Keterangan</th>
-                            <th class="p-2 border border-indigo-900 w-36 text-right">Debet (Rp)</th>
-                            <th class="p-2 border border-indigo-900 w-36 text-right">Kredit (Rp)</th>
-                            <th class="p-2 border border-indigo-900 w-40 text-right">Saldo (Rp)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${rowsHtml}
-                    </tbody>
-                </table>
-            </div>
-        `;
-        container.appendChild(sec);
-    });
-}
+                    <div class="overflow-x-auto custom-touch-scroll">
+                        <table class="w-full text-xs text-left border-collapse border border-slate-300 min-w-[650px]">
+                            <thead>
+                                <tr class="bg-indigo-950 text-white border-b font-bold text-center">
+                                    <th class="p-2 border border-indigo-900 w-28">Tanggal</th>
+                                    <th class="p-2 border border-indigo-900">Keterangan</th>
+                                    <th class="p-2 border border-indigo-900 w-36 text-right">Debet (Rp)</th>
+                                    <th class="p-2 border border-indigo-900 w-36 text-right">Kredit (Rp)</th>
+                                    <th class="p-2 border border-indigo-900 w-40 text-right">Saldo (Rp)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${rowsHtml}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+                container.appendChild(sec);
+            });
+        }
 
         async function fetchIhsgData() {
             try {
