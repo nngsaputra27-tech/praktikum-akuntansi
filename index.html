@@ -1229,6 +1229,7 @@
             resetFormAjpDinamis();
             renderTampilan();
             renderTampilanAjp();
+            renderBukuBesar();
             updateTampilanIdentitasHeader();
 
             fetchIhsgData();
@@ -1854,6 +1855,217 @@
             if(document.getElementById('loPend')) document.getElementById('loPend').innerText = formatRp(pendLO);
             if(document.getElementById('loBeban')) document.getElementById('loBeban').innerText = formatRp(bebanLO);
             if(document.getElementById('loSurplus')) document.getElementById('loSurplus').innerText = formatRp(pendLO - bebanLO);
+        }
+
+        /* --- FUNGSI BUKU BESAR MANUAL & INTEGRASI TABEL --- */
+        function tambahBukuBesarManual(e) {
+            e.preventDefault();
+            const akunSelect = document.getElementById('bbSelect');
+            const akunKey = akunSelect ? akunSelect.value : '';
+
+            if(!akunKey) {
+                alert("Silakan pilih akun Buku Besar terlebih dahulu!");
+                return;
+            }
+
+            const tgl = document.getElementById('bbTgl').value;
+            const ket = document.getElementById('bbKet').value;
+            const debet = parseCurrencyValue(document.getElementById('bbDebet').value);
+            const kredit = parseCurrencyValue(document.getElementById('bbKredit').value);
+            const editIdx = parseInt(document.getElementById('editBbIndex').value);
+
+            if(!bukuBesarManual[akunKey]) {
+                bukuBesarManual[akunKey] = [];
+            }
+
+            if(editIdx === -1) {
+                bukuBesarManual[akunKey].push({
+                    id: Date.now(),
+                    tgl: tgl,
+                    ket: ket,
+                    debet: debet,
+                    kredit: kredit
+                });
+            } else {
+                bukuBesarManual[akunKey][editIdx] = {
+                    id: bukuBesarManual[akunKey][editIdx].id || Date.now(),
+                    tgl: tgl,
+                    ket: ket,
+                    debet: debet,
+                    kredit: kredit
+                };
+            }
+
+            localStorage.setItem('siswa_bb_manual', JSON.stringify(bukuBesarManual));
+            
+            batalEditBb();
+            renderBukuBesar();
+            showSuccessModal('Buku Besar Disimpan!', `Berhasil memposting ke akun ${akunKey}`);
+        }
+
+        function renderBukuBesar() {
+            const akunSelect = document.getElementById('bbSelect');
+            const bbTbody = document.getElementById('bbTbody');
+            const bbJudul = document.getElementById('bbJudulTabel');
+            if(!akunSelect || !bbTbody) return;
+
+            const akunKey = akunSelect.value;
+            bbTbody.innerHTML = '';
+
+            if(!akunKey) {
+                if(bbJudul) bbJudul.innerText = 'Buku Besar: Belum Memilih Akun';
+                bbTbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-slate-400">Silakan pilih akun pada dropdown di atas.</td></tr>';
+                return;
+            }
+
+            const saldoNormal = getSaldoNormal(akunKey);
+            if(bbJudul) bbJudul.innerText = `Buku Besar: ${akunKey} (Saldo Normal: ${saldoNormal})`;
+
+            const rows = bukuBesarManual[akunKey] || [];
+            if(rows.length === 0) {
+                bbTbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-slate-400">Belum ada posting pada akun ini.</td></tr>';
+                return;
+            }
+
+            let saldo = 0;
+            rows.forEach((r, idx) => {
+                if(saldoNormal === 'KREDIT') {
+                    saldo += (r.kredit - r.debet);
+                } else {
+                    saldo += (r.debet - r.kredit);
+                }
+
+                const tr = document.createElement('tr');
+                tr.className = 'border-b hover:bg-slate-50 font-medium text-xs';
+                tr.innerHTML = `
+                    <td class="p-2.5 border text-center font-semibold">${r.tgl}</td>
+                    <td class="p-2.5 border">${r.ket}</td>
+                    <td class="p-2.5 border text-right font-mono">${r.debet > 0 ? formatRp(r.debet) : '-'}</td>
+                    <td class="p-2.5 border text-right font-mono">${r.kredit > 0 ? formatRp(r.kredit) : '-'}</td>
+                    <td class="p-2.5 border text-right font-bold font-mono text-indigo-950">${formatRp(saldo)}</td>
+                    <td class="p-2.5 border text-center space-x-1">
+                        <button onclick="editBb(${idx})" class="text-indigo-600 hover:text-indigo-800 p-1" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button onclick="hapusBb(${idx})" class="text-rose-500 hover:text-rose-700 p-1" title="Hapus"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                `;
+                bbTbody.appendChild(tr);
+            });
+        }
+
+        function editBb(idx) {
+            const akunKey = document.getElementById('bbSelect').value;
+            if(!akunKey || !bukuBesarManual[akunKey] || !bukuBesarManual[akunKey][idx]) return;
+
+            const item = bukuBesarManual[akunKey][idx];
+            document.getElementById('editBbIndex').value = idx;
+            document.getElementById('bbTgl').value = item.tgl || '';
+            document.getElementById('bbKet').value = item.ket || '';
+            document.getElementById('bbDebet').value = item.debet > 0 ? formatRp(item.debet) : '';
+            document.getElementById('bbKredit').value = item.kredit > 0 ? formatRp(item.kredit) : '';
+
+            const btnSubmit = document.getElementById('btnSubmitBb');
+            const btnBatal = document.getElementById('btnBatalBb');
+            if(btnSubmit) btnSubmit.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Simpan Edit BB';
+            if(btnBatal) btnBatal.classList.remove('hidden');
+        }
+
+        function batalEditBb() {
+            document.getElementById('editBbIndex').value = -1;
+            document.getElementById('bbTgl').value = '';
+            document.getElementById('bbKet').value = '';
+            document.getElementById('bbDebet').value = '';
+            document.getElementById('bbKredit').value = '';
+
+            const btnSubmit = document.getElementById('btnSubmitBb');
+            const btnBatal = document.getElementById('btnBatalBb');
+            if(btnSubmit) btnSubmit.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Submit Buku Besar';
+            if(btnBatal) btnBatal.classList.add('hidden');
+        }
+
+        function hapusBb(idx) {
+            const akunKey = document.getElementById('bbSelect').value;
+            if(!akunKey || !bukuBesarManual[akunKey]) return;
+
+            if(confirm(`Hapus baris posting ini dari akun ${akunKey}?`)) {
+                bukuBesarManual[akunKey].splice(idx, 1);
+                localStorage.setItem('siswa_bb_manual', JSON.stringify(bukuBesarManual));
+                renderBukuBesar();
+            }
+        }
+
+        function resetBukuBesarAkunIni() {
+            const akunKey = document.getElementById('bbSelect').value;
+            if(!akunKey) {
+                alert("Pilih akun terlebih dahulu!");
+                return;
+            }
+            if(confirm(`Kosongkan seluruh data Buku Besar untuk akun ${akunKey}?`)) {
+                delete bukuBesarManual[akunKey];
+                localStorage.setItem('siswa_bb_manual', JSON.stringify(bukuBesarManual));
+                renderBukuBesar();
+            }
+        }
+
+        /* --- FUNGSI NERACA SALDO HASIL BUKU BESAR --- */
+        function renderNeracaSaldo() {
+            const nsTbody = document.getElementById('neracaSaldoTbody');
+            if (!nsTbody) return;
+            nsTbody.innerHTML = '';
+
+            updateTampilanIdentitasHeader();
+
+            let totalDebit = 0, totalKredit = 0;
+
+            coaData.forEach(item => {
+                const fullKey = `${item.kode} ${item.nama}`;
+                const rows = bukuBesarManual[fullKey] || [];
+                const saldoNormal = getSaldoNormal(fullKey);
+
+                let saldo = 0;
+                rows.forEach(r => {
+                    if (saldoNormal === 'KREDIT') {
+                        saldo += (r.kredit - r.debet);
+                    } else {
+                        saldo += (r.debet - r.kredit);
+                    }
+                });
+
+                let debetVal = 0, kreditVal = 0;
+                if (saldoNormal === 'KREDIT') {
+                    kreditVal = saldo >= 0 ? saldo : 0;
+                    debetVal = saldo < 0 ? Math.abs(saldo) : 0;
+                } else {
+                    debetVal = saldo >= 0 ? saldo : 0;
+                    kreditVal = saldo < 0 ? Math.abs(saldo) : 0;
+                }
+
+                totalDebit += debetVal;
+                totalKredit += kreditVal;
+
+                const tr = document.createElement('tr');
+                tr.className = 'border-b hover:bg-slate-50 font-medium text-xs';
+                tr.innerHTML = `
+                    <td class="p-2.5 border font-mono font-bold text-indigo-950">${item.kode}</td>
+                    <td class="p-2.5 border font-medium text-slate-800">${item.nama}</td>
+                    <td class="p-2.5 border text-right font-mono">${debetVal > 0 ? formatRp(debetVal) : '-'}</td>
+                    <td class="p-2.5 border text-right font-mono">${kreditVal > 0 ? formatRp(kreditVal) : '-'}</td>
+                `;
+                nsTbody.appendChild(tr);
+            });
+
+            if (document.getElementById('totalNsDebit')) document.getElementById('totalNsDebit').innerText = formatRp(totalDebit);
+            if (document.getElementById('totalNsKredit')) document.getElementById('totalNsKredit').innerText = formatRp(totalKredit);
+
+            const statusNs = document.getElementById('statusNsBalance');
+            if (statusNs) {
+                if (Math.abs(totalDebit - totalKredit) < 0.01) {
+                    statusNs.className = 'px-3 py-1.5 rounded-xl text-xs font-black tracking-wider bg-emerald-500 text-white shadow-sm flex items-center gap-1.5';
+                    statusNs.innerHTML = '<i class="fa-solid fa-circle-check"></i> BALANCE';
+                } else {
+                    statusNs.className = 'px-3 py-1.5 rounded-xl text-xs font-black tracking-wider bg-rose-600 text-white shadow-sm flex items-center gap-1.5';
+                    statusNs.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> UNBALANCE';
+                }
+            }
         }
 
         /* --- FUNGSI AJP MANDIRI --- */
