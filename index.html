@@ -2006,7 +2006,27 @@
                 renderBukuBesar();
             }
         }
+/* --- FUNGSI LIHAT BUKU BESAR SEMUA --- */
+function bukaModalLihatBukuBesar() {
+    updateTampilanIdentitasHeader();
+    renderModalBukuBesarSemuaAkun();
+    const modal = document.getElementById('modalLihatBukuBesar');
+    if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    }
+}
 
+function tutupModalLihatBukuBesar() {
+    const modal = document.getElementById('modalLihatBukuBesar');
+    if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
+}
+
+
+        
         /* --- FUNGSI NERACA SALDO HASIL BUKU BESAR --- */
         function renderNeracaSaldo() {
             const nsTbody = document.getElementById('neracaSaldoTbody');
