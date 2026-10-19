@@ -1070,6 +1070,24 @@
         let transaksi = [];
         let ajpTransaksi = [];
         let bukuBesarManual = {};
+
+// Membersihkan data dummy lama dari localStorage browser sekali jalan
+if (!localStorage.getItem('siswa_bb_manual_cleared_v2')) {
+    localStorage.removeItem('siswa_bb_manual');
+    localStorage.setItem('siswa_bb_manual_cleared_v2', 'true');
+    bukuBesarManual = {};
+} else {
+    let savedBb = localStorage.getItem('siswa_bb_manual');
+    if (savedBb) {
+        try {
+            bukuBesarManual = JSON.parse(savedBb);
+        } catch(e) {
+            bukuBesarManual = {};
+        }
+    }
+}
+
+        
         let identitas = { nama: '', kelas: '', instansi: '', kab: '', tgl: '' };
 
         function formatDateInput(input) {
