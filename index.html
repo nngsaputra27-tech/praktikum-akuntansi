@@ -2637,13 +2637,11 @@ function tutupModalLihatBukuBesar() {
         if (!container) return;
         container.innerHTML = '';
 
-        // Helper lokal untuk format rupiah agar tidak error jika formatRp belum terdefinisi
         const safeFormatRp = (num) => {
             if (typeof formatRp === 'function') return formatRp(num);
             return 'Rp ' + Number(num || 0).toLocaleString('id-ID');
         };
 
-        // Helper lokal untuk saldo normal
         const safeGetSaldoNormal = (key) => {
             if (typeof getSaldoNormal === 'function') return getSaldoNormal(key);
             const lower = String(key).toLowerCase();
@@ -2655,7 +2653,6 @@ function tutupModalLihatBukuBesar() {
 
         let semuaAkunSet = new Set();
 
-        // Ambil dari coaData
         if (typeof coaData !== 'undefined' && Array.isArray(coaData)) {
             coaData.forEach(item => {
                 const debetAw = parseFloat(item.debetAwal) || 0;
@@ -2666,7 +2663,6 @@ function tutupModalLihatBukuBesar() {
             });
         }
 
-        // Ambil dari bukuBesarManual
         if (typeof bukuBesarManual !== 'undefined' && bukuBesarManual !== null) {
             Object.keys(bukuBesarManual).forEach(key => {
                 const rows = bukuBesarManual[key];
@@ -2705,7 +2701,6 @@ function tutupModalLihatBukuBesar() {
             let rowsHtml = '';
             let saldo = 0;
 
-            // Baris Saldo Awal
             if (debetAwal > 0 || kreditAwal > 0) {
                 if (saldoNormal === 'KREDIT') {
                     saldo += (kreditAwal - debetAwal);
@@ -2724,7 +2719,6 @@ function tutupModalLihatBukuBesar() {
                 `;
             }
 
-            // Baris Transaksi Buku Besar
             rowsBukuBesar.forEach(r => {
                 const d = parseFloat(r.debet) || 0;
                 const k = parseFloat(r.kredit) || 0;
@@ -2749,7 +2743,7 @@ function tutupModalLihatBukuBesar() {
             if (!rowsHtml) return;
 
             const sec = document.createElement('div');
-            sec.className = 'space-y-2';
+            sec.className = 'space-y-2 mb-6';
             sec.innerHTML = `
                 <div class="flex items-center gap-2 border-b-2 border-indigo-600 pb-1.5 mt-4">
                     <i class="fa-solid fa-book text-indigo-600"></i>
