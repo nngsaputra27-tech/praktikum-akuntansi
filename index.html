@@ -2592,90 +2592,77 @@
             if (document.getElementById('modalLraTotalKredit')) document.getElementById('modalLraTotalKredit').innerText = formatRp(lraTotalKredit);
         }
 
-        function bukaModalLihatBukuBesar() {
-            updateTampilanIdentitasHeader();
-            renderModalBukuBesarSemuaAkun();
-            const modal = document.getElementById('modalLihatBukuBesar');
-            if (modal) {
-                modal.classList.remove('hidden');
-                modal.classList.add('flex');
-            }
-        }
-
-        function tutupModalLihatBukuBesar() {
-            const modal = document.getElementById('modalLihatBukuBesar');
-            if (modal) {
-                modal.classList.add('hidden');
-                modal.classList.remove('flex');
-            }
-        }
-
         function renderModalBukuBesarSemuaAkun() {
-            const container = document.getElementById('modalBbContainer');
-            if (!container) return;
-            container.innerHTML = '';
+    const container = document.getElementById('modalBbContainer');
+    if (!container) return;
+    container.innerHTML = '';
 
-            const activeKeys = Object.keys(bukuBesarManual).filter(key => bukuBesarManual[key] && bukuBesarManual[key].length > 0);
+    // Hanya ambil akun yang benar-benar memiliki baris data postingan (panjang array > 0)
+    const activeKeys = Object.keys(bukuBesarManual).filter(key => {
+        const rows = bukuBesarManual[key];
+        return Array.isArray(rows) && rows.length > 0;
+    });
 
-            if (activeKeys.length === 0) {
-                container.innerHTML = '<div class="p-8 text-center text-slate-400 font-medium bg-slate-50 rounded-2xl border border-slate-200">Belum ada posting pada Buku Besar di akun manapun.</div>';
-                return;
+    // Jika belum ada postingan buku besar sama sekali, tampilkan pesan kosong secara default tanpa merubah layout kolom
+    if (activeKeys.length === 0) {
+        container.innerHTML = '<div class="p-8 text-center text-slate-400 font-medium bg-slate-50 rounded-2xl border border-slate-200">Belum ada Buku Besar yang tersimpan. Silakan lakukan posting atau submit buku besar terlebih dahulu.</div>';
+        return;
+    }
+
+    activeKeys.forEach(akunKey => {
+        const rows = bukuBesarManual[akunKey];
+        const saldoNormal = getSaldoNormal(akunKey);
+
+        const sec = document.createElement('div');
+        sec.className = 'space-y-2';
+
+        let rowsHtml = '';
+        let saldo = 0;
+
+        rows.forEach(r => {
+            if (saldoNormal === 'KREDIT') {
+                saldo += (r.kredit - r.debet);
+            } else {
+                saldo += (r.debet - r.kredit);
             }
 
-            activeKeys.forEach(akunKey => {
-                const rows = bukuBesarManual[akunKey];
-                const saldoNormal = getSaldoNormal(akunKey);
+            rowsHtml += `
+                <tr class="border-b hover:bg-slate-50 font-medium">
+                    <td class="p-2 border text-center">${r.tgl || '-'}</td>
+                    <td class="p-2 border">${r.ket || '-'}</td>
+                    <td class="p-2 border text-right font-mono">${r.debet > 0 ? formatRp(r.debet) : '-'}</td>
+                    <td class="p-2 border text-right font-mono">${r.kredit > 0 ? formatRp(r.kredit) : '-'}</td>
+                    <td class="p-2 border text-right font-bold font-mono text-indigo-950">${formatRp(saldo)}</td>
+                </tr>
+            `;
+        });
 
-                const sec = document.createElement('div');
-                sec.className = 'space-y-2';
+        sec.innerHTML = `
+            <div class="flex items-center gap-2 border-b-2 border-indigo-600 pb-1.5">
+                <i class="fa-solid fa-book text-indigo-600"></i>
+                <h4 class="text-xs font-extrabold text-indigo-950 uppercase tracking-wide">Buku Besar: ${akunKey} (Saldo Normal: ${saldoNormal})</h4>
+            </div>
 
-                let rowsHtml = '';
-                let saldo = 0;
-
-                rows.forEach(r => {
-                    if (saldoNormal === 'KREDIT') {
-                        saldo += (r.kredit - r.debet);
-                    } else {
-                        saldo += (r.debet - r.kredit);
-                    }
-
-                    rowsHtml += `
-                        <tr class="border-b hover:bg-slate-50 font-medium">
-                            <td class="p-2 border text-center">${r.tgl}</td>
-                            <td class="p-2 border">${r.ket}</td>
-                            <td class="p-2 border text-right font-mono">${r.debet > 0 ? formatRp(r.debet) : '-'}</td>
-                            <td class="p-2 border text-right font-mono">${r.kredit > 0 ? formatRp(r.kredit) : '-'}</td>
-                            <td class="p-2 border text-right font-bold font-mono text-indigo-950">${formatRp(saldo)}</td>
+            <div class="overflow-x-auto custom-touch-scroll">
+                <table class="w-full text-xs text-left border-collapse border border-slate-300 min-w-[650px]">
+                    <thead>
+                        <tr class="bg-indigo-950 text-white border-b font-bold text-center">
+                            <th class="p-2 border border-indigo-900 w-28">Tanggal</th>
+                            <th class="p-2 border border-indigo-900">Keterangan</th>
+                            <th class="p-2 border border-indigo-900 w-36 text-right">Debet (Rp)</th>
+                            <th class="p-2 border border-indigo-900 w-36 text-right">Kredit (Rp)</th>
+                            <th class="p-2 border border-indigo-900 w-40 text-right">Saldo (Rp)</th>
                         </tr>
-                    `;
-                });
-
-                sec.innerHTML = `
-                    <div class="flex items-center gap-2 border-b-2 border-indigo-600 pb-1.5">
-                        <i class="fa-solid fa-book text-indigo-600"></i>
-                        <h4 class="text-xs font-extrabold text-indigo-950 uppercase tracking-wide">Buku Besar: ${akunKey} (Saldo Normal: ${saldoNormal})</h4>
-                    </div>
-
-                    <div class="overflow-x-auto custom-touch-scroll">
-                        <table class="w-full text-xs text-left border-collapse border border-slate-300 min-w-[650px]">
-                            <thead>
-                                <tr class="bg-indigo-950 text-white border-b font-bold text-center">
-                                    <th class="p-2 border border-indigo-900 w-28">Tanggal</th>
-                                    <th class="p-2 border border-indigo-900">Keterangan</th>
-                                    <th class="p-2 border border-indigo-900 w-36 text-right">Debet (Rp)</th>
-                                    <th class="p-2 border border-indigo-900 w-36 text-right">Kredit (Rp)</th>
-                                    <th class="p-2 border border-indigo-900 w-40 text-right">Saldo (Rp)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${rowsHtml}
-                            </tbody>
-                        </table>
-                    </div>
-                `;
-                container.appendChild(sec);
-            });
-        }
+                    </thead>
+                    <tbody>
+                        ${rowsHtml}
+                    </tbody>
+                </table>
+            </div>
+        `;
+        container.appendChild(sec);
+    });
+}
 
         async function fetchIhsgData() {
             try {
